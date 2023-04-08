@@ -9,7 +9,7 @@
     "start": "vite",
     "dev": "vite --host",
     "build": "vite build --emptyOutDir",
-    "preview": "vite build --emptyOutDir && vite preview --host"
+    "preview": "vite preview --host"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^1.0.1",

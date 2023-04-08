@@ -1,6 +1,6 @@
-# AV-Tools v0.3
+# av-server-ui v0.4.0
 
-[Download](https://github.com/TreyTiderman/AV-Tools/releases/tag/v0.3) or check out the [Demo UI](https://trey.app/av-tools)
+[Download](https://github.com/treytiderman/av-server/releases/tag/v0.4.0) or check out the [Demo UI](https://trey.app/av-tools)
 
 ## Goals
 
@@ -20,12 +20,9 @@
         - Podman / Docker container
         - Source Code with Node JS
 
-## Services
+## Web UI
 
-I refer to the computer that this application is running on "the server"
-
-### Core v0.4
-
+- [ ] Provide easy tools to work with
 - [ ] TCP Client v1
     - [ ] Open tcp connections to any device on the network
         - Connection Views
@@ -33,39 +30,10 @@ I refer to the computer that this application is running on "the server"
         - [ ] Terminal Tool / Telnet / SSH style
         - [ ] Visca tool
         - [ ] Device specific builder?
-- [x] Web UI
-    - [ ] Provide easy tools to work with
-- [ ] API v1
-    - [Docs](./public/docs/api/api.md)
-    - [ ] WebSocket
-    - [ ] TCP
-- [x] HTTP Server
-    - Any files put in the `./public` directory will be served
-- [ ] Auth / User accounts / Permissions
-- [ ] Multicast Discovery
-    - [ ] mDNS?
-- [ ] Choose what services are bound to which network interface
-- [ ] Encrypt all data between the server and clients
 - Help sections
-  - How to run on startup
-  - How to use the web server
-  - How to use the API
-
-Dependencies
-```
-nodejs  18.12.1
-npm     8.19.2
-```
-```
-"cors": "^2.8.5",
-"express": "^4.18.1",
-"jsonwebtoken": "^8.5.1",
-"ws": "^8.8.0"
-```
-
-### Web UI v0.4
-
-- [ ] Provide easy tools to work with
+    - How to run on startup
+    - How to use the web server
+    - How to use the API
 
 ```
   "devDependencies": {
@@ -78,141 +46,102 @@ npm     8.19.2
   }
 ```
 
-# Run source code
+# Source Code
 
-First clone the github repo [link](https://github.com/TreyTiderman/AV-Tools)
+## Clone
 
-### Server | AV-Tools
+```
+cd ~/
+git clone https://github.com/treytiderman/av-server-ui.git
+```
 
-1. Run the following commands in the `./server` folder
-2. Install project dependencies (package.json) with
+## Run
+
+1. Run the following commands in the `/av-server-ui` folder
+2. Install project dependencies (package.json)
+
 ```
 npm install
 ```
-3. Then to start the server (server.js) with
-```
-npm run start
-```
-4. Or in development mode (Reloads every file change) with
+
+3. Then to start the bundler Vite (Updates live)
+
 ```
 npm run dev
 ```
-5. Go to http://SERVER_IP:4620
-    - Example: http://192.168.1.1:4620
 
-#### Kill the process
+4. Go to http://SERVER_IP:5173, Example http://192.168.1.1:5173
+5. Build a bundle and put it in the public folder of the av-server `../av-server/public/av-server-ui`
 
-```
-sudo netstat -lpn |grep :'<SERVER_PORT>'
-kill -9 <NODE_PROCESS>
-```
-
-```
-sudo netstat -lpn |grep :'6969'
-kill -9 1029825
-```
-
-#### Docker
-
-1. Run the following commands in the `./` folder
-2. Build the image
-    - Folder to build: "PATH"
-    - Tag: "-t NAME_OF_TAG"
-```
-sudo docker build . -t AV-Tools
-```
-3. Remove the current running container if it exists
-    - Image Name: "NAME"
-```
-sudo docker rm AV-Tools
-```
-4. Then to run the image
-    - Detach: "-d" (run in background)
-    - Port: "-p SERVER_PORT:CONTAINER_PORT"
-    - Volume: "-v SERVER_DIRECTORY:CONTAINER_DIRECTORY"
-    - Image Name: "NAME"
-```
-sudo docker run -d -p 4620:4620 -v $(pwd)/public:/app/public --restart unless-stopped --name AV-Tools AV-Tools
-```
-5. Stop / Start / Restart when needed
-    - Image Name: "NAME"
-```
-sudo docker stop AV-Tools
-```
-```
-sudo docker start AV-Tools
-```
-```
-sudo docker restart AV-Tools
-```
-
-### Client | Web UI with Svelte
-
-1. Run the following commands in the `./svelte` folder
-2. Install project dependencies (package.json) with
-```
-npm install
-```
-3. Then to start the bundler Vite (Updates live) with
-```
-npm run dev
-```
-4. Go to http://SERVER_IP:5173
-    - Example: http://192.168.1.1:5173
-5. Build a bundle and put it in the public folder `./public/svelte` with
 ```
 npm run build
 ```
-6. Build and Preview the bundle if needed with
-```
-npm run preview
-```
 
-#### Docker
+## Podman
 
-1. Run the following commands in the `./svelte` folder
+1. Run the following commands in the `/av-server-ui` folder
 2. Build the image
-    - Folder to build: "PATH"
-    - Tag: "-t NAME_OF_TAG"
+
 ```
-sudo docker build . -t AV-Tools-UI
+podman build . -t av-server-ui
 ```
+
 3. Remove the current running container if it exists
-    - Image Name: "NAME"
+
 ```
-sudo docker rm AV-Tools-UI
+podman stop av-server-ui
+podman rm av-server-ui
 ```
+
 4. Then to run the image
-    - Detach: "-d" (run in background)
-    - Port: "-p SERVER_PORT:CONTAINER_PORT"
-    - Volume: "-v SERVER_DIRECTORY:CONTAINER_DIRECTORY"
-    - Image Name: "NAME"
-```
-sudo docker run -d -p 5173:5173 -v $(pwd)/public:/app/public --restart unless-stopped --name AV-Tools-UI AV-Tools-UI
-```
-5. Stop / Start / Restart when needed
-    - Image Name: "NAME"
-```
-sudo docker stop AV-Tools-UI
-```
-```
-sudo docker start AV-Tools-UI
-```
-```
-sudo docker restart AV-Tools-UI
-```
-
-### Install as a service (Windows)
-
-1. Run the following commands in the `./server` folder
-2. Create the service with
 
 ```
-npm run service-install
+podman run -d --name av-server-ui --hostname av-server-ui -p 5173:5173 -v $(pwd):/app:Z av-server-ui
 ```
 
-3. Uninstall service when needed
+5. Start / Restart / Stop / Remove
 
 ```
-npm run service-uninstall
+podman start av-server-ui
+```
+
+```
+podman restart av-server-ui
+```
+
+```
+podman stop av-server-ui
+```
+
+```
+podman rm av-server-ui
+```
+
+### Run on system startup / Restart if fails
+
+Generate service, enable, and start
+
+```
+mkdir -p ~/.config/systemd/user/
+podman generate systemd --new -t 1 \
+	--name av-server-ui \
+	--restart-policy=always \
+	--container-prefix="" \
+	--separator="" \
+	> ~/.config/systemd/user/av-server-ui.service
+systemctl --user daemon-reload
+systemctl --user enable av-server-ui.service
+systemctl --user start av-server-ui.service
+```
+
+Restart
+
+```
+systemctl --user restart av-server-ui.service
+```
+
+Disable
+
+```
+systemctl --user disable av-server-ui.service
 ```
