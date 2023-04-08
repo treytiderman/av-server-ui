@@ -97,7 +97,7 @@
         // Start WebSocket Connection
         ws.setDebug(true);
         ws.setOffline($settings.offline);
-        if (document.location.port === "5173") ws.connect({ port: 4620 });
+        if (document.location.port === "4621") ws.connect({ port: 4620 });
         else ws.connect();
     });
 

@@ -70,7 +70,7 @@ npm install
 npm run dev
 ```
 
-4. Go to http://SERVER_IP:5173, Example http://192.168.1.1:5173
+4. Go to http://SERVER_IP:4621, Example http://192.168.1.1:4621
 5. Build a bundle and put it in the public folder of the av-server `../av-server/public/av-server-ui`
 
 ```
@@ -96,7 +96,7 @@ podman rm av-server-ui
 4. Then to run the image
 
 ```
-podman run -d --name av-server-ui --hostname av-server-ui -p 5173:5173 -v $(pwd):/app:Z av-server-ui
+podman run -d --name av-server-ui --hostname av-server-ui -p 4621:4621 -v $(pwd):/app:Z av-server-ui
 ```
 
 5. Start / Restart / Stop / Remove

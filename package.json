@@ -6,10 +6,10 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "start": "vite",
-    "dev": "vite --host",
+    "start": "vite --port 4621",
+    "dev": "vite --port 4621 --host",
     "build": "vite build --emptyOutDir",
-    "preview": "vite preview --host"
+    "preview": "vite preview --port 4621 --host"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^1.0.1",
