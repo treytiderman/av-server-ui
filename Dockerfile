@@ -17,8 +17,5 @@ COPY . .
 # Install node dependencies
 RUN npm install
 
-# Environment variables
-ENV port=5713
-
 # Run the app
 CMD "npm" "run" "dev"

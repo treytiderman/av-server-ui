@@ -21,7 +21,7 @@
 
   // Dynamic Variables
   $: percent = ((value - min) / (max - min)) * 100;
-  $: background = `linear-gradient(to right, var(--color-bg-highlight) 0% ${percent}%, var(--color-bg-input) ${percent}% 100%)`
+  $: background = `linear-gradient(to right, var(--color-bg-mark) 0% ${percent}%, var(--color-bg-input) ${percent}% 100%)`
 
 </script>
 
@@ -50,14 +50,15 @@
 <!-- CSS -->
 <style>
   input[type=range] {
+    appearance: none;
     -webkit-appearance: none;
     width: 100%;
     min-width: 150px;
     height: var(--gap);
-    margin: calc(var(--gap)*1.25) 0 var(--pad) 0;
+    margin: calc(var(--gap)*1.25) 0 var(--pad-y) 0;
     padding: 0;
     border: none;
-    border-radius: var(--radius);
+    border-radius: var(--border-radius);
   }
   input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
@@ -65,7 +66,7 @@
     width: calc(var(--gap)*1.5);
     border: var(--border);
     border-color: var(--color-text);
-    border-radius: var(--radius);
+    border-radius: var(--border-radius);
     background-color: var(--color-text);
   }
   input[type=range]::-moz-range-thumb {
@@ -73,7 +74,7 @@
     width: calc(var(--gap)*1.5);
     border: var(--border);
     border-color: var(--color-text);
-    border-radius: var(--radius);
+    border-radius: var(--border-radius);
     background-color: var(--color-text);
   }
   label {
