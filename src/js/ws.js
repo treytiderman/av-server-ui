@@ -12,23 +12,21 @@ function isJSON(text) {
 function setDebug(bool) {
     debug = bool
 }
-function connect(url) {
-    return new Promise((resolve, reject) => {
-        websocket = new WebSocket(url);
+function connect(url, callback) {
+    websocket = new WebSocket(url);
 
-        // Events
-        websocket.onopen = () => {
-            log(`opened: ${url}`)
-            resolve("beans");
-        };
-        websocket.onerror = (error) => {
-            log(`error: ${url}`)
-            reject(err);
-        };
-        websocket.onmessage = (event) => {
-            log("received:", event.data)
-        };
-    });
+    // Events
+    websocket.onopen = (event) => {
+        log(`opened: ${url}`)
+        callback("open");
+    }
+    websocket.onerror = (err) => {
+        log(`error: ${url}`)
+        callback("error")
+    }
+    websocket.addEventListener('message', (event) => {
+        log("received:", event.data)
+    })
 }
 function send(text) {
     if (websocket.readyState === 1) {
@@ -50,9 +48,9 @@ function sendEvent(topic, event, body = {}) {
 }
 function receive(callback) {
     if (websocket.readyState === 1) {
-        websocket.onmessage = (event) => {
+        websocket.addEventListener('message', (event) => {
             callback(event.data)
-        }
+        })
     }
 }
 function receiveJSON(callback) {
@@ -74,18 +72,25 @@ function receiveEvent(topic, event, callback) {
         }
     })
 }
+function onClose(callback) {
+    websocket.addEventListener('close', (event) => {
+        callback(event)
+    })
+}
 
 // Export
 export const ws = {
-    "debug": setDebug,
-    "connect": connect,
-    "receive": {
+    debug: setDebug,
+    connect: connect,
+    onClose: onClose,
+    connection: websocket,
+    receive: {
         text: receive,
         json: receiveJSON,
         topic: receiveTopic,
         event: receiveEvent,
     },
-    "send": {
+    send: {
         text: send,
         json: sendJSON,
         event: sendEvent,

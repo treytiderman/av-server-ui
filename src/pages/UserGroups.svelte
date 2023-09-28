@@ -1,14 +1,19 @@
 <script>
+    import { api } from "../js/api.js";
     const data = {
-        action: "addGroup",
+        action: "createGroup",
         group: "",
-        groups: ["admins", "users", "guests", "dragons"],
+        groups: ["admins", "users", "guests"],
     };
-    function addGroup(group) {
-        console.log("addGroup", group);
+    api.users.getGroups()
+    api.users.onGroups(groups => data.groups = groups)
+    function createGroup(group) {
+        console.log("createGroup", group);
+        api.users.createGroup(group)
     }
-    function removeGroup(group) {
-        console.log("removeGroup", group);
+    function deleteGroup(group) {
+        console.log("deleteGroup", group);
+        api.users.deleteGroup(group)
     }
 </script>
 
@@ -22,8 +27,8 @@
 
     <h2>Actions</h2>
     <select id="select" bind:value={data.action}>
-        <option value="addGroup">addGroup</option>
-        <option value="removeGroup">removeGroup</option>
+        <option value="createGroup">createGroup</option>
+        <option value="deleteGroup">deleteGroup</option>
     </select>
 
     <label>
@@ -31,13 +36,13 @@
         <input type="text" placeholder="group" bind:value={data.group} />
     </label>
 
-    {#if data.action === "addGroup"}
-        <button class="green" on:click={() => addGroup(data.group)}>
-            Add
+    {#if data.action === "createGroup"}
+        <button class="cyan" on:click={() => createGroup(data.group)}>
+            Create
         </button>
-    {:else if data.action === "removeGroup"}
-        <button class="red" on:click={() => removeGroup(data.group)}>
-            Remove
+    {:else if data.action === "deleteGroup"}
+        <button class="red" on:click={() => deleteGroup(data.group)}>
+            Delete
         </button>
     {/if}
 </article>

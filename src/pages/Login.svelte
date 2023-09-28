@@ -1,10 +1,21 @@
 <script>
+    import { api } from "../js/api.js";
+    let error = ""
     let showError = false
     let username = "admin"
-    let password = "okayokay"
+    let password = "admin"
     function login() {
-        showError = true
+        api.users.login(username, password)
     }
+    api.users.onLogin(res => {
+        if (error === "") error = res
+        else error = error + "\n" + res
+        showError = true
+    })
+    api.users.onToken(res => {
+        localStorage.setItem("token", res)
+        localStorage.setItem("username", username)
+    })
 </script>
 
 <article>
@@ -29,12 +40,12 @@
         />
     </label>
     <button class="fill-width purple" on:click={() => login()}>Login</button>
-    <div class="error" class:display-none={!showError}>error...</div>
+    <pre class="error" class:display-none={!showError}>{error}</pre>
 </article>
 
 <style>
     article {
-        width: 20rem;
+        width: 25rem;
     }
     .error {
         padding: var(--gap-xs) var(--gap-sm);

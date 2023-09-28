@@ -5,22 +5,64 @@
     import { state } from "./js/state.js";
 
     // Components
-    import Tabs from "./pages/WindowTabs.svelte"; 
+    import Login from "./pages/Login.svelte";
+    import Tabs from "./pages/WindowTabs.svelte";
     import Split from "./pages/WindowSplit.svelte";
 
-    $: mainWindow = $state.windows.find(window => window.parentId === 0)
+    // Variables
+    let url = "ws://192.168.1.1:46222";
+    let status = "startup";
+    let datetime = new Date().toLocaleString();
 
+    // Functions
+    function wsOpen() {
+        const username = localStorage.getItem("username");
+        const token = localStorage.getItem("token");
+        api.ws.onClose((event) => (status = "closed"));
+        api.users.loginWithToken(username, token);
+        api.users.onLoginWithToken(username, (res) => {
+            if (res === "ok") status = "authorized";
+            else status = "open";
+        });
+        api.users.onToken((res) => {
+            status = "authorized";
+        });
+    }
+
+    // Startup
     onMount(async () => {
-        // api.debug(true)
-        await api.connect("ws://192.168.1.1:4620")
-        api.users.login("admin", "admin")
-        api.users.subToken(token => console.log("token", token))
-    })
+        api.ws.debug(true);
+        api.connect(url, (newStatus) => {
+            if (newStatus === "open") wsOpen();
+            else status = "error";
+        });
+    });
 
+    // Dynamic Variables
+    $: mainWindow = $state.windows.find((window) => window.parentId === 0);
+    $: console.log(status);
 </script>
 
-{#if mainWindow?.type === "tabs"}
+{#if status === "startup"}
+    <article />
+{:else if status === "error"}
+    <article>
+        <p>Error connecting to {url}</p>
+        <button on:click={() => location.reload()}>Reload</button>
+    </article>
+{:else if status === "open"}
+    <Login />
+{:else if status === "closed"}
+    <article>
+        <h1>Lost Connection</h1>
+        <p>The connection was lost {datetime}</p>
+        <button on:click={() => location.reload()}>Reload</button>
+    </article>
+{:else if status === "authorized" && mainWindow?.type === "tabs"}
     <Tabs id={mainWindow.id} />
-{:else if mainWindow?.type === "split"}
-    <Split childrenIds={mainWindow?.childrenIds} isVertical={mainWindow?.state.isVertical} />
+{:else if status === "authorized" && mainWindow?.type === "split"}
+    <Split
+        childrenIds={mainWindow?.childrenIds}
+        isVertical={mainWindow?.state.isVertical}
+    />
 {/if}
