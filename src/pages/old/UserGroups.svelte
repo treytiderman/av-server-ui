@@ -1,19 +1,19 @@
 <script>
-    import { api } from "../js/api.js";
+    import { api } from "../../js/api.js";
     const data = {
-        action: "createGroup",
+        action: "groupCreate",
         group: "",
-        groups: ["admins", "users", "guests"],
+        groups: ["admin", "user", "guest"],
+        response: "",
     };
-    api.users.getGroups()
-    api.users.onGroups(groups => data.groups = groups)
-    function createGroup(group) {
-        console.log("createGroup", group);
-        api.users.createGroup(group)
+    api.user.v1.subGroups((groups) => (data.groups = groups));
+    function groupCreate(group) {
+        console.log("groupCreate", group);
+        api.user.v1.groupCreate(group, (res) => (data.response = res));
     }
-    function deleteGroup(group) {
-        console.log("deleteGroup", group);
-        api.users.deleteGroup(group)
+    function groupDelete(group) {
+        console.log("groupDelete", group);
+        api.user.v1.groupDelete(group, (res) => (data.response = res));
     }
 </script>
 
@@ -27,8 +27,8 @@
 
     <h2>Actions</h2>
     <select id="select" bind:value={data.action}>
-        <option value="createGroup">createGroup</option>
-        <option value="deleteGroup">deleteGroup</option>
+        <option value="groupCreate">groupCreate</option>
+        <option value="groupDelete">groupDelete</option>
     </select>
 
     <label>
@@ -36,15 +36,17 @@
         <input type="text" placeholder="group" bind:value={data.group} />
     </label>
 
-    {#if data.action === "createGroup"}
-        <button class="cyan" on:click={() => createGroup(data.group)}>
+    {#if data.action === "groupCreate"}
+        <button class="cyan" on:click={() => groupCreate(data.group)}>
             Create
         </button>
-    {:else if data.action === "deleteGroup"}
-        <button class="red" on:click={() => deleteGroup(data.group)}>
+    {:else if data.action === "groupDelete"}
+        <button class="red" on:click={() => groupDelete(data.group)}>
             Delete
         </button>
     {/if}
+
+    <div>{data.response}</div>
 </article>
 
 <style>

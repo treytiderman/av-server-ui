@@ -10,22 +10,20 @@
     import Split from "./pages/WindowSplit.svelte";
 
     // Variables
-    let url = "ws://192.168.1.1:46222";
+    let url = "ws://192.168.1.1:4622";
     let status = "startup";
     let datetime = new Date().toLocaleString();
 
     // Functions
     function wsOpen() {
-        const username = localStorage.getItem("username");
         const token = localStorage.getItem("token");
         api.ws.onClose((event) => (status = "closed"));
-        api.users.loginWithToken(username, token);
-        api.users.onLoginWithToken(username, (res) => {
+        api.user.v1.loginWithToken(token, (res) => {
             if (res === "ok") status = "authorized";
             else status = "open";
         });
-        api.users.onToken((res) => {
-            status = "authorized";
+        api.user.v1.subToken((res) => {
+            if (res === "ok") status = "authorized";
         });
     }
 

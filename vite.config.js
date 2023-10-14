@@ -7,7 +7,7 @@ export default defineConfig({
 base: './',
     plugins: [svelte()],
     build: {
-        outDir: '../av-server/server/frontend',
+        outDir: '../av-server/server/ui',
         rollupOptions: {
             output: {
                 manualChunks: {
@@ -28,7 +28,7 @@ Folder Structure expected to build right into av-server
 /path_to_your_folders
 ├── av-server
 │   ├── server
-│   │   └── frontend
+│   │   └── ui
 └── av-server-ui
     ├── public
     ├── src

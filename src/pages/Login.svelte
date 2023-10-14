@@ -1,21 +1,20 @@
 <script>
     import { api } from "../js/api.js";
-    let error = ""
-    let showError = false
-    let username = "admin"
-    let password = "admin"
+
+    const data = {
+        username: "admin",
+        password: "admin",
+        error: "",
+    };
+
     function login() {
-        api.users.login(username, password)
+        api.user.v1.login(data.username, data.password, (res) => {
+            data.error = res;
+            api.user.v1.getToken((res) => {
+                localStorage.setItem("token", res);
+            });
+        });
     }
-    api.users.onLogin(res => {
-        if (error === "") error = res
-        else error = error + "\n" + res
-        showError = true
-    })
-    api.users.onToken(res => {
-        localStorage.setItem("token", res)
-        localStorage.setItem("username", username)
-    })
 </script>
 
 <article>
@@ -27,7 +26,7 @@
             class="fill-width"
             id="username"
             placeholder="username"
-            bind:value={username}
+            bind:value={data.username}
         />
     </label>
     <label>
@@ -36,22 +35,15 @@
             type="password"
             class="fill-width"
             placeholder="password"
-            bind:value={password}
+            bind:value={data.password}
         />
     </label>
     <button class="fill-width purple" on:click={() => login()}>Login</button>
-    <pre class="error" class:display-none={!showError}>{error}</pre>
+    <div>{data.error}</div>
 </article>
 
 <style>
     article {
         width: 25rem;
-    }
-    .error {
-        padding: var(--gap-xs) var(--gap-sm);
-        background-color: var(--color-bg-red);
-        color: var(--color-text-red);
-        border: var(--border);
-        border-color: var(--color-border-red);
     }
 </style>

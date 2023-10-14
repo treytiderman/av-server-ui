@@ -1,6 +1,6 @@
 <script>
     // Components
-    import { Settings } from "lucide-svelte";
+    import { X, Settings } from "lucide-svelte";
     import Terminal from "../components/Terminal.svelte";
 
     // Variables
@@ -156,28 +156,28 @@
     // $: console.log("data", data)
     // $: console.log("activeConnection", data.activeConnection)
 
-    setInterval(() => {
-        data.lines = [
-            ...data.lines,
-            {
-                wasReceived: true,
-                timestampISO: new Date().toISOString(),
-                data: Date.now(),
-            },
-        ];
-    }, 1000);
-    setInterval(() => {
-        const mark = Date.now()%4 === 0
-        data.lines = [
-            ...data.lines,
-            {
-                wasReceived: false,
-                timestampISO: new Date().toISOString(),
-                data: mark ? "yes" : "no",
-                mark: mark,
-            },
-        ];
-    }, 4000);
+    // setInterval(() => {
+    //     data.lines = [
+    //         ...data.lines,
+    //         {
+    //             wasReceived: true,
+    //             timestampISO: new Date().toISOString(),
+    //             data: Date.now(),
+    //         },
+    //     ];
+    // }, 1000);
+    // setInterval(() => {
+    //     const mark = Date.now()%4 === 0
+    //     data.lines = [
+    //         ...data.lines,
+    //         {
+    //             wasReceived: false,
+    //             timestampISO: new Date().toISOString(),
+    //             data: mark ? "yes" : "no",
+    //             mark: mark,
+    //         },
+    //     ];
+    // }, 4000);
 </script>
 
 <section class="wrapper flex column nowrap mono">
@@ -227,10 +227,13 @@
         </div>
         <button
             class="settings"
-            on:click={() =>
-                (data.state.showSettings = !data.state.showSettings)}
+            on:click={() => (data.state.showSettings = !data.state.showSettings)}
         >
-            <Settings size="1.2rem" strokeWidth="2.5" />
+            {#if data.state.showSettings === true}
+                <X size="1.2rem" strokeWidth="2.5" />
+            {:else}
+                <Settings size="1.2rem" strokeWidth="2.5" />
+            {/if}
         </button>
     </div>
 

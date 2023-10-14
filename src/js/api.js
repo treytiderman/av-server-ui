@@ -1,11 +1,11 @@
 import { ws } from "../js/ws.js";
 
 // Api
-import { users } from "../js/api-users.js";
+import { v1 as user_v1 } from "../js/api-user-v1.js";
 
 // Exports
 export const api = {
-    "connect": ws.connect,
     "ws": ws,
-    "users": users,
+    "connect": ws.connect,
+    "user": { v1: user_v1 }
 }

@@ -1,6 +1,6 @@
 <script>
     // Components
-    import { Settings } from 'lucide-svelte';
+    import { X, Settings } from 'lucide-svelte';
     import Terminal from "../components/Terminal.svelte";
 
     // Variables
@@ -177,7 +177,11 @@
             class="settings"
             on:click={() => data.state.showSettings = !data.state.showSettings}
         >
-            <Settings size=1.2rem strokeWidth=2.5 />
+            {#if data.state.showSettings === true}
+                <X size="1.2rem" strokeWidth="2.5" />
+            {:else}
+                <Settings size="1.2rem" strokeWidth="2.5" />
+            {/if}
         </button>
     </div>
 

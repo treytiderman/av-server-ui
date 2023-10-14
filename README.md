@@ -46,6 +46,10 @@
   }
 ```
 
+## Icons
+
+https://lucide.dev/icons/
+
 # Source Code
 
 ## Clone
