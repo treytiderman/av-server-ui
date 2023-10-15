@@ -6,14 +6,14 @@
         groups: ["admin", "user", "guest"],
         response: "",
     };
-    api.user.v1.subGroups((groups) => (data.groups = groups));
+    api.user.v0.subGroups((groups) => (data.groups = groups));
     function groupCreate(group) {
         console.log("groupCreate", group);
-        api.user.v1.groupCreate(group, (res) => (data.response = res));
+        api.user.v0.groupCreate(group, (res) => (data.response = res));
     }
     function groupDelete(group) {
         console.log("groupDelete", group);
-        api.user.v1.groupDelete(group, (res) => (data.response = res));
+        api.user.v0.groupDelete(group, (res) => (data.response = res));
     }
 </script>
 

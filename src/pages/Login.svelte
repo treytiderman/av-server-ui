@@ -8,9 +8,9 @@
     };
 
     function login() {
-        api.user.v1.login(data.username, data.password, (res) => {
+        api.user.v0.login(data.username, data.password, (res) => {
             data.error = res;
-            api.user.v1.getToken((res) => {
+            api.user.v0.getToken((res) => {
                 localStorage.setItem("token", res);
             });
         });

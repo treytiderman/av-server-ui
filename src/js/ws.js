@@ -1,3 +1,26 @@
+// Export
+export const ws = {
+    url: getWebsocketUrl,
+    debug: setDebug,
+    connect: connect,
+    onClose: onClose,
+    receive: {
+        text: receive,
+        json: receiveJson,
+        path: receivePath,
+    },
+    receiveOnce: {
+        text: receiveOnce,
+        json: receiveJsonOnce,
+        path: receivePathOnce,
+    },
+    send: {
+        text: send,
+        json: sendJSON,
+        path: sendPath,
+    }
+}
+
 // Global variables
 let debug = false
 let websocket = { readyState: 3 }
@@ -18,7 +41,7 @@ function getWebsocketUrl() {
     let host = location.host
     return protocal + host
 }
-function connect(url = "", callback = () => {}) {
+function connect(url = "", callback = () => { }) {
     url = url || getWebsocketUrl()
     console.log(url);
     websocket = new WebSocket(url);
@@ -65,7 +88,7 @@ function receiveJson(callback) {
     })
 }
 function receiveOnce(callback) {
-    let eventListenerFunction = (event) => {
+    function eventListenerFunction(event) {
         websocket.removeEventListener('message', eventListenerFunction)
         callback(event.data)
     }
@@ -74,9 +97,16 @@ function receiveOnce(callback) {
     }
 }
 function receiveJsonOnce(callback) {
-    receiveOnce(data => {
-        if (isJSON(data)) callback(JSON.parse(data))
-    })
+    function eventListenerFunction(event) {
+        if (isJSON(event.data)) {
+            const obj = JSON.parse(event.data)
+            websocket.removeEventListener('message', eventListenerFunction)
+            callback(JSON.parse(obj))
+        }
+    }
+    if (websocket.readyState === 1) {
+        websocket.addEventListener('message', eventListenerFunction)
+    }
 }
 
 // API
@@ -94,75 +124,16 @@ function receivePath(path, callback) {
     })
 }
 function receivePathOnce(path, callback) {
-    receiveJsonOnce(obj => {
-        if (obj.path === path) {
-            callback(obj.body)
+    function eventListenerFunction(event) {
+        if (isJSON(event.data)) {
+            const obj = JSON.parse(event.data)
+            if (obj.path === path) {
+                websocket.removeEventListener('message', eventListenerFunction)
+                callback(obj.body)
+            }
         }
-    })
-}
-
-// Old API
-function sendEvent(topic, event, body = {}) {
-    sendJSON({
-        "topic": topic,
-        "event": event,
-        "body": body,
-    })
-}
-function receiveTopic(topic, callback) {
-    receiveJson(obj => {
-        if (obj.topic === topic) {
-            callback(obj.event, obj.body)
-        }
-    })
-}
-function receiveEvent(topic, event, callback) {
-    receiveJson(obj => {
-        if (obj.topic === topic && obj.event === event) {
-            callback(obj.body)
-        }
-    })
-}
-function receiveTopicOnce(topic, callback) {
-    receiveJsonOnce(obj => {
-        if (obj.topic === topic) {
-            callback(obj.event, obj.body)
-        }
-    })
-}
-function receiveEventOnce(topic, event, callback) {
-    receiveJsonOnce(obj => {
-        if (obj.topic === topic && obj.event === event) {
-            callback(obj.body)
-        }
-    })
-}
-
-// Export
-export const ws = {
-    url: getWebsocketUrl,
-    debug: setDebug,
-    connect: connect,
-    onClose: onClose,
-    connection: websocket,
-    receive: {
-        text: receive,
-        json: receiveJson,
-        topic: receiveTopic,
-        event: receiveEvent,
-        path: receivePath,
-    },
-    receiveOnce: {
-        text: receiveOnce,
-        json: receiveJsonOnce,
-        topic: receiveTopicOnce,
-        event: receiveEventOnce,
-        path: receivePathOnce,
-    },
-    send: {
-        text: send,
-        json: sendJSON,
-        event: sendEvent,
-        path: sendPath,
+    }
+    if (websocket.readyState === 1) {
+        websocket.addEventListener('message', eventListenerFunction)
     }
 }

@@ -18,11 +18,11 @@
     function wsOpen() {
         const token = localStorage.getItem("token");
         api.ws.onClose((event) => (status = "closed"));
-        api.user.v1.loginWithToken(token, (res) => {
+        api.user.v0.loginWithToken(token, (res) => {
             if (res === "ok") status = "authorized";
             else status = "open";
         });
-        api.user.v1.subToken((res) => {
+        api.user.v0.subToken((res) => {
             if (res === "ok") status = "authorized";
         });
     }

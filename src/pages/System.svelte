@@ -1,61 +1,48 @@
 <script>
+    import { onMount, onDestroy } from "svelte";
+    import { api } from "../js/api.js";
     const data = {
-        action: "addGroup",
-        group: "",
-        groups: ["admins", "users", "guests", "dragons"],
-    };
-    function addGroup(group) {
-        console.log("addGroup", group);
+        time: 0,
+        timeAsIso: 0,
+        uptime: 0,
+        info: {},
     }
-    function removeGroup(group) {
-        console.log("removeGroup", group);
-    }
+    onMount(() => {
+        api.system.v0.subTime(res => data.time = res)
+        api.system.v0.subTimeAsIso(res => data.timeAsIso = res)
+        api.system.v0.subUptime(res => data.uptime = res)
+        api.system.v0.subInfo(res => data.info = res)
+    })
+    onDestroy(() => {
+        api.system.v0.unsubTime(res => data.time = res)
+        api.system.v0.unsubTimeAsIso(res => data.timeAsIso = res)
+        api.system.v0.unsubUptime(res => data.uptime = res)
+        api.system.v0.unsubInfo(res => data.info = res)
+    })
 </script>
 
 <article>
-    <h1>User Groups</h1>
-    <div class="flex gap-sm">
-        {#each data.groups as group}
-            <div class="tag">{group}</div>
-        {/each}
+    <h1>System</h1>
+    <div>
+        <b>Server Time (ms): </b>
+        <span class="mono">{data.time}</span>
     </div>
-
-    <h2>Action</h2>
-    <select id="select" bind:value={data.action}>
-        <option value="addGroup">addGroup</option>
-        <option value="removeGroup">removeGroup</option>
-    </select>
-
-    <label>
-        Group <br />
-        <input type="text" placeholder="group" bind:value={data.group} />
-    </label>
-
-    {#if data.action === "addGroup"}
-        <button class="green" on:click={() => addGroup(data.group)}>
-            Add
-        </button>
-    {:else if data.action === "removeGroup"}
-        <button class="red" on:click={() => removeGroup(data.group)}>
-            Remove
-        </button>
-    {/if}
+    <div>
+        <b>Server Time (iso): </b>
+        <span class="mono">{data.timeAsIso}</span>
+    </div>
+    <div>
+        <b>Server Uptime (sec): </b>
+        <span class="mono">{Math.round(data.uptime / 1000)}</span>
+    </div>
+    <div>
+        <b>Server Info: </b>
+        <pre>{JSON.stringify(data.info, true, 4)}</pre>
+    </div>
 </article>
 
 <style>
     article {
         max-width: 30rem;
-    }
-    input,
-    select,
-    button {
-        width: 100%;
-    }
-    .tag {
-        padding: var(--gap-xs) var(--gap-sm);
-        color: var(--color-text-section);
-        background-color: var(--color-bg-section);
-        border: var(--border);
-        border-radius: 99px;
     }
 </style>

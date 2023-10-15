@@ -24,9 +24,9 @@
     };
 
     // Startup
-    api.user.v1.subUsers((users) => (data.users = users));
-    api.user.v1.subGroups((groups) => (data.groups = groups));
-    api.user.v1.subWhoAmI((res) => {
+    api.user.v0.subUsers((users) => (data.users = users));
+    api.user.v0.subGroups((groups) => (data.groups = groups));
+    api.user.v0.subWhoAmI((res) => {
         if (res.username) data.me = res;
     });
 </script>
@@ -151,7 +151,7 @@
         <button
             class="cyan"
             on:click={() =>
-                api.user.v1.userCreate(
+                api.user.v0.userCreate(
                     data.username,
                     data.password,
                     data.passwordConfirm,
@@ -167,7 +167,7 @@
         <button
             class="red"
             on:click={() =>
-                api.user.v1.userDelete(
+                api.user.v0.userDelete(
                     data.username,
                     (res) => (data.response = res)
                 )}
@@ -178,7 +178,7 @@
         <button
             class="green"
             on:click={() =>
-                api.user.v1.userAddGroup(
+                api.user.v0.userAddGroup(
                     data.username,
                     data.group,
                     (res) => (data.response = res)
@@ -190,7 +190,7 @@
         <button
             class="red"
             on:click={() =>
-                api.user.v1.userRemoveGroup(
+                api.user.v0.userRemoveGroup(
                     data.username,
                     data.group,
                     (res) => (data.response = res)
@@ -202,7 +202,7 @@
         <button
             class="yellow"
             on:click={() =>
-                api.user.v1.userChangePassword(
+                api.user.v0.userChangePassword(
                     data.username,
                     data.password,
                     data.passwordConfirm,
@@ -215,7 +215,7 @@
         <button
             class="purple"
             on:click={() =>
-                api.user.v1.login(data.username, data.password, (res) => {
+                api.user.v0.login(data.username, data.password, (res) => {
                     localStorage.setItem("token", res);
                     data.response = res;
                 })}
@@ -225,7 +225,7 @@
     {:else if data.action === "logout"}
         <button
             class="yellow"
-            on:click={() => api.user.v1.logout((res) => (data.response = res))}
+            on:click={() => api.user.v0.logout((res) => (data.response = res))}
         >
             Logout
         </button>
@@ -233,7 +233,7 @@
         <button
             class="cyan"
             on:click={() =>
-                api.user.v1.groupCreate(
+                api.user.v0.groupCreate(
                     data.group,
                     (res) => (data.response = res)
                 )}
@@ -244,7 +244,7 @@
         <button
             class="red"
             on:click={() =>
-                api.user.v1.groupDelete(
+                api.user.v0.groupDelete(
                     data.group,
                     (res) => (data.response = res)
                 )}
@@ -255,9 +255,9 @@
         <button
             class="red"
             on:click={() =>
-                api.user.v1.resetToDefault((res) => (data.response = res))}
+                api.user.v0.resetToDefault((res) => (data.response = res))}
         >
-            Reset
+            Reset all Users and Groups to default
         </button>
     {/if}
 

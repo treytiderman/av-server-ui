@@ -7,7 +7,7 @@ export default defineConfig({
 base: './',
     plugins: [svelte()],
     build: {
-        outDir: '../av-server/server/ui',
+        outDir: '../av-server/public/ui',
         rollupOptions: {
             output: {
                 manualChunks: {
@@ -26,11 +26,11 @@ base: './',
 Folder Structure expected to build right into av-server
 
 /path_to_your_folders
-├── av-server
-│   ├── server
+├── /av-server
+│   ├── /public
 │   │   └── ui
-└── av-server-ui
-    ├── public
-    ├── src
+└── /av-server-ui
+    ├── /public
+    ├── /src
     └── vite.config.js
 */

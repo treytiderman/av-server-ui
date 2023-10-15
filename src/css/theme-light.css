@@ -69,8 +69,8 @@ html.light {
     --max-width: 120ch;
     
     /* Text Size on small screens (width > 500px) */
-    --font-size-mono: calc(var(--font-size) - 2px);
-    --font-size-mono: calc(var(--font-size) - 4px);
+    --font-size-mobile: calc(var(--font-size) - 2px);
+    --font-size-mobile-mono: calc(var(--font-size) - 4px);
 
     /* Margin, Padding, Gap */
     --pad-x: 0.8rem;
