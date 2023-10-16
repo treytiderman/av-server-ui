@@ -346,6 +346,11 @@ blockquote.quote-bg p {
     margin-inline: auto;
 }
 
+.not-mono {
+    font-family: var(--font-family);
+    font-size: var(--font-family);
+}
+
 .mono {
     font-family: var(--font-family-mono);
     font-size: var(--font-family-mono);
@@ -479,4 +484,16 @@ body .pink {
     color: var(--color-text-pink);
     border: var(--border);
     border-color: var(--color-border-pink);
+}
+
+span.red {
+    background-color: transparent;
+    color: var(--color-text-red);
+    border: none;
+}
+
+span.green {
+    background-color: transparent;
+    color: var(--color-text-green);
+    border: none;
 }

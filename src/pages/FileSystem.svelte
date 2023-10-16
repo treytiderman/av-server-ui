@@ -1,61 +1,25 @@
 <script>
+    // Imports
+    import { onMount, onDestroy } from "svelte";
+    import { api } from "../js/api.js";
+
+    // Variables
     const data = {
-        action: "addGroup",
-        group: "",
-        groups: ["admins", "users", "guests", "dragons"],
+        // action: "userCreate",
     };
-    function addGroup(group) {
-        console.log("addGroup", group);
-    }
-    function removeGroup(group) {
-        console.log("removeGroup", group);
-    }
+
+    // Startup / Shutdown
+    onMount(() => {
+        // api.user.v0.subUsers((res) => (data.users = res));
+    });
+    onDestroy(() => {
+        // api.user.v0.unsubUsers();
+    });
 </script>
 
 <article>
-    <h1>User Groups</h1>
-    <div class="flex gap-sm">
-        {#each data.groups as group}
-            <div class="tag">{group}</div>
-        {/each}
-    </div>
-
-    <h2>Action</h2>
-    <select id="select" bind:value={data.action}>
-        <option value="addGroup">addGroup</option>
-        <option value="removeGroup">removeGroup</option>
-    </select>
-
-    <label>
-        Group <br />
-        <input type="text" placeholder="group" bind:value={data.group} />
-    </label>
-
-    {#if data.action === "addGroup"}
-        <button class="green" on:click={() => addGroup(data.group)}>
-            Add
-        </button>
-    {:else if data.action === "removeGroup"}
-        <button class="red" on:click={() => removeGroup(data.group)}>
-            Remove
-        </button>
-    {/if}
+    <h2>File System</h2>
 </article>
 
 <style>
-    article {
-        max-width: 30rem;
-    }
-    input,
-    select,
-    button {
-        width: 100%;
-    }
-    .tag {
-        padding: var(--gap-xs) var(--gap-sm);
-        color: var(--color-text-section);
-        background-color: var(--color-bg-section);
-        border: var(--border);
-        border-radius: 99px;
-    }
 </style>

@@ -12,7 +12,6 @@
     // Variables
     let url = "ws://192.168.1.1:4622";
     let status = "startup";
-    let datetime = new Date().toLocaleString();
 
     // Functions
     function wsOpen() {
@@ -29,7 +28,7 @@
 
     // Startup
     onMount(async () => {
-        api.ws.debug(true);
+        // api.ws.debug(true);
         api.connect(url, (newStatus) => {
             if (newStatus === "open") wsOpen();
             else status = "error";
@@ -38,7 +37,7 @@
 
     // Dynamic Variables
     $: mainWindow = $state.windows.find((window) => window.parentId === 0);
-    $: console.log(status);
+    $: console.log("status:", status);
 </script>
 
 {#if status === "startup"}
@@ -53,7 +52,7 @@
 {:else if status === "closed"}
     <article>
         <h1>Lost Connection</h1>
-        <p>The connection was lost {datetime}</p>
+        <p>The connection was lost {new Date().toLocaleString()}</p>
         <button on:click={() => location.reload()}>Reload</button>
     </article>
 {:else if status === "authorized" && mainWindow?.type === "tabs"}

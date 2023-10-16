@@ -1,4 +1,6 @@
 <script>
+    // Imports
+    import { onMount, onDestroy } from "svelte";
     import { api } from "../js/api.js";
 
     // Variables
@@ -23,29 +25,34 @@
         response: "",
     };
 
-    // Startup
-    api.user.v0.subUsers((users) => (data.users = users));
-    api.user.v0.subGroups((groups) => (data.groups = groups));
-    api.user.v0.subWhoAmI((res) => {
-        if (res.username) data.me = res;
+    // Startup / Shutdown
+    onMount(() => {
+        api.user.v0.subUsers((res) => (data.users = res));
+        api.user.v0.subGroups((res) => (data.groups = res));
+        api.user.v0.subWhoAmI((res) => {
+            if (res.username) data.me = res;
+        });
+    });
+    onDestroy(() => {
+        api.user.v0.unsubUsers();
+        api.user.v0.unsubGroups();
+        api.user.v0.unsubWhoAmI();
     });
 </script>
 
 <article>
     <!-- Data -->
-    <h1>Users</h1>
+    <h2>Users</h2>
     {#each data.users as user}
         <div class="grid gap-sm">
             <div class="flex gap-sm align-center user">
-                <div class:you={user.username === data.me.username}>
-                    {user.username}
-                </div>
+                <h3>{user.username}</h3>
                 {#if user.username === data.me.username}
                     <small class="dim">&lt- You</small>
                 {/if}
             </div>
             <div class="flex gap-sm align-center">
-                <!-- <div>Groups:</div> -->
+                <div class="dim">Groups:</div>
                 {#each user.groups as group}
                     <div class="tag">{group}</div>
                 {/each}
@@ -62,18 +69,30 @@
 
     <!-- Actions -->
     <h2>Actions</h2>
-    <select id="select" bind:value={data.action}>
-        <option value="login">login</option>
-        <option value="logout">logout</option>
-        <option value="groupCreate">group create</option>
-        <option value="groupDelete">group delete</option>
-        <option value="userCreate">user create</option>
-        <option value="userDelete">user delete</option>
-        <option value="userAddGroup">user add group</option>
-        <option value="userRemoveGroup">user remove group</option>
-        <option value="userChangePassword">user change password</option>
-        <option value="resetToDefault">reset to default</option>
-    </select>
+    <label>
+        Action <br />
+        <select id="select" bind:value={data.action}>
+            <optgroup label="Login / Logout">
+                <option value="login">login</option>
+                <option value="logout">logout</option>
+            </optgroup>
+            <optgroup label="Group Managment">
+                <option value="groupCreate">group create</option>
+                <option value="groupDelete">group delete</option>
+            </optgroup>
+            <optgroup label="User Managment">
+                <option value="userCreate">user create</option>
+                <option value="userDelete">user delete</option>
+                <option value="userAddGroup">user add group</option>
+                <option value="userRemoveGroup">user remove group</option>
+                <option value="userChangePassword">user change password</option>
+            </optgroup>
+            <optgroup label="All Users">
+                <option value="resetToDefault">reset to default</option>
+            </optgroup>
+        </select>
+    </label>
+
 
     <!-- Text Fields -->
     <label
@@ -94,7 +113,6 @@
             autocomplete="off"
         />
     </label>
-
     <label
         class:display-none={!(
             data.action === "login" ||
@@ -110,7 +128,6 @@
             autocomplete="new-password"
         />
     </label>
-
     <label
         class:display-none={!(
             data.action === "userCreate" || data.action === "userChangePassword"
@@ -124,7 +141,6 @@
             autocomplete="new-password"
         />
     </label>
-
     <label class:display-none={!(data.action === "userCreate")}>
         Groups (comma seperated) <br />
         <input
@@ -133,7 +149,6 @@
             bind:value={data.groupsCommaSperated}
         />
     </label>
-
     <label
         class:display-none={!(
             data.action === "groupCreate" ||
@@ -273,18 +288,11 @@
     button {
         width: 100%;
     }
-    .user {
-        font-weight: bold;
-        color: var(--color-text);
-    }
     .tag {
         padding: var(--gap-xs) var(--gap-sm);
         color: var(--color-text-section);
         background-color: var(--color-bg-section);
         border: var(--border);
         border-radius: 99px;
-    }
-    .you {
-        color: var(--color-text-heading);
     }
 </style>

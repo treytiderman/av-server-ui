@@ -1,28 +1,33 @@
 <script>
+    // Imports
     import { onMount, onDestroy } from "svelte";
     import { api } from "../js/api.js";
+
+    // Variables
     const data = {
         time: 0,
         timeAsIso: 0,
         uptime: 0,
         info: {},
-    }
+    };
+
+    // Startup / Shutdown
     onMount(() => {
-        api.system.v0.subTime(res => data.time = res)
-        api.system.v0.subTimeAsIso(res => data.timeAsIso = res)
-        api.system.v0.subUptime(res => data.uptime = res)
-        api.system.v0.subInfo(res => data.info = res)
-    })
+        api.system.v0.subTime((res) => (data.time = res));
+        api.system.v0.subTimeAsIso((res) => (data.timeAsIso = res));
+        api.system.v0.subUptime((res) => (data.uptime = res));
+        api.system.v0.subInfo((res) => (data.info = res));
+    });
     onDestroy(() => {
-        api.system.v0.unsubTime(res => data.time = res)
-        api.system.v0.unsubTimeAsIso(res => data.timeAsIso = res)
-        api.system.v0.unsubUptime(res => data.uptime = res)
-        api.system.v0.unsubInfo(res => data.info = res)
-    })
+        api.system.v0.unsubTime();
+        api.system.v0.unsubTimeAsIso();
+        api.system.v0.unsubUptime();
+        api.system.v0.unsubInfo();
+    });
 </script>
 
 <article>
-    <h1>System</h1>
+    <h2>System</h2>
     <div>
         <b>Server Time (ms): </b>
         <span class="mono">{data.time}</span>

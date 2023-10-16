@@ -1,4 +1,9 @@
 <script>
+    // Imports
+    import { onMount, onDestroy } from "svelte";
+    import { api } from "../js/api.js";
+
+    // Variables
     const data = {
         action: "createProgram",
         name: "",
@@ -29,72 +34,108 @@
             },
         },
     };
-    function createProgram(group) {
-        console.log("createProgram", group);
-    }
-    function createAndStartProgram(group) {
-        console.log("createAndStartProgram", group);
-    }
+
+    // Startup / Shutdown
+    onMount(() => {
+        // api.user.v0.subUsers((res) => (data.users = res));
+    });
+    onDestroy(() => {
+        // api.user.v0.unsubUsers();
+    });
 </script>
 
 <article>
-    <h1>User Groups</h1>
-
+    <!-- Data -->
     <h2>Programs</h2>
     <div class="grid">
         {#each Object.entries(data.programs) as program}
-            <div class="grid gap-sm pad border">
+            <div class="grid gap-sm">
                 <h3>{program[0]}</h3>
-                <div><b>Command:</b> {program[1].command}</div>
-                <div><b>Running:</b> {program[1].running}</div>
-                <div><b>Pid:</b> {program[1].pid}</div>
-                <pre><b>Env:</b> {JSON.stringify(program[1].env, true, 2)}</pre>
+                <div>
+                    <span class="dim">Running:</span> 
+                    <span class={program[1].running ? "mono green" : "mono red"}>{program[1].running}</span>
+                </div>
+                <div>
+                    <span class="dim">PID:</span> 
+                    <span class="mono">{program[1].pid}</span>
+                </div>
+                <div>
+                    <span class="dim">Command:</span> 
+                    <span class="mono">{program[1].command}</span>
+                </div>
+                <div>
+                    <pre><span class="not-mono dim">Environment Variables: </span>{JSON.stringify(program[1].env, true, 2)}</pre>
+                </div>
             </div>
         {/each}
     </div>
 
-    <h2>Programs Available</h2>
+    <h2>Available</h2>
     <div class="grid">
         {#each Object.entries(data.programsAvailable) as program}
-            <div class="grid gap-sm pad border">
+            <div class="grid gap-sm">
                 <h3>{program[0]}</h3>
-                <div><b>Command:</b> {program[1].command}</div>
-                <div><b>Path:</b> {program[1].path}</div>
-                <div><b>Files:</b> {program[1].files}</div>
-                <pre><b>Env:</b> {JSON.stringify(program[1].env, true, 2)}</pre>
+                <div>
+                    <span class="dim">Command:</span> 
+                    <span class="mono">{program[1].command}</span>
+                </div>
+                <div>
+                    <span class="dim">Path:</span> 
+                    <span class="mono">{program[1].path}</span>
+                </div>
+                <div>
+                    <pre><span class="not-mono dim">Files: </span>{JSON.stringify(program[1].files, true, 2)}</pre>
+                </div>
+                <div>
+                    <pre><span class="not-mono dim">Environment Variables: </span>{JSON.stringify(program[1].env, true, 2)}</pre>
+                </div>
             </div>
         {/each}
     </div>
 
-    <h2>Action</h2>
-    <select id="select" bind:value={data.action}>
-        <option value="createProgram">createProgram</option>
-        <option value="createAndStartProgram">createAndStartProgram</option>
-        <option value="createAvailableProgram">createAvailableProgram</option>
-        <option value="setProgramDirectory">setProgramDirectory</option>
-        <option value="setProgramCommand">setProgramCommand</option>
-        <option value="setProgramStartOnBoot">setProgramStartOnBoot</option>
-        <option value="setProgramEnv">setProgramEnv</option>
-        <option value="startProgram">startProgram</option>
-        <option value="killProgram">killProgram</option>
-        <option value="restartProgram">restartProgram</option>
-        <option value="deleteProgram">deleteProgram</option>
-        <option value="killAllPrograms">killAllPrograms</option>
-        <option value="restartAllPrograms">restartAllPrograms</option>
-        <option value="deleteAllPrograms">deleteAllPrograms</option>
-    </select>
-
+    <!-- Actions -->
+    <h2>Actions</h2>
+    <label>
+        Action <br />
+        <select id="select" bind:value={data.action}>
+            <optgroup label="Create">
+                <option value="createProgram">create program</option>
+                <option value="createProgramAndStart">create program and start</option>
+                <option value="createProgramFromAvailable">create program from available</option>
+            </optgroup>
+            <optgroup label="Program Managment">
+                <option value="programStart">program start</option>
+                <option value="programKill">program kill</option>
+                <option value="programRestart">program restart</option>
+                <option value="programDelete">program delete</option>
+            </optgroup>
+            <optgroup label="Update Program">
+                <option value="programSetDirectory">program set directory</option>
+                <option value="programSetCommand">program set command</option>
+                <option value="programSetStartOnBoot">program set start-on-boot</option>
+                <option value="programSetEnv">program set env</option>
+            </optgroup>
+            <optgroup label="All Programs">
+                <option value="allProgramsKill">all programs kill</option>
+                <option value="allProgramsRestart">all programs restart</option>
+                <option value="allProgramsDelete">all programs delete</option>
+            </optgroup>
+        </select>
+    </label>
+    
+    <!-- Text Fields -->
     <label>
         Program Name <br />
         <input type="text" placeholder="name" bind:value={data.name} />
     </label>
 
+    <!-- Buttons -->
     {#if data.action === "createProgram"}
-        <button class="cyan" on:click={() => createProgram(data.name)}>
+        <button class="cyan" on:click={() => {}}>
             Create
         </button>
     {:else if data.action === "createAndStartProgram"}
-        <button class="cyan" on:click={() => createAndStartProgram(data.name)}>
+        <button class="cyan" on:click={() => {}}>
             Create
         </button>
     {/if}

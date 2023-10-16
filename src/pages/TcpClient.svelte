@@ -65,7 +65,7 @@
 
     // Functions
     function connectionChange() {
-        if (data.state.selectedAddressValue === "New Connection") return
+        if (data.state.selectedAddressValue === "Add Connection") return
         const address = data.state.selectedAddressValue
         const selectedConnection = data.connections.find(connection => address === connection.address)
         data.activeConnection = selectedConnection
@@ -153,15 +153,17 @@
                 bind:value={data.state.selectedAddressValue}
                 on:change={() => connectionChange()}
             >
-                <option value="New Connection">New Connection</option>
-                {#each data.connections as connection}
-                    <option
-                        value="{connection.address}"
-                        selected={data.activeConnection.address === connection.address}
-                    >
-                        {connection.address}
-                    </option>
-                {/each}
+                <optgroup label="TCP Servers">
+                    <option value="Add Connection">Add Connection</option>
+                    {#each data.connections as connection}
+                        <option
+                            value="{connection.address}"
+                            selected={data.activeConnection.address === connection.address}
+                        >
+                            {connection.address}
+                        </option>
+                    {/each}
+                </optgroup>
             </select>
         </div>
         <button class="connection-state"
@@ -206,10 +208,10 @@
         </label>
     </div>
 
-    <!-- New Connection -->
+    <!-- Add Connection -->
     <div
         class="new-connection grow grid overflow pad"
-        class:display-none={data.state.selectedAddressValue !== "New Connection" || data.state.showSettings}
+        class:display-none={data.state.selectedAddressValue !== "Add Connection" || data.state.showSettings}
     >
         <label>
             Address <br />
@@ -236,13 +238,13 @@
     <!-- Terminal + Sends -->
     <div 
         class="overflow grow"
-        class:display-none={data.state.selectedAddressValue === "New Connection" || data.state.showSettings}
+        class:display-none={data.state.selectedAddressValue === "Add Connection" || data.state.showSettings}
     >
         <Terminal lines={data.lines} />
     </div>
     <div
         class="sends"
-        class:display-none={data.state.selectedAddressValue === "New Connection" || data.state.showSettings}
+        class:display-none={data.state.selectedAddressValue === "Add Connection" || data.state.showSettings}
     >
         {#each data.sends as send}
             <div class="sendWrapper flex nowrap">

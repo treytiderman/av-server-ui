@@ -187,27 +187,31 @@
                 bind:value={data.state.selectedPortValue}
                 on:change={() => connectionChange()}
             >
-                {#each data.connections as connection}
-                    <option
-                        value={connection.port}
-                        selected={data.activeConnection.port === connection.port}
-                    >
-                        {connection.port}
-                    </option>
-                {/each}
+                <optgroup label="Serial Port">
+                    {#each data.connections as connection}
+                        <option
+                            value={connection.port}
+                            selected={data.activeConnection.port === connection.port}
+                        >
+                            {connection.port}
+                        </option>
+                    {/each}
+                </optgroup>
             </select>
             <select
                 bind:value={data.state.selectedBaudrateValue}
                 on:change={() => connectionChange()}
             >
-                {#each data.baudrates as baudrate}
-                    <option
-                        value={baudrate}
-                        selected={data.state.baudrate === baudrate}
-                    >
-                        {baudrate}
-                    </option>
-                {/each}
+                <optgroup label="Baud Rate">
+                    {#each data.baudrates as baudrate}
+                        <option
+                            value={baudrate}
+                            selected={data.state.baudrate === baudrate}
+                        >
+                            {baudrate}
+                        </option>
+                    {/each}
+                </optgroup>
             </select>
         </div>
         <button
