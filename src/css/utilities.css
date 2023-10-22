@@ -418,6 +418,10 @@ blockquote.quote-bg p {
     border: var(--border);
 }
 
+.border-none {
+    border: none;
+}
+
 body .dim {
     background-color: var(--color-bg);
     color: var(--color-text-dim);
@@ -495,5 +499,23 @@ span.red {
 span.green {
     background-color: transparent;
     color: var(--color-text-green);
+    border: none;
+}
+
+span.orange {
+    background-color: transparent;
+    color: var(--color-text-orange);
+    border: none;
+}
+
+span.yellow {
+    background-color: transparent;
+    color: var(--color-text-yellow);
+    border: none;
+}
+
+span.cyan {
+    background-color: transparent;
+    color: var(--color-text-cyan);
     border: none;
 }

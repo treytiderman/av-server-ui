@@ -4,6 +4,8 @@ import Database from "../pages/Database.svelte"
 import FileSystem from "../pages/FileSystem.svelte"
 import Logs from "../pages/Logs.svelte"
 import Monaco from "../pages/Monaco.svelte"
+// import NewTab from "../pages/NewTab.svelte"
+import Pages from "../pages/Pages.svelte"
 import Program from "../pages/Program.svelte"
 import SerialPort from "../pages/SerialPort.svelte"
 import Settings from "../pages/Settings.svelte"
@@ -13,15 +15,25 @@ import Users from "../pages/Users.svelte"
 
 // Exports
 export const pages = {
-    "Article": Article,
+
+    // System
     "Database": Database,
     "File System": FileSystem,
     "Logs": Logs,
-    "VS Code": Monaco,
+    "Monaco": Monaco,
+    
+    // Programs
     "Program": Program,
-    "Serial Port": SerialPort,
     "Settings": Settings,
     "System": System,
-    "Tcp Client": TcpClient,
     "Users": Users,
+
+    // Tools
+    "Tcp Client": TcpClient,
+    "Serial Port": SerialPort,
+    
+    // Test Page
+    "Pages": Pages,
+    "Article": Article,
+    // "NewTab": NewTab,
 }

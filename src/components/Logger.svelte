@@ -91,7 +91,7 @@
         <div class="col2">Level</div>
         <div class="col3">Group</div>
         <div class="col4">Message</div>
-        <div class="col5">Object</div>
+        <!-- <div class="col5">Object</div> -->
     </div>
 
     <!-- Lines -->
@@ -122,17 +122,25 @@
 
                 <!-- Col2 - Col5 -->
                 <div class="col2">
-                    <dev>{line.level}</dev>
+                    <span
+                        class:red={line.level === "error"}
+                        class:cyan={line.level === "debug"}
+                        class:yellow={line.level === "info"}
+                    >
+                        {line.level}
+                    </span>
                 </div>
                 <div class="col3">
-                    <dev>{line.group}</dev>
+                    <span>{line.group}</span>
                 </div>
                 <div class="col4">
-                    <dev>{line.message}</dev>
+                    <span>{line.message}</span>
                 </div>
-                <div class="col5">
-                    <pre>{JSON.stringify(line.obj, true, 0)}</pre>
-                </div>
+                <!-- <div class="col5">
+                    {#if JSON.stringify(line.obj) !== "{}"}
+                        <pre>{JSON.stringify(line.obj, true, 4)}</pre>
+                    {/if}
+                </div> -->
 
             </div>
         {/each}
@@ -190,10 +198,10 @@
         min-width: 5rem;
     }
     .col3 {
-        min-width: 15rem;
+        min-width: 13rem;
     }
     .col4 {
-        min-width: 30rem;
+        min-width: 32rem;
     }
     .col5 {
         min-width: 5rem;
