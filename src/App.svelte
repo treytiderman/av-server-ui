@@ -41,7 +41,7 @@
 
     // Startup
     onMount(async () => {
-        api.ws.debug(true);
+        // api.ws.debug(true);
         api.connect(url, (newStatus) => {
             if (newStatus === "open") wsOpen();
             else status = "error";

@@ -14,6 +14,7 @@
         Settings,
         Code,
         SquareCode,
+        HeartPulse,
     } from "lucide-svelte";
 
     // Variables
@@ -103,7 +104,7 @@
             on:click={() => addTabActive({ name: "System" })}
             on:pointerdown={(event) => addTab(event, { name: "System" })}
         >
-            <Server size="1.5rem" strokeWidth="2.5" />
+            <HeartPulse size="1.5rem" strokeWidth="2.5" />
             System
         </button>
         <button
@@ -137,7 +138,8 @@
             Monaco
         </button>
         <button
-            class="flex gap-sm align-center green"
+            disabled
+            class="flex gap-sm align-center greens"
             on:click={() => addTabActive({ name: "Database" })}
             on:pointerdown={(event) => addTab(event, { name: "Database" })}
         >
@@ -148,12 +150,75 @@
     <h2>Tools</h2>
     <div class="grid auto-sm gap align-start">
         <button
+            disabled
+            class="flex gap-sm align-center purples"
+            on:click={() => addTabActive({ name: "HTTP Client" })}
+            on:pointerdown={(event) => addTab(event, { name: "HTTP Client" })}
+        >
+            <Network size="1.5rem" strokeWidth="2.5" />
+            HTTP Client
+        </button>
+        <button
+            disabled
+            class="flex gap-sm align-center purples"
+            on:click={() => addTabActive({ name: "HTTP Server" })}
+            on:pointerdown={(event) => addTab(event, { name: "HTTP Server" })}
+        >
+            <Server size="1.5rem" strokeWidth="2.5" />
+            HTTP Server
+        </button>
+        <button
             class="flex gap-sm align-center purple"
-            on:click={() => addTabActive({ name: "Tcp Client" })}
-            on:pointerdown={(event) => addTab(event, { name: "Tcp Client" })}
+            on:click={() => addTabActive({ name: "TCP Client" })}
+            on:pointerdown={(event) => addTab(event, { name: "TCP Client" })}
         >
             <Network size="1.5rem" strokeWidth="2.5" />
             TCP Client
+        </button>
+        <button
+            disabled
+            class="flex gap-sm align-center purples"
+            on:click={() => addTabActive({ name: "TCP Server" })}
+            on:pointerdown={(event) => addTab(event, { name: "TCP Server" })}
+        >
+            <Server size="1.5rem" strokeWidth="2.5" />
+            TCP Server
+        </button>
+        <button
+            disabled
+            class="flex gap-sm align-center purples"
+            on:click={() => addTabActive({ name: "UDP Client" })}
+            on:pointerdown={(event) => addTab(event, { name: "UDP Client" })}
+        >
+            <Network size="1.5rem" strokeWidth="2.5" />
+            UDP Client
+        </button>
+        <button
+            disabled
+            class="flex gap-sm align-center purples"
+            on:click={() => addTabActive({ name: "UDP Server" })}
+            on:pointerdown={(event) => addTab(event, { name: "UDP Server" })}
+        >
+            <Server size="1.5rem" strokeWidth="2.5" />
+            UDP Server
+        </button>
+        <button
+            disabled
+            class="flex gap-sm align-center purples"
+            on:click={() => addTabActive({ name: "WebSocket Client" })}
+            on:pointerdown={(event) => addTab(event, { name: "WebSocket Client" })}
+        >
+            <Network size="1.5rem" strokeWidth="2.5" />
+            WebSocket Client
+        </button>
+        <button
+            disabled
+            class="flex gap-sm align-center purples"
+            on:click={() => addTabActive({ name: "WebSocket Server" })}
+            on:pointerdown={(event) => addTab(event, { name: "WebSocket Server" })}
+        >
+            <Server size="1.5rem" strokeWidth="2.5" />
+            WebSocket Server
         </button>
         <button
             class="flex gap-sm align-center purple"

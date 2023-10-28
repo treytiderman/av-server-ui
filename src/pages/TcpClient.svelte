@@ -175,7 +175,7 @@
 </script>
 
 <section class="wrapper flex column nowrap mono">
-    <div class="header flex gap align-center nowrap fill-width">
+    <div class="header flex gap align-center fill-width">
         <div class="address" class:display-none={data.state.showSettings}>
             <select
                 bind:value={data.state.selectedAddressValue}
