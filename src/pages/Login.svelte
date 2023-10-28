@@ -10,9 +10,6 @@
     function login() {
         api.user.v0.login(data.username, data.password, (res) => {
             data.error = res;
-            api.user.v0.getToken((res) => {
-                localStorage.setItem("token", res);
-            });
         });
     }
 </script>
@@ -24,7 +21,6 @@
         <input
             type="text"
             class="fill-width"
-            id="username"
             placeholder="username"
             bind:value={data.username}
         />

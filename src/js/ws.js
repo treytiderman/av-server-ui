@@ -21,9 +21,13 @@ export const ws = {
     }
 }
 
-// Global variables
+// Constants
+const RECONNECT_TIMER = 5_000
+
+// Variables
 let debug = false
 let websocket = { readyState: 3 }
+let timeout
 
 // Functions
 function log(...params) { if (debug) console.log(...params) }
@@ -55,6 +59,12 @@ function connect(url = "", callback = () => { }) {
         log(`error: ${url}`)
         callback("error")
     }
+    websocket.addEventListener('close', (event) => {
+        log(`reconnect: ${url} in ${RECONNECT_TIMER}ms`)
+        timeout = setTimeout(() => {
+            location.reload()
+        }, RECONNECT_TIMER);
+    })
     websocket.addEventListener('message', (event) => {
         log("received:", event.data)
     })

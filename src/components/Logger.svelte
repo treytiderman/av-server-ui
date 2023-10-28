@@ -55,7 +55,7 @@
 
     // Scroll to the bottom of the logger if the scroll bar is at the bottom everytime "lines" updates
     function scrollToBottomOfElement(element) {
-        const manualOffset = 10
+        const manualOffset = 100
         const currentScrollHeight = element?.scrollTop + element?.offsetHeight + manualOffset;
         const totalScrollHeight = element?.scrollHeight;
         
@@ -202,6 +202,7 @@
     }
     .col4 {
         min-width: 32rem;
+        text-wrap: nowrap;
     }
     .col5 {
         min-width: 5rem;

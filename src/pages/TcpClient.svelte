@@ -1,6 +1,8 @@
 <script>
+    import { api } from "../js/api";
+
     // Components
-    import { X, Settings } from 'lucide-svelte';
+    import { X, Settings } from "lucide-svelte";
     import Terminal from "../components/Terminal.svelte";
 
     // Variables
@@ -8,36 +10,35 @@
         state: {
             showSettings: false,
             encodingMode: "ascii",
-            selectedAddressValue: "192.168.1.246:23",
+            pullHistory: "false",
+            selectedAddressValue: "Add Connection",
             address: {
-                value: "192.168.1.246:23",
-                placeholder: "192.168.1.246:23",
+                value: "192.168.1.32:23",
+                placeholder: "192.168.1.32:23",
             },
-            expectedDelimiter: {
-                value: "\\r\\n",
-                placeholder: "\\r\\n",
+            encoding: {
+                value: "ascii",
+                placeholder: "ascii or hex",
             },
         },
         activeConnection: {
             isOpen: false,
-            address: "192.168.1.246:23",
-            expectedDelimiter: "\r"
+            isReconnect: false,
+            address: "192.168.1.32:23",
+            encoding: "ascii",
         },
         connections: [
             {
                 isOpen: false,
                 address: "192.168.1.99:8080",
-                expectedDelimiter: "\r\n"
             },
             {
                 isOpen: false,
-                address: "192.168.1.246:23",
-                expectedDelimiter: "\r"
+                address: "192.168.1.32:23",
             },
             {
                 isOpen: true,
                 address: "192.168.1.37:10001",
-                expectedDelimiter: ""
             },
         ],
         lines: [
@@ -58,98 +59,125 @@
             },
             {
                 value: "\\x01\\x30\\x41\\x30\\x41\\x30\\x43\\x02\\x43\\x32\\x30\\x33\\x44\\x36\\x30\\x30\\x30\\x31\\x03\\x73\\x0D",
-                placeholder: "\\x01\\x30\\x41\\x30\\x41\\x30\\x43\\x02\\x43\\x32\\x30\\x33\\x44\\x36\\x30\\x30\\x30\\x31\\x03\\x73\\x0D",
+                placeholder:
+                    "\\x01\\x30\\x41\\x30\\x41\\x30\\x43\\x02\\x43\\x32\\x30\\x33\\x44\\x36\\x30\\x30\\x30\\x31\\x03\\x73\\x0D",
             },
         ],
     };
 
     // Functions
+    function updateActiveConnection() {
+        if (data.state.selectedAddressValue === "Add Connection") return;
+        const address = data.state.selectedAddressValue;
+        const selectedConnection = data.connections.find(
+            (connection) => address === connection.address
+        );
+        console.log(
+            "data.state.selectedAddressValue",
+            data.state.selectedAddressValue
+        );
+        console.log("selectedConnection", selectedConnection);
+        if (selectedConnection === undefined) {
+            data.state.selectedAddressValue = "Add Connection";
+        } else {
+            data.activeConnection = selectedConnection;
+        }
+    }
     function connectionChange() {
-        if (data.state.selectedAddressValue === "Add Connection") return
-        const address = data.state.selectedAddressValue
-        const selectedConnection = data.connections.find(connection => address === connection.address)
-        data.activeConnection = selectedConnection
-        // console.log(address);
-        // console.log(selectedConnection);
+        if (data.state.selectedAddressValue === "Add Connection") return;
+
+        // Unsub from the previous active connections
+        api.tcpClient.v0.unsubData(data.activeConnection.address);
+
+        // Sub to new active connection
+        updateActiveConnection();
+        api.tcpClient.v0.subData(data.activeConnection.address, (res) => {
+            if (res) data.lines = [...data.lines, res];
+        });
+        if (data.state.pullHistory) {
+            api.tcpClient.v0.getHistory(
+                data.activeConnection.address,
+                (res) => {
+                    if (res) data.lines = res;
+                }
+            );
+        }
     }
-    async function openConnection(address, expectedDelimiter) {
-        data.activeConnection.isOpen = true
+    async function openConnection(address, encoding) {
+        console.log(`open(${address}, ${encoding})`);
+        // data.state.selectedAddressValue = address
+        api.tcpClient.v0.open(address, encoding, (res) => {
+            if (res === "ok") return;
+            data.lines = [
+                {
+                    wasReceived: true,
+                    timestampISO: new Date().toISOString(),
+                    data: res,
+                },
+            ];
+        });
     }
-    async function closeConnection(path) {
-        data.activeConnection.isOpen = false
+    async function closeConnection(address) {
+        console.log(`close(${address})`);
+        api.tcpClient.v0.close(address, (res) => {
+            if (res === "ok") return;
+            data.lines = [
+                {
+                    wasReceived: true,
+                    timestampISO: new Date().toISOString(),
+                    data: res,
+                },
+            ];
+        });
     }
-    async function toggleConnectionClick() {
-        if (data.activeConnection.isOpen) closeConnection(data.activeConnection.address)
-        else openConnection(data.activeConnection.address, data.activeConnection.expectedDelimiter)
+    async function removeConnection(address) {
+        console.log(`remove(${address})`);
+        api.tcpClient.v0.remove(address);
     }
     async function sendClick(text) {
-        data.lines = [...data.lines, {
-            wasReceived: false,
-            timestampISO: (new Date).toISOString(),
-            data: text,
-        }]
-        // const body = {
-        //   "path": data.settings.devicePath,
-        //   "message": text,
-        //   "messageType": data.settings.encodingMode,
-        //   "cr": false,
-        //   "lf": false
-        // }
-        // // const sendResponse = await post("/api/serial/v1/send", body)
-        // console.log("Send", body)
-    }
-    function updateLineData(port, encodingMode) {
-        // if (port?.data) {
-        //   let linesFromServer = []
-        //   // Add sends to the array
-        //   if (encodingMode === "hex") {
-        //     port.data.forEach(data => {
-        //       if (data.error !== "") data.hex += " <- " + data.error
-        //       linesFromServer.push({
-        //         wasReceived: data.wasReceived,
-        //         timestampISO: data.timestampISO,
-        //         data: data.hex,
-        //       })
-        //     })
-        //   }
-        //   else {
-        //     port.data.forEach(data => {
-        //       if (data.error !== "") data.ascii += " <- " + data.error
-        //       linesFromServer.push({
-        //         wasReceived: data.wasReceived,
-        //         timestampISO: data.timestampISO,
-        //         data: data.ascii,
-        //       })
-        //     })
-        //   }
-        //   // Set lines equal to the info from the server
-        //   lines = linesFromServer
-        // }
+        console.log(
+            `send(${data.activeConnection.address}, ${text}. ${data.activeConnection.encoding})`
+        );
+        api.tcpClient.v0.send(
+            data.activeConnection.address,
+            text,
+            data.activeConnection.encoding,
+            (res) => {
+                if (res === "ok") return;
+                data.lines = [
+                    {
+                        wasReceived: true,
+                        timestampISO: new Date().toISOString(),
+                        data: res,
+                    },
+                ];
+            }
+        );
     }
 
-    // Terminal lines
-    // $: updateLineData(data.settings.devicePath, data.settings.encodingMode)
+    // Api
+    api.tcpClient.v0.subClients((res) => {
+        data.connections = res;
+        if (res) updateActiveConnection();
+    });
 
     // Debug
     // $: console.log("data", data)
-    // $: console.log("activeConnection", data.activeConnection)
+    $: console.log("activeConnection", data.activeConnection);
 
-    setInterval(() => {
-        data.lines = [...data.lines, {
-            wasReceived: true,
-            timestampISO: (new Date).toISOString(),
-            data: Date.now(),
-        }]
-    }, 1000);
+    // setInterval(() => {
+    //     data.lines = [...data.lines, {
+    //         wasReceived: true,
+    //         timestampISO: (new Date).toISOString(),
+    //         data: Date.now(),
+    //     }]
+    // }, 1000);
 </script>
 
 <section class="wrapper flex column nowrap mono">
     <div class="header flex gap align-center nowrap fill-width">
-        <div
-            class="address"
-            class:display-none={data.state.showSettings}
-        >
-            <select 
+        <div class="address" class:display-none={data.state.showSettings}>
+            <select
                 bind:value={data.state.selectedAddressValue}
                 on:change={() => connectionChange()}
             >
@@ -157,8 +185,9 @@
                     <option value="Add Connection">Add Connection</option>
                     {#each data.connections as connection}
                         <option
-                            value="{connection.address}"
-                            selected={data.activeConnection.address === connection.address}
+                            value={connection.address}
+                            selected={data.activeConnection.address ===
+                                connection.address}
                         >
                             {connection.address}
                         </option>
@@ -166,18 +195,68 @@
                 </optgroup>
             </select>
         </div>
-        <button class="connection-state"
-            class:open={data.activeConnection.isOpen}
-            class:closed={!data.activeConnection.isOpen}
-            class:display-none={data.state.showSettings}
-            on:click={() => toggleConnectionClick()}
+        {#if data.activeConnection.isOpen}
+            <button
+                class="connection-state open"
+                class:display-none={data.state.selectedAddressValue ===
+                    "Add Connection" || data.state.showSettings}
+                on:click={() =>
+                    openConnection(
+                        data.activeConnection.address,
+                        data.activeConnection.encoding
+                    )}
+            >
+                Open
+            </button>
+            <button
+                class="connection-state"
+                class:display-none={data.state.selectedAddressValue ===
+                    "Add Connection" || data.state.showSettings}
+                on:click={() => closeConnection(data.activeConnection.address)}
+            >
+                Close
+            </button>
+        {:else}
+            <button
+                class="connection-state"
+                class:display-none={data.state.selectedAddressValue ===
+                    "Add Connection" || data.state.showSettings}
+                on:click={() =>
+                    openConnection(
+                        data.activeConnection.address,
+                        data.activeConnection.encoding
+                    )}
+            >
+                Open
+            </button>
+            <button
+                class="connection-state close"
+                class:display-none={data.state.selectedAddressValue ===
+                    "Add Connection" || data.state.showSettings}
+                on:click={() => closeConnection(data.activeConnection.address)}
+            >
+                Close
+            </button>
+        {/if}
+        <button
+            class="connection-state flex align-center"
+            class:display-none={data.state.selectedAddressValue ===
+                "Add Connection" || data.state.showSettings}
+            on:click={() => removeConnection(data.activeConnection.address)}
         >
-            {data.activeConnection.isOpen ? "Open" : "Closed"}
+            Remove
         </button>
-        <div class:display-none={!data.state.showSettings} style="padding-left: var(--gap-sm)">TCP Client Settings</div>
+
+        <div
+            class:display-none={!data.state.showSettings}
+            style="padding-left: var(--gap-sm)"
+        >
+            TCP Client Settings
+        </div>
         <button
             class="settings"
-            on:click={() => data.state.showSettings = !data.state.showSettings}
+            on:click={() =>
+                (data.state.showSettings = !data.state.showSettings)}
         >
             {#if data.state.showSettings === true}
                 <X size="1.2rem" strokeWidth="2.5" />
@@ -201,9 +280,9 @@
         </label>
         <label>
             Pull History <br />
-            <select>
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
+            <select bind:value={data.state.pullHistory}>
+                <option value="true">true</option>
+                <option value="false">false</option>
             </select>
         </label>
     </div>
@@ -211,7 +290,8 @@
     <!-- Add Connection -->
     <div
         class="new-connection grow grid overflow pad"
-        class:display-none={data.state.selectedAddressValue !== "Add Connection" || data.state.showSettings}
+        class:display-none={data.state.selectedAddressValue !==
+            "Add Connection" || data.state.showSettings}
     >
         <label>
             Address <br />
@@ -222,29 +302,37 @@
             />
         </label>
         <label>
-            Expected Delimiter 
-            <small>(optional)</small> <br />
+            Encoding <br />
             <input
                 type="text"
-                bind:value={data.state.expectedDelimiter.value}
-                placeholder={data.state.expectedDelimiter.placeholder}
+                bind:value={data.state.encoding.value}
+                placeholder={data.state.encoding.placeholder}
             />
         </label>
-        <button class="green" on:click={() => openConnection()}>
+        <button
+            class="green"
+            on:click={() =>
+                openConnection(
+                    data.state.address.value,
+                    data.state.encoding.value
+                )}
+        >
             Open
         </button>
     </div>
 
     <!-- Terminal + Sends -->
-    <div 
+    <div
         class="overflow grow"
-        class:display-none={data.state.selectedAddressValue === "Add Connection" || data.state.showSettings}
+        class:display-none={data.state.selectedAddressValue ===
+            "Add Connection" || data.state.showSettings}
     >
         <Terminal lines={data.lines} />
     </div>
     <div
         class="sends"
-        class:display-none={data.state.selectedAddressValue === "Add Connection" || data.state.showSettings}
+        class:display-none={data.state.selectedAddressValue ===
+            "Add Connection" || data.state.showSettings}
     >
         {#each data.sends as send}
             <div class="sendWrapper flex nowrap">
@@ -259,7 +347,6 @@
             </div>
         {/each}
     </div>
-
 </section>
 
 <style>
@@ -275,7 +362,7 @@
         padding: var(--gap-xs) var(--gap-sm);
         height: var(--gap-lg);
     }
-    .header .closed {
+    .header .close {
         background-color: var(--color-bg-red);
         border-color: var(--color-border-red);
         color: var(--color-text-red);
