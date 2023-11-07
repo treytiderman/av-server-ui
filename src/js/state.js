@@ -16,7 +16,7 @@ let windowsDefault = {
 // Initial State of Store
 export let initialState = {
     theme: "dark",
-    themes: ["black", "dark", "light", "white"],
+    themes: ["black", "dark", "white"],
     fontSize: 16,
     windowActiveId: 1,
     windowsDefault: JSON.parse(JSON.stringify(windowsDefault)),

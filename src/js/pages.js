@@ -5,7 +5,7 @@ import FileSystem from "../pages/FileSystem.svelte"
 import Logs from "../pages/Logs.svelte"
 import Monaco from "../pages/Monaco.svelte"
 import Pages from "../pages/Pages.svelte"
-import Program from "../pages/Program.svelte"
+import Programs from "../pages/Programs.svelte"
 import SerialPort from "../pages/SerialPort.svelte"
 import Settings from "../pages/Settings.svelte"
 import System from "../pages/System.svelte"
@@ -23,7 +23,7 @@ export const pages = {
     "Settings": Settings,
     
     // Programs
-    "Program": Program,
+    "Programs": Programs,
     "Database": Database,
     "Monaco": Monaco,
     

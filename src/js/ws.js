@@ -111,7 +111,7 @@ function receiveJsonOnce(callback) {
         if (isJSON(event.data)) {
             const obj = JSON.parse(event.data)
             websocket.removeEventListener('message', eventListenerFunction)
-            callback(JSON.parse(obj))
+            callback(obj)
         }
     }
     if (websocket.readyState === 1) {

@@ -3,6 +3,19 @@ import { ws } from "./ws.js";
 
 // Exports
 export const v0 = {
+
+    // Functions
+    open,
+    send,
+    setEncoding,
+    close,
+    remove,
+
+    openAll,
+    closeAll,
+    removeAll,
+
+    // Topics
     getClient,
     subClient,
     unsubClient,
@@ -18,19 +31,58 @@ export const v0 = {
     getHistory,
     subHistory,
     unsubHistory,
-
-    open,
-    send,
-    setEncoding,
-    close,
-    remove,
-
-    openAll,
-    closeAll,
-    removeAll,
 }
 
-// tcp-client/v0/topic/client/${address}
+// Functions
+function open(address, encoding, callback = () => { }) {
+    ws.send.path("tcp-client/v0/func/open", {
+        address: address,
+        encoding: encoding,
+    })
+    ws.receiveOnce.path("tcp-client/v0/func/open", (response) => callback(response))
+}
+function send(address, data, encoding, callback = () => { }) {
+    ws.send.path("tcp-client/v0/func/send", {
+        address: address,
+        data: data,
+        encoding: encoding,
+    })
+    ws.receiveOnce.path("tcp-client/v0/func/send", (response) => callback(response))
+}
+function setEncoding(address, encoding, callback = () => { }) {
+    ws.send.path("tcp-client/v0/func/set-encoding", {
+        address: address,
+        encoding: encoding,
+    })
+    ws.receiveOnce.path("tcp-client/v0/func/set-encoding", (response) => callback(response))
+}
+function close(address, callback = () => { }) {
+    ws.send.path("tcp-client/v0/func/close", {
+        address: address,
+    })
+    ws.receiveOnce.path("tcp-client/v0/func/close", (response) => callback(response))
+}
+function remove(address, callback = () => { }) {
+    ws.send.path("tcp-client/v0/func/remove", {
+        address: address,
+    })
+    ws.receiveOnce.path("tcp-client/v0/func/remove", (response) => callback(response))
+}
+
+function openAll(callback = () => { }) {
+    ws.send.path("tcp-client/v0/func/open-all")
+    ws.receiveOnce.path("tcp-client/v0/func/open-all", (response) => callback(response))
+}
+function closeAll(callback = () => { }) {
+    ws.send.path("tcp-client/v0/func/close-all")
+    ws.receiveOnce.path("tcp-client/v0/func/close-all", (response) => callback(response))
+}
+function removeAll(callback = () => { }) {
+    ws.send.path("tcp-client/v0/func/remove-all")
+    ws.receiveOnce.path("tcp-client/v0/func/remove-all", (response) => callback(response))
+}
+
+// Topics
 function getClient(address, callback = () => { }) {
     ws.send.path(`tcp-client/v0/topic/client/${address}`, "get")
     ws.receiveOnce.path(`tcp-client/v0/topic/client/${address}`, (response) => callback(response))
@@ -44,7 +96,6 @@ function unsubClient(address, callback = () => { }) {
     ws.receiveOnce.path(`tcp-client/v0/topic/client/${address}`, (response) => callback(response))
 }
 
-// tcp-client/v0/topic/clients
 function getClients(callback = () => { }) {
     ws.send.path(`tcp-client/v0/topic/clients`, "get")
     ws.receiveOnce.path(`tcp-client/v0/topic/clients`, (response) => callback(response))
@@ -58,7 +109,6 @@ function unsubClients(callback = () => { }) {
     ws.receiveOnce.path(`tcp-client/v0/topic/clients`, (response) => callback(response))
 }
 
-// tcp-client/v0/topic/data/${address}
 function getData(address, callback = () => { }) {
     ws.send.path(`tcp-client/v0/topic/data/${address}`, "get")
     ws.receiveOnce.path(`tcp-client/v0/topic/data/${address}`, (response) => callback(response))
@@ -72,7 +122,6 @@ function unsubData(address, callback = () => { }) {
     ws.receiveOnce.path(`tcp-client/v0/topic/data/${address}`, (response) => callback(response))
 }
 
-// tcp-client/v0/topic/history/${address}
 function getHistory(address, callback = () => { }) {
     ws.send.path(`tcp-client/v0/topic/history/${address}`, "get")
     ws.receiveOnce.path(`tcp-client/v0/topic/history/${address}`, (response) => callback(response))
@@ -84,66 +133,4 @@ function subHistory(address, callback = () => { }) {
 function unsubHistory(address, callback = () => { }) {
     ws.send.path(`tcp-client/v0/topic/history/${address}`, "unsub")
     ws.receiveOnce.path(`tcp-client/v0/topic/history/${address}`, (response) => callback(response))
-}
-
-// logger/v0/func/open
-function open(address, encoding, callback = () => { }) {
-    ws.send.path("tcp-client/v0/func/open", {
-        address: address,
-        encoding: encoding,
-    })
-    ws.receiveOnce.path("tcp-client/v0/func/open", (response) => callback(response))
-}
-
-// logger/v0/func/send
-function send(address, data, encoding, callback = () => { }) {
-    ws.send.path("tcp-client/v0/func/send", {
-        address: address,
-        data: data,
-        encoding: encoding,
-    })
-    ws.receiveOnce.path("tcp-client/v0/func/send", (response) => callback(response))
-}
-
-// logger/v0/func/set-encoding
-function setEncoding(address, encoding, callback = () => { }) {
-    ws.send.path("tcp-client/v0/func/set-encoding", {
-        address: address,
-        encoding: encoding,
-    })
-    ws.receiveOnce.path("tcp-client/v0/func/set-encoding", (response) => callback(response))
-}
-
-// logger/v0/func/close
-function close(address, callback = () => { }) {
-    ws.send.path("tcp-client/v0/func/close", {
-        address: address,
-    })
-    ws.receiveOnce.path("tcp-client/v0/func/close", (response) => callback(response))
-}
-
-// logger/v0/func/remove
-function remove(address, callback = () => { }) {
-    ws.send.path("tcp-client/v0/func/remove", {
-        address: address,
-    })
-    ws.receiveOnce.path("tcp-client/v0/func/remove", (response) => callback(response))
-}
-
-// logger/v0/func/open-all
-function openAll(callback = () => { }) {
-    ws.send.path("tcp-client/v0/func/open-all")
-    ws.receiveOnce.path("tcp-client/v0/func/open-all", (response) => callback(response))
-}
-
-// logger/v0/func/close-all
-function closeAll(callback = () => { }) {
-    ws.send.path("tcp-client/v0/func/close-all")
-    ws.receiveOnce.path("tcp-client/v0/func/close-all", (response) => callback(response))
-}
-
-// logger/v0/func/remove-all
-function removeAll(callback = () => { }) {
-    ws.send.path("tcp-client/v0/func/remove-all")
-    ws.receiveOnce.path("tcp-client/v0/func/remove-all", (response) => callback(response))
 }

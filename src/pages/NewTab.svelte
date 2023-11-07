@@ -123,8 +123,8 @@
     >
         <button
             class="flex gap-sm align-center green"
-            on:click={() => addTabActive({ name: "Program" })}
-            on:pointerdown={(event) => addTab(event, { name: "Program" })}
+            on:click={() => addTabActive({ name: "Programs" })}
+            on:pointerdown={(event) => addTab(event, { name: "Programs" })}
         >
             <SquareCode size="1.5rem" strokeWidth="2.5" />
             Programs

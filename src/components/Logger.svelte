@@ -124,8 +124,8 @@
                 <div class="col2">
                     <span
                         class:red={line.level === "error"}
-                        class:cyan={line.level === "debug"}
-                        class:yellow={line.level === "info"}
+                        class:green={line.level === "debug"}
+                        class:cyan={line.level === "info"}
                     >
                         {line.level}
                     </span>

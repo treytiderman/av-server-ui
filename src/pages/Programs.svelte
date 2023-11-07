@@ -37,10 +37,10 @@
 
     // Startup / Shutdown
     onMount(() => {
-        // api.user.v0.subUsers((res) => (data.users = res));
+        api.programs.v0.subAvailable((res) => (data.programsAvailable = res));
     });
     onDestroy(() => {
-        // api.user.v0.unsubUsers();
+        api.programs.v0.unsubAvailable();
     });
 </script>
 
