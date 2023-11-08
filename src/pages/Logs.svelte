@@ -32,7 +32,7 @@
             const line = res[i]
             setTimeout(() => {
                 parseLog(line)
-            }, i * 5);
+            }, i * 3);
         }
     }
     function getHistory() {

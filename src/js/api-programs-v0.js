@@ -110,67 +110,67 @@ function removeAll(callback = () => { }) {
 }
 
 // Topics
-function getAvailable(address, callback = () => { }) {
-    ws.send.path(`programs/v0/topic/available/${address}`, "get")
-    ws.receiveOnce.path(`programs/v0/topic/available/${address}`, (response) => callback(response))
+function getAvailable(callback = () => { }) {
+    ws.send.path(`programs/v0/topic/available`, "get")
+    ws.receiveOnce.path(`programs/v0/topic/available`, (response) => callback(response))
 }
-function subAvailable(address, callback = () => { }) {
-    ws.send.path(`programs/v0/topic/available/${address}`, "sub")
-    ws.receive.path(`programs/v0/topic/available/${address}`, (response) => callback(response))
+function subAvailable(callback = () => { }) {
+    ws.send.path(`programs/v0/topic/available`, "sub")
+    ws.receive.path(`programs/v0/topic/available`, (response) => callback(response))
 }
-function unsubAvailable(address, callback = () => { }) {
-    ws.send.path(`programs/v0/topic/available/${address}`, "unsub")
-    ws.receiveOnce.path(`programs/v0/topic/available/${address}`, (response) => callback(response))
-}
-
-function getData(address, callback = () => { }) {
-    ws.send.path(`programs/v0/topic/data/${address}`, "get")
-    ws.receiveOnce.path(`programs/v0/topic/data/${address}`, (response) => callback(response))
-}
-function subData(address, callback = () => { }) {
-    ws.send.path(`programs/v0/topic/data/${address}`, "sub")
-    ws.receive.path(`programs/v0/topic/data/${address}`, (response) => callback(response))
-}
-function unsubData(address, callback = () => { }) {
-    ws.send.path(`programs/v0/topic/data/${address}`, "unsub")
-    ws.receiveOnce.path(`programs/v0/topic/data/${address}`, (response) => callback(response))
+function unsubAvailable(callback = () => { }) {
+    ws.send.path(`programs/v0/topic/available`, "unsub")
+    ws.receiveOnce.path(`programs/v0/topic/available`, (response) => callback(response))
 }
 
-function getHistory(address, callback = () => { }) {
-    ws.send.path(`programs/v0/topic/history/${address}`, "get")
-    ws.receiveOnce.path(`programs/v0/topic/history/${address}`, (response) => callback(response))
+function getData(name, callback = () => { }) {
+    ws.send.path(`programs/v0/topic/data/${name}`, "get")
+    ws.receiveOnce.path(`programs/v0/topic/data/${name}`, (response) => callback(response))
 }
-function subHistory(address, callback = () => { }) {
-    ws.send.path(`programs/v0/topic/history/${address}`, "sub")
-    ws.receive.path(`programs/v0/topic/history/${address}`, (response) => callback(response))
+function subData(name, callback = () => { }) {
+    ws.send.path(`programs/v0/topic/data/${name}`, "sub")
+    ws.receive.path(`programs/v0/topic/data/${name}`, (response) => callback(response))
 }
-function unsubHistory(address, callback = () => { }) {
-    ws.send.path(`programs/v0/topic/history/${address}`, "unsub")
-    ws.receiveOnce.path(`programs/v0/topic/history/${address}`, (response) => callback(response))
-}
-
-function getStatus(address, callback = () => { }) {
-    ws.send.path(`programs/v0/topic/status/${address}`, "get")
-    ws.receiveOnce.path(`programs/v0/topic/status/${address}`, (response) => callback(response))
-}
-function subStatus(address, callback = () => { }) {
-    ws.send.path(`programs/v0/topic/status/${address}`, "sub")
-    ws.receive.path(`programs/v0/topic/status/${address}`, (response) => callback(response))
-}
-function unsubStatus(address, callback = () => { }) {
-    ws.send.path(`programs/v0/topic/status/${address}`, "unsub")
-    ws.receiveOnce.path(`programs/v0/topic/status/${address}`, (response) => callback(response))
+function unsubData(name, callback = () => { }) {
+    ws.send.path(`programs/v0/topic/data/${name}`, "unsub")
+    ws.receiveOnce.path(`programs/v0/topic/data/${name}`, (response) => callback(response))
 }
 
-function getStatusAll(address, callback = () => { }) {
-    ws.send.path(`programs/v0/topic/status-all/${address}`, "get")
-    ws.receiveOnce.path(`programs/v0/topic/status-all/${address}`, (response) => callback(response))
+function getHistory(name, callback = () => { }) {
+    ws.send.path(`programs/v0/topic/history/${name}`, "get")
+    ws.receiveOnce.path(`programs/v0/topic/history/${name}`, (response) => callback(response))
 }
-function subStatusAll(address, callback = () => { }) {
-    ws.send.path(`programs/v0/topic/status-all/${address}`, "sub")
-    ws.receive.path(`programs/v0/topic/status-all/${address}`, (response) => callback(response))
+function subHistory(name, callback = () => { }) {
+    ws.send.path(`programs/v0/topic/history/${name}`, "sub")
+    ws.receive.path(`programs/v0/topic/history/${name}`, (response) => callback(response))
 }
-function unsubStatusAll(address, callback = () => { }) {
-    ws.send.path(`programs/v0/topic/status-all/${address}`, "unsub")
-    ws.receiveOnce.path(`programs/v0/topic/status-all/${address}`, (response) => callback(response))
+function unsubHistory(name, callback = () => { }) {
+    ws.send.path(`programs/v0/topic/history/${name}`, "unsub")
+    ws.receiveOnce.path(`programs/v0/topic/history/${name}`, (response) => callback(response))
+}
+
+function getStatus(name, callback = () => { }) {
+    ws.send.path(`programs/v0/topic/status/${name}`, "get")
+    ws.receiveOnce.path(`programs/v0/topic/status/${name}`, (response) => callback(response))
+}
+function subStatus(name, callback = () => { }) {
+    ws.send.path(`programs/v0/topic/status/${name}`, "sub")
+    ws.receive.path(`programs/v0/topic/status/${name}`, (response) => callback(response))
+}
+function unsubStatus(name, callback = () => { }) {
+    ws.send.path(`programs/v0/topic/status/${name}`, "unsub")
+    ws.receiveOnce.path(`programs/v0/topic/status/${name}`, (response) => callback(response))
+}
+
+function getStatusAll(callback = () => { }) {
+    ws.send.path(`programs/v0/topic/status-all`, "get")
+    ws.receiveOnce.path(`programs/v0/topic/status-all`, (response) => callback(response))
+}
+function subStatusAll(callback = () => { }) {
+    ws.send.path(`programs/v0/topic/status-all`, "sub")
+    ws.receive.path(`programs/v0/topic/status-all`, (response) => callback(response))
+}
+function unsubStatusAll(callback = () => { }) {
+    ws.send.path(`programs/v0/topic/status-all`, "unsub")
+    ws.receiveOnce.path(`programs/v0/topic/status-all`, (response) => callback(response))
 }
