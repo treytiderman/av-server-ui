@@ -203,6 +203,7 @@
     .col4 {
         min-width: 32rem;
         text-wrap: nowrap;
+        white-space: nowrap;
     }
     .col5 {
         min-width: 5rem;

@@ -88,7 +88,6 @@
         // console.log("pointerdownPosition_px", Math.ceil(pointerdownPosition_px));
     }
     function pointermove(event) {
-        event.preventDefault();
         if (isPointerdown === false) return;
         pointermoveThrottle(event);
     }

@@ -30,7 +30,7 @@
             else status = "open";
         });
         api.user.v0.subToken((res) => {
-            if (!res.startsWith("error")) {
+            if (res && !res.startsWith("error")) {
                 localStorage.setItem("token", res);
                 status = "authorized";
             }
