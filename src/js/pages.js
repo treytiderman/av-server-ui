@@ -25,7 +25,7 @@ export const pages = {
     // Programs
     "Programs": Programs,
     "Database": Database,
-    "Monaco": Monaco,
+    "Code": Monaco,
     
     // Tools
     "TCP Client": TcpClient,

@@ -130,16 +130,16 @@
             Programs
         </button>
         <button
-            class="flex gap-sm align-center green"
-            on:click={() => addTabActive({ name: "Monaco" })}
-            on:pointerdown={(event) => addTab(event, { name: "Monaco" })}
+            disabled
+            class="flex gap-sm align-center green purple"
+            on:click={() => addTabActive({ name: "Code" })}
+            on:pointerdown={(event) => addTab(event, { name: "Code" })}
         >
             <Code size="1.5rem" strokeWidth="2.5" />
-            Monaco
+            Code
         </button>
         <button
-            disabled
-            class="flex gap-sm align-center greens"
+            class="flex gap-sm align-center green"
             on:click={() => addTabActive({ name: "Database" })}
             on:pointerdown={(event) => addTab(event, { name: "Database" })}
         >
@@ -151,7 +151,7 @@
     <div class="grid auto-sm gap align-start">
         <button
             disabled
-            class="flex gap-sm align-center purples"
+            class="flex gap-sm align-center purple"
             on:click={() => addTabActive({ name: "HTTP Client" })}
             on:pointerdown={(event) => addTab(event, { name: "HTTP Client" })}
         >
@@ -160,7 +160,7 @@
         </button>
         <button
             disabled
-            class="flex gap-sm align-center purples"
+            class="flex gap-sm align-center purple"
             on:click={() => addTabActive({ name: "HTTP Server" })}
             on:pointerdown={(event) => addTab(event, { name: "HTTP Server" })}
         >
@@ -177,7 +177,7 @@
         </button>
         <button
             disabled
-            class="flex gap-sm align-center purples"
+            class="flex gap-sm align-center purple"
             on:click={() => addTabActive({ name: "TCP Server" })}
             on:pointerdown={(event) => addTab(event, { name: "TCP Server" })}
         >
@@ -186,7 +186,7 @@
         </button>
         <button
             disabled
-            class="flex gap-sm align-center purples"
+            class="flex gap-sm align-center purple"
             on:click={() => addTabActive({ name: "UDP Client" })}
             on:pointerdown={(event) => addTab(event, { name: "UDP Client" })}
         >
@@ -195,7 +195,7 @@
         </button>
         <button
             disabled
-            class="flex gap-sm align-center purples"
+            class="flex gap-sm align-center purple"
             on:click={() => addTabActive({ name: "UDP Server" })}
             on:pointerdown={(event) => addTab(event, { name: "UDP Server" })}
         >
@@ -204,7 +204,7 @@
         </button>
         <button
             disabled
-            class="flex gap-sm align-center purples"
+            class="flex gap-sm align-center purple"
             on:click={() => addTabActive({ name: "WebSocket Client" })}
             on:pointerdown={(event) => addTab(event, { name: "WebSocket Client" })}
         >
@@ -213,7 +213,7 @@
         </button>
         <button
             disabled
-            class="flex gap-sm align-center purples"
+            class="flex gap-sm align-center purple"
             on:click={() => addTabActive({ name: "WebSocket Server" })}
             on:pointerdown={(event) => addTab(event, { name: "WebSocket Server" })}
         >
