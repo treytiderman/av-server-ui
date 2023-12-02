@@ -31,17 +31,17 @@ myAmp.connect(async (status) => {
     console.log(status.address, "is open:", status.isOpen)
 
     // Listen for volume changes
-    Marantz.onVolume(vol => {
+    myAmp.onVolume(vol => {
         console.log("vol is now", vol);
     })
 
     // Once connected wait 500ms then send volume up
     await sleep(500)
-    Marantz.volumeUp()
+    myAmp.volumeUp()
 
     // Wait another 500ms then send volume down
     await sleep(500)
-    Marantz.volumeDown()
+    myAmp.volumeDown()
 })
 `;
     let examplePython = `"""Cleavage Frequencies"""

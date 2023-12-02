@@ -40,6 +40,7 @@
     export let data = {
         element: undefined,
         editor: undefined,
+        loading: true,
         setValue: (value, language = "json") => {
             monaco.editor.setModelLanguage(data.editor.getModel(), language);
             return data.editor.setValue(value);
@@ -799,15 +800,20 @@
         });
         if (screenWidth < 600) {data.editor.getModel().updateOptions({ tabSize: 2 })}
         else {data.editor.getModel().updateOptions({ tabSize: 4 });}
-
+        
         // Update theme
         state.subscribe(stateUpdate => {
             data.setTheme(stateUpdate.theme)
             data.setFontSize(stateUpdate.fontSize)
         })
+
+        data.loading = false;
     });
 </script>
 
+{#if data.loading}
+    <section class="pad">loading editor...</section>
+{/if}
 <section class="editor" bind:this={data.element} />
 
 <style>
