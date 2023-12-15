@@ -1,4 +1,5 @@
 // Imports
+import Api from "../pages/Api.svelte"
 import Article from "../pages/Article.svelte"
 import Database from "../pages/Database.svelte"
 import FileSystem from "../pages/FileSystem.svelte"
@@ -34,5 +35,6 @@ export const pages = {
     // Test Page
     "Pages": Pages,
     "Article": Article,
+    "Api": Api,
     // "NewTab": NewTab,
 }

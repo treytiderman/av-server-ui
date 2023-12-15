@@ -10,8 +10,8 @@
     import Split from "./pages/WindowSplit.svelte";
 
     // Variables
-    let url = "wss://2.trey.app";
-    // let url = "ws://192.168.1.1:4622";
+    // let url = "wss://2.trey.app";
+    let url = "ws://192.168.1.1:4620";
     let status =
         localStorage.getItem("status") === "error" ? "error" : "startup";
     let lostConnection = localStorage.getItem("lost-connection");

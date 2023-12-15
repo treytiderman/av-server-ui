@@ -781,6 +781,23 @@
         // Dynamically import Monaco so it isn't loaded unless needed
         monaco = await import("monaco-editor");
 
+        monaco.languages.typescript.javascriptDefaults.setEagerModelSync(true)
+
+        monaco.editor.createModel(`/**
+ * Open serial port by path.
+ * @param {string} path 
+ * @param {string|number} [baudRate = 9600] baud rate of serial port
+ * @param {string} encoding see the data in "ascii" or "hex"
+ * @param {string} delimiter expected delimiter such as "\r\n". leave blank "" or "none" to receive all data.
+ * @returns {Promise<string>} Promise<"ok" or "error...">
+ * @example
+ *     boom('COM1', 9600, "ascii", )
+ */
+async function testFunction(path, baudRate = 9600, encoding = "ascii", delimiter = "none") {}
+`,
+            "javascript"
+        )
+
         monaco.editor.defineTheme("black", themeBlack);
         monaco.editor.defineTheme("dark", themeDark);
         monaco.editor.defineTheme("light", themeWhite);
