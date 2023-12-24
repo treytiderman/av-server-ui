@@ -3,7 +3,7 @@
     import { onMount, onDestroy } from "svelte";
     import { global } from "../js/global.js";
     import { state } from "../js/state.js";
-    import { api } from "../js/api.js";
+    import { api, user_v1 } from "../js/api.js";
     import {
         Server,
         UserCog,
@@ -20,7 +20,7 @@
     // Variables
     const data = {
         me: {
-            username: "fakeUser",
+            username: "...",
             groups: ["dragon"],
         },
         isNotAdmin: false,
@@ -73,7 +73,7 @@
 
     // Startup / Shutdown
     onMount(() => {
-        api.user.v0.subWhoAmI((res) => {
+        user_v1.whoAmI.sub((res) => {
             if (res.username) {
                 data.me = res;
                 data.isNotAdmin = isNotAdmin(data.me.groups);
@@ -81,11 +81,20 @@
         });
     });
     onDestroy(() => {
-        api.user.v0.unsubWhoAmI();
+        user_v1.whoAmI.unsub();
     });
 </script>
 
 <article>
+    <h3 class="flex">
+        <div>Welcome 
+            <span
+                class="purple"
+                style="text-decoration: underline; text-underline-position: under;"
+            >{data.me.username}</span> !
+        </div>
+        <div class="margin-left-auto">{data.isNotAdmin ? "USER" : "ADMIN"}</div>
+    </h3>
     <h2 class:display-none={data.isNotAdmin}>Server</h2>
     <div
         class="grid auto-sm gap align-start"
@@ -130,8 +139,7 @@
             Programs
         </button>
         <button
-            disabled
-            class="flex gap-sm align-center green purple"
+            class="flex gap-sm align-center dim"
             on:click={() => addTabActive({ name: "Code" })}
             on:pointerdown={(event) => addTab(event, { name: "Code" })}
         >
@@ -150,8 +158,7 @@
     <h2>Tools</h2>
     <div class="grid auto-sm gap align-start">
         <button
-            disabled
-            class="flex gap-sm align-center purple"
+            class="flex gap-sm align-center dim"
             on:click={() => addTabActive({ name: "HTTP Client" })}
             on:pointerdown={(event) => addTab(event, { name: "HTTP Client" })}
         >
@@ -159,8 +166,7 @@
             HTTP Client
         </button>
         <button
-            disabled
-            class="flex gap-sm align-center purple"
+            class="flex gap-sm align-center dim"
             on:click={() => addTabActive({ name: "HTTP Server" })}
             on:pointerdown={(event) => addTab(event, { name: "HTTP Server" })}
         >
@@ -176,8 +182,7 @@
             TCP Client
         </button>
         <button
-            disabled
-            class="flex gap-sm align-center purple"
+            class="flex gap-sm align-center dim"
             on:click={() => addTabActive({ name: "TCP Server" })}
             on:pointerdown={(event) => addTab(event, { name: "TCP Server" })}
         >
@@ -185,8 +190,7 @@
             TCP Server
         </button>
         <button
-            disabled
-            class="flex gap-sm align-center purple"
+            class="flex gap-sm align-center dim"
             on:click={() => addTabActive({ name: "UDP Client" })}
             on:pointerdown={(event) => addTab(event, { name: "UDP Client" })}
         >
@@ -194,8 +198,7 @@
             UDP Client
         </button>
         <button
-            disabled
-            class="flex gap-sm align-center purple"
+            class="flex gap-sm align-center dim"
             on:click={() => addTabActive({ name: "UDP Server" })}
             on:pointerdown={(event) => addTab(event, { name: "UDP Server" })}
         >
@@ -203,8 +206,7 @@
             UDP Server
         </button>
         <button
-            disabled
-            class="flex gap-sm align-center purple"
+            class="flex gap-sm align-center dim"
             on:click={() => addTabActive({ name: "WebSocket Client" })}
             on:pointerdown={(event) => addTab(event, { name: "WebSocket Client" })}
         >
@@ -212,8 +214,7 @@
             WebSocket Client
         </button>
         <button
-            disabled
-            class="flex gap-sm align-center purple"
+            class="flex gap-sm align-center dim"
             on:click={() => addTabActive({ name: "WebSocket Server" })}
             on:pointerdown={(event) => addTab(event, { name: "WebSocket Server" })}
         >
@@ -242,7 +243,7 @@
             Logout
         </button>
         <button
-            class="flex gap-sm align-center grey"
+            class="flex gap-sm align-center"
             class:display-none={data.isNotAdmin}
             on:click={() => addTabActive({ name: "Pages" })}
             on:pointerdown={(event) => addTab(event, { name: "Pages" })}
@@ -250,7 +251,7 @@
             Site Map
         </button>
         <button
-            class="flex gap-sm align-center grey"
+            class="flex gap-sm align-center"
             on:click={() => addTabActive({ name: "Settings" })}
             on:pointerdown={(event) => addTab(event, { name: "Settings" })}
         >

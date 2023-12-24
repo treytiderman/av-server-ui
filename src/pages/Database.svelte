@@ -1,7 +1,7 @@
 <script>
     // Imports
     import { onMount, onDestroy } from "svelte";
-    import { database_v0 as db } from "../js/api.js";
+    import { database_v1 } from "../js/api.js";
 
     // Variables
     const data = {
@@ -10,26 +10,31 @@
         databases: {},
     };
 
+    function namesUpdate(names) {
+        
+        // unsub
+        data.databaseNames.forEach((name) => {
+            database_v1.db.unsub(name);
+        });
+        
+        // new names
+        data.databaseNames = names;
+        
+        // sub
+        names.forEach((name) => {
+            database_v1.db.sub(name, (res) => {
+                data.databases[name] = res;
+            });
+        });
+    }
+
     // Startup / Shutdown
     onMount(() => {
-        db.subNames((res) => {
-            // console.log(res)
-            data.databaseNames.forEach((name) => {
-                db.unsubData(name);
-            });
-            data.databaseNames = res;
-            res.forEach((name) => {
-                db.subData(name, (res) => {
-                    data.databases[name] = res;
-                });
-            });
-        });
+        database_v1.names.sub((names) => namesUpdate(names));
     });
     onDestroy(() => {
-        db.unsubNames();
-        data.databaseNames.forEach((name) => {
-            db.unsubData(name);
-        });
+        data.databaseNames.forEach((name) => database_v1.db.unsub(name));
+        database_v1.names.unsub();
     });
 </script>
 
@@ -38,7 +43,7 @@
     {#each data.databaseNames as name}
         <details>
             <summary>{name}</summary>
-            <pre>json-data: {JSON.stringify(
+            <pre>{JSON.stringify(
                     data.databases[name],
                     true,
                     4,

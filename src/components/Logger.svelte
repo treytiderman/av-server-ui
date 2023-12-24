@@ -7,28 +7,25 @@
     import { Circle, X } from 'lucide-svelte';
 
     // Exports
-    export let showCRLF = true;
+    export let showCRLF = false;
     export let lines = [
         {
             timestampISO: "2023-10-16T01:01:57.154Z",
-            level: 'debug',
-            group: 'database.js',
-            message: 'createDatabase("test-database-2", defaultData)',
-            obj: { "defaultData": { "num": 72, "array": [ 1, 2 ] } },
+            level: 'DEBUG',
+            message: '1ms createDatabase("test-database-2", defaultData)',
+            data: JSON.stringify({ defaultData: { num: 72, array: [ 1, 2 ] } }),
         },
         {
             timestampISO: "2023-10-16T01:01:57.155Z",
-            level: 'debug',
-            group: 'database.js',
-            message: 'writeDatabase("test-database-2")',
-            obj: "ok",
+            level: 'DEBUG',
+            message: '3ms writeDatabase("test-database-2") -> "ok',
+            daata: JSON.stringify({}),
         },
         {
             timestampISO: "2023-10-16T01:01:57.163Z",
-            level: 'debug',
-            group: 'database.js',
-            message: 'deleteDatabase("test-database-2")',
-            obj: "ok",
+            level: 'DEBUG',
+            message: '0ms deleteDatabase("test-database-2") -> "ok',
+            daata: JSON.stringify({}),
         },
     ];
 
@@ -39,17 +36,17 @@
 
     // Time Column
     $: timeColFormat = loggerElementWidth > 600 ? "time" : "timeShort";
-    $: timeColWidth = loggerElementWidth > 600 ? "8rem" : "4rem";
+    $: timeColWidth = loggerElementWidth > 600 ? "8.6rem" : "4.6rem";
     function timePress() {
         if (timeColFormat === "datetime") {
             timeColFormat = "time";
-            timeColWidth = "8rem";
+            timeColWidth = "8.6rem";
         } else if (timeColFormat === "time") {
             timeColFormat = "timeShort";
-            timeColWidth = "4rem";
+            timeColWidth = "4.6rem";
         } else {
             timeColFormat = "datetime";
-            timeColWidth = "15rem";
+            timeColWidth = "15.4rem";
         }
     }
 
@@ -65,7 +62,7 @@
         }
     }
     $: if (lines) scrollToBottomOfElement(linesElement);
-    
+
     // Unescape the delimiter if needed
     $: if (showCRLF) escapeCRLF(lines);
     function escapeCRLF(lines) {
@@ -89,9 +86,7 @@
             {timeColFormat === "datetime" ? "Date Time" : "Time"}
         </button>
         <div class="col2">Level</div>
-        <div class="col3">Group</div>
-        <div class="col4">Message</div>
-        <!-- <div class="col5">Object</div> -->
+        <div class="col3">Message</div>
     </div>
 
     <!-- Lines -->
@@ -123,24 +118,26 @@
                 <!-- Col2 - Col5 -->
                 <div class="col2">
                     <span
-                        class:red={line.level === "error"}
-                        class:green={line.level === "debug"}
-                        class:cyan={line.level === "info"}
+                        class:red={line.level === "ERROR"}
+                        class:orange={line.level === "WARN"}
+                        class:green={line.level === "DEBUG"}
+                        class:cyan={line.level === "INFO"}
                     >
                         {line.level}
                     </span>
                 </div>
                 <div class="col3">
-                    <span>{line.group}</span>
+                    <span>
+                        {line.message}
+                        {#if line.open && line.data && line.data !== "{}"}
+                            <span on:click={() => line.open = !line.open}>-</span>
+                            <pre>{line.data}</pre>
+                        {/if}
+                        {#if !line.open && line.data && line.data !== "{}"}
+                            <span on:click={() => line.open = !line.open}>+</span>
+                        {/if}
+                    </span>
                 </div>
-                <div class="col4">
-                    <span>{line.message}</span>
-                </div>
-                <!-- <div class="col5">
-                    {#if JSON.stringify(line.obj) !== "{}"}
-                        <pre>{JSON.stringify(line.obj, true, 4)}</pre>
-                    {/if}
-                </div> -->
 
             </div>
         {/each}
@@ -195,18 +192,15 @@
         color: var(--color-text-dim);
     }
     .col2 {
-        min-width: 5rem;
+        min-width: 4.5rem;
     }
     .col3 {
-        min-width: 13rem;
-    }
-    .col4 {
         min-width: 32rem;
         text-wrap: nowrap;
         white-space: nowrap;
     }
-    .col5 {
-        min-width: 5rem;
+    .col3 span span {
+        cursor: pointer;
     }
 
     /* Buttons */

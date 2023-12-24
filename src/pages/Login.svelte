@@ -1,5 +1,5 @@
 <script>
-    import { api } from "../js/api.js";
+    import { api, user_v1 } from "../js/api.js";
 
     const data = {
         username: "admin",
@@ -7,10 +7,13 @@
         error: "",
     };
 
-    function login() {
-        api.user.v0.login(data.username, data.password, (res) => {
-            data.error = res;
-        });
+    async function login() {
+        const response = await user_v1.login(data.username, data.password)
+        if (response.startsWith("error")) data.error = response;
+        else {
+            localStorage.setItem("token", response);
+            location.reload()
+        }
     }
 </script>
 

@@ -1,7 +1,7 @@
 <script>
     // Imports
     import { onMount } from "svelte";
-    import { api } from "./js/api";
+    import { api, user_v1 } from "./js/api";
     import { state } from "./js/state.js";
 
     // Components
@@ -16,30 +16,6 @@
         localStorage.getItem("status") === "error" ? "error" : "startup";
     let lostConnection = localStorage.getItem("lost-connection");
 
-    // Functions
-    function wsOpen() {
-        lostConnection = "";
-        localStorage.setItem("lost-connection", lostConnection);
-        const token = localStorage.getItem("token");
-        api.ws.onClose((event) => {
-            status = "error";
-            lostConnection = new Date().toLocaleString();
-            localStorage.setItem("lost-connection", lostConnection);
-        });
-        api.user.v0.loginWithToken(token, (res) => {
-            if (res === "ok") status = "authorized";
-            else status = "open";
-        });
-        api.user.v0.subToken((res) => {
-            if (res && !res.startsWith("error")) {
-                localStorage.setItem("token", res);
-                status = "authorized";
-            }
-        });
-    }
-
-    $: localStorage.setItem("status", status);
-
     // Startup
     onMount(async () => {
         // api.ws.debug(true);
@@ -49,7 +25,25 @@
         });
     });
 
+    // Functions
+    async function wsOpen() {
+        lostConnection = "";
+        localStorage.setItem("lost-connection", lostConnection);
+        api.ws.onClose((event) => {
+            status = "error";
+            lostConnection = new Date().toLocaleString();
+            localStorage.setItem("lost-connection", lostConnection);
+        });
+        
+        const token = localStorage.getItem("token");
+        const loginResponse = await user_v1.loginWithToken(token)
+        if (loginResponse === "ok") status = "authorized";
+        else status = "open";
+
+    }
+
     // Dynamic Variables
+    $: localStorage.setItem("status", status);
     $: mainWindow = $state.windows.find((window) => window.parentId === 0);
     $: console.log("status:", status);
 </script>

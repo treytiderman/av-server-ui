@@ -2,7 +2,7 @@
     // Imports
     import { onMount, onDestroy } from "svelte";
     import { state } from "../js/state.js";
-    import { api } from "../js/api.js";
+    import { api, user_v1 } from "../js/api.js";
 
     // Variables
     const data = {
@@ -10,34 +10,28 @@
         username: "",
         password: "",
         passwordConfirm: "",
-        groups: ["admin", "user", "guest"],
+        // groups: ["admin", "user", "guest"],
+        groups: [],
         groupsCommaSperated: "",
         group: "",
-        me: {
-            username: "fakeUser",
-            groups: ["dragon"],
-        },
-        users: [
-            {
-                username: "admin",
-                groups: ["admin"],
-            },
-        ],
+        me: { username: "fakeUser", groups: ["dragon"] },
+        // users: [{ username: "admin", groups: ["admin"] }],
+        users: [],
         response: "",
     };
 
     // Startup / Shutdown
-    onMount(() => {
-        api.user.v0.subUsers((res) => (data.users = res));
-        api.user.v0.subGroups((res) => (data.groups = res));
-        api.user.v0.subWhoAmI((res) => {
+    onMount(async () => {
+        user_v1.users.sub((res) => (data.users = Object.values(res)));
+        user_v1.groups.sub((res) => (data.groups = res));
+        user_v1.whoAmI.sub((res) => {
             if (res.username) data.me = res;
         });
     });
-    onDestroy(() => {
-        api.user.v0.unsubUsers();
-        api.user.v0.unsubGroups();
-        api.user.v0.unsubWhoAmI();
+    onDestroy(async () => {
+        await user_v1.users.unsub();
+        await user_v1.groups.unsub();
+        await user_v1.whoAmI.unsub();
     });
 </script>
 
@@ -87,14 +81,16 @@
                     <option value="userDelete">user delete</option>
                     <option value="userAddGroup">user add group</option>
                     <option value="userRemoveGroup">user remove group</option>
-                    <option value="userChangePassword">user change password</option>
+                    <option value="userChangePassword"
+                        >user change password</option
+                    >
                 </optgroup>
                 <optgroup label="All Users">
                     <option value="resetToDefault">reset to default</option>
                 </optgroup>
             </select>
         </label>
-    
+
         <!-- Text Fields -->
         <label
             class:display-none={!(
@@ -131,7 +127,8 @@
         </label>
         <label
             class:display-none={!(
-                data.action === "userCreate" || data.action === "userChangePassword"
+                data.action === "userCreate" ||
+                data.action === "userChangePassword"
             )}
         >
             Password Confirm <br />
@@ -161,81 +158,84 @@
             Group <br />
             <input type="text" placeholder="group" bind:value={data.group} />
         </label>
-    
+
         <!-- Buttons -->
         {#if data.action === "userCreate"}
             <button
                 class="cyan"
-                on:click={() =>
-                    api.user.v0.userCreate(
+                on:click={async () => {
+                    data.response = await user_v1.user.create(
                         data.username,
                         data.password,
                         data.passwordConfirm,
                         data.groupsCommaSperated
                             .split(",")
                             .map((group) => group.trim()),
-                        (res) => (data.response = res)
-                    )}
+                    );
+                }}
             >
                 Create
             </button>
         {:else if data.action === "userDelete"}
             <button
                 class="red"
-                on:click={() =>
-                    api.user.v0.userDelete(
-                        data.username,
-                        (res) => (data.response = res)
-                    )}
+                on:click={async () => {
+                    data.response = await user_v1.user.delete(data.username);
+                }}
             >
                 Delete
             </button>
         {:else if data.action === "userAddGroup"}
             <button
                 class="green"
-                on:click={() =>
-                    api.user.v0.userAddGroup(
+                on:click={async () => {
+                    data.response = await user_v1.user.addGroup(
                         data.username,
                         data.group,
-                        (res) => (data.response = res)
-                    )}
+                    );
+                }}
             >
                 Add
             </button>
         {:else if data.action === "userRemoveGroup"}
             <button
                 class="red"
-                on:click={() =>
-                    api.user.v0.userRemoveGroup(
+                on:click={async () => {
+                    data.response = await user_v1.user.removeGroup(
                         data.username,
                         data.group,
-                        (res) => (data.response = res)
-                    )}
+                    );
+                }}
             >
                 Remove
             </button>
         {:else if data.action === "userChangePassword"}
             <button
                 class="yellow"
-                on:click={() =>
-                    api.user.v0.userChangePassword(
+                on:click={async () => {
+                    data.response = await user_v1.user.changePassword(
                         data.username,
                         data.password,
                         data.passwordConfirm,
-                        (res) => (data.response = res)
-                    )}
+                    );
+                }}
             >
                 Change
             </button>
         {:else if data.action === "login"}
             <button
                 class="purple"
-                on:click={() =>
-                    api.user.v0.login(data.username, data.password, (res) => {
-                        localStorage.setItem("token", res);
-                        data.response = res;
-                        location.reload();
-                    })}
+                on:click={async () => {
+                    data.response = await user_v1.login(
+                        data.username,
+                        data.password,
+                    );
+                    $state.windows = JSON.parse(
+                        JSON.stringify([$state.windowsDefault]),
+                    );
+                    localStorage.setItem("token", data.response);
+                    location.reload();
+                }}
             >
                 Login
             </button>
@@ -243,7 +243,9 @@
             <button
                 class="yellow"
                 on:click={() => {
-                    $state.windows = JSON.parse(JSON.stringify([$state.windowsDefault]))
+                    $state.windows = JSON.parse(
+                        JSON.stringify([$state.windowsDefault]),
+                    );
                     localStorage.removeItem("token");
                     location.reload();
                 }}
@@ -253,35 +255,32 @@
         {:else if data.action === "groupCreate"}
             <button
                 class="cyan"
-                on:click={() =>
-                    api.user.v0.groupCreate(
-                        data.group,
-                        (res) => (data.response = res)
-                    )}
+                on:click={async () => {
+                    data.response = await user_v1.groups.create(data.group);
+                }}
             >
                 Create
             </button>
         {:else if data.action === "groupDelete"}
             <button
                 class="red"
-                on:click={() =>
-                    api.user.v0.groupDelete(
-                        data.group,
-                        (res) => (data.response = res)
-                    )}
+                on:click={async () => {
+                    data.response = await user_v1.groups.delete(data.group);
+                }}
             >
                 Delete
             </button>
         {:else if data.action === "resetToDefault"}
             <button
                 class="red"
-                on:click={() =>
-                    api.user.v0.resetToDefault((res) => (data.response = res))}
+                on:click={async () => {
+                    data.response = await user_v1.users.reset();
+                }}
             >
                 Reset all Users and Groups to default
             </button>
         {/if}
-    
+
         <div>{data.response}</div>
     </div>
 </section>

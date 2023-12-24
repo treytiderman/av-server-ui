@@ -519,3 +519,9 @@ span.cyan {
     color: var(--color-text-cyan);
     border: none;
 }
+
+span.purple {
+    background-color: transparent;
+    color: var(--color-text-purple);
+    border: none;
+}

@@ -22,7 +22,7 @@ export const ws = {
 }
 
 // Constants
-const RECONNECT_TIMER = 5_000
+const RECONNECT_TIMER = 1_000
 
 // Variables
 let debug = false

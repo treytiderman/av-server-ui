@@ -1,7 +1,7 @@
 <script>
     // Imports
     import { onMount, onDestroy } from "svelte";
-    import { api } from "../js/api.js";
+    import { logger_v0 } from "../js/api.js";
 
     // Components
     import Logger from "../components/Logger.svelte";
@@ -13,16 +13,15 @@
 
     // Functions
     function parseLog(line) {
-        line = line.split(" >> ")
-        let obj = line[4]
-        try { obj = JSON.parse(line[4]) }
-        catch (error) {}
+        const split = line.split(" >> ")
+        let json
+        try { json = JSON.stringify(JSON.parse(split[3]), true, 4) }
+        catch (error) { json = split[3] }
         const lineObj = {
-            timestampISO: line[0],
-            level: line[1],
-            group: line[2],
-            message: line[3],
-            obj: obj,
+            timestampISO: split[0],
+            level: split[1].trim(),
+            message: split[2].trim(),
+            data: json,
         }
         data.logs = [...data.logs, lineObj]
     }
@@ -35,21 +34,16 @@
             }, i * 3);
         }
     }
-    function getHistory() {
-        api.logger.v0.getLogsHistory((res) => {
-            parseHistory(res)
-        });
+    async function getHistory() {
+        parseHistory(await logger_v0.history.get())
     }
-
+    
     // Startup / Shutdown
     onMount(() => {
-        api.logger.v0.subLogs((res) => {
-            parseLog(res)
-        });
-        
+        logger_v0.log.sub((res) => parseLog(res))
     });
     onDestroy(() => {
-        api.logger.v0.unsubLogs();
+        logger_v0.log.unsub();
     });
 </script>
 
