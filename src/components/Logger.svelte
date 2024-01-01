@@ -19,13 +19,13 @@
             timestampISO: "2023-10-16T01:01:57.155Z",
             level: 'DEBUG',
             message: '3ms writeDatabase("test-database-2") -> "ok',
-            daata: JSON.stringify({}),
+            data: JSON.stringify({}),
         },
         {
             timestampISO: "2023-10-16T01:01:57.163Z",
             level: 'DEBUG',
             message: '0ms deleteDatabase("test-database-2") -> "ok',
-            daata: JSON.stringify({}),
+            data: JSON.stringify({}),
         },
     ];
 

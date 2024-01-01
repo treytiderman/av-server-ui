@@ -1,6 +1,4 @@
 <script>
-    import Icon from "./Icon.svelte";
-
     function backdropClick(event) {
         const modalDimensions = modal.getBoundingClientRect();
         if (
@@ -28,7 +26,7 @@
                 <h2>{title}</h2>
                 {#if closeIcon}
                     <button class="modalExit" on:click={modal.close()}>
-                        <Icon name="xmark" />
+                        <!-- <Icon name="xmark" /> -->
                     </button>
                 {/if}
             </header>
