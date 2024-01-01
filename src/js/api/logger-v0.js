@@ -5,6 +5,8 @@ import { ws } from "../ws.js";
 export {
     log, // get, sub, unsub, clear, debug, info, warn, error
     history, // get, sub, unsub
+    group, // get, sub, unsub
+    level, // get, sub, unsub
 }
 
 // Functions
@@ -56,5 +58,27 @@ const history = {
     unsub: () => new Promise((resolve) => {
         ws.send.path(`v0/log/history/unsub/`)
         ws.receiveOnce.path(`v0/log/history/unsub/`, (response) => resolve(response))
+    }),
+}
+const group = {
+    sub: (group, callback) => {
+        ws.send.path(`v0/log/group/sub/${group}/`)
+        ws.receiveOnce.path(`v0/log/group/sub/${group}/`, (response) => callback(response))
+        ws.receive.path(`v0/log/group/pub/${group}/`, (response) => callback(response))
+    },
+    unsub: (group) => new Promise((resolve) => {
+        ws.send.path(`v0/log/group/unsub/${group}/`)
+        ws.receiveOnce.path(`v0/log/group/unsub/${group}/`, (response) => resolve(response))
+    }),
+}
+const level = {
+    sub: (level, callback) => {
+        ws.send.path(`v0/log/level/sub/${level}/`)
+        ws.receiveOnce.path(`v0/log/level/sub/${level}/`, (response) => callback(response))
+        ws.receive.path(`v0/log/level/pub/${level}/`, (response) => callback(response))
+    },
+    unsub: (level) => new Promise((resolve) => {
+        ws.send.path(`v0/log/level/unsub/${level}/`)
+        ws.receiveOnce.path(`v0/log/level/unsub/${level}/`, (response) => resolve(response))
     }),
 }
