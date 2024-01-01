@@ -5,6 +5,7 @@ import * as user_v1 from "./api/user-v1.js";
 import * as logger_v0 from "./api/logger-v0.js";
 import * as system_v1 from "./api/system-v1.js";
 import * as database_v1 from "./api/database-v1.js";
+import * as program_v1 from "./api/program-v1.js";
 
 import * as database_v0 from "../js/api-database-v0.js";
 import { v0 as programs_v0 } from "../js/api-programs-v0.js";
@@ -20,6 +21,7 @@ export {
     logger_v0,
     system_v1,
     user_v1,
+    program_v1,
 }
 const api = {
     "ws": ws,

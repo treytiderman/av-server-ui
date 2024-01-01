@@ -1,7 +1,7 @@
 <script>
     // Imports
     import { onMount, onDestroy } from "svelte";
-    import { api } from "../js/api.js";
+    import { api, program_v1 } from "../js/api.js";
 
     // Variables
     const data = {
@@ -43,17 +43,12 @@
 
     // Startup / Shutdown
     onMount(() => {
-        api.programs.v0.subAvailable((res) => {
-            console.log(res);
-            data.available = res;
-        });
-        api.programs.v0.subStatusAll((res) => {
-            console.log(res);
-            data.programs = res;
-        });
+        program_v1.programs.sub((res) => data.programs = Object.values(res))
+        program_v1.available.sub((res) => data.available = res)
     });
     onDestroy(() => {
-        api.programs.v0.unsubAvailable();
+        program_v1.programs.unsub()
+        program_v1.available.unsub()
     });
 </script>
 
@@ -100,7 +95,7 @@
         <div class="grid">
             {#each data.available as program}
                 <div class="grid gap-sm">
-                    <h3>{program.name}</h3>
+                    <h3>{program.directory.split("/").splice(-1)}</h3>
                     <div>
                         <span class="dim">Directory:</span>
                         <span class="mono">{program.directory}</span>

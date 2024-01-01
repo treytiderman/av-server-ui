@@ -1,19 +1,20 @@
 <script>
     // Imports
     import { onMount } from "svelte";
-    import { api, user_v1 } from "./js/api";
+    import { api, user_v1, logger_v0 } from "./js/api";
     import { state } from "./js/state.js";
 
     // Components
     import Login from "./pages/Login.svelte";
     import Tabs from "./pages/WindowTabs.svelte";
     import Split from "./pages/WindowSplit.svelte";
+    import Modal from "./components/Modal.svelte";
 
     // Variables
     // let url = "wss://2.trey.app";
     let url = "ws://192.168.1.1:4620";
     let status =
-        localStorage.getItem("status") === "error" ? "error" : "startup";
+        localStorage.getItem("status") === "close" ? "close" : "startup";
     let lostConnection = localStorage.getItem("lost-connection");
 
     // Startup
@@ -21,7 +22,7 @@
         // api.ws.debug(true);
         api.connect(url, (newStatus) => {
             if (newStatus === "open") wsOpen();
-            else status = "error";
+            else status = "boom";
         });
     });
 
@@ -29,17 +30,51 @@
     async function wsOpen() {
         lostConnection = "";
         localStorage.setItem("lost-connection", lostConnection);
+
+        // On Websocket close
         api.ws.onClose((event) => {
-            status = "error";
+            status = "close";
             lostConnection = new Date().toLocaleString();
             localStorage.setItem("lost-connection", lostConnection);
         });
-        
+
+        // Login
         const token = localStorage.getItem("token");
-        const loginResponse = await user_v1.loginWithToken(token)
+        const loginResponse = await user_v1.loginWithToken(token);
         if (loginResponse === "ok") status = "authorized";
         else status = "open";
 
+        // Errors
+        setTimeout(() => {
+            logger_v0.level.sub("error", rxError);
+            logger_v0.level.sub("warn", rxError);
+        }, 3000);
+    }
+    
+    function rxError(line) {
+        addTabActive({ name: "Logs" })
+        location.reload(true)
+    }
+
+    function addTabActive(tabAdded) {
+        setTimeout(() => {
+            let windowActiveIndex = $state.windows.findIndex(
+                (window) => window.id === $state.windowActiveId
+            );
+            if (
+                $state.windows[windowActiveIndex].state.tabs.some(
+                    (tab) => tab.name === tabAdded.name
+                )
+            ) {
+                $state.windows[windowActiveIndex].state.tabActive = tabAdded;
+            } else {
+                $state.windows[windowActiveIndex].state.tabs = [
+                    ...$state.windows[windowActiveIndex].state.tabs,
+                    tabAdded,
+                ];
+                $state.windows[windowActiveIndex].state.tabActive = tabAdded;
+            }
+        }, 1);
     }
 
     // Dynamic Variables
@@ -48,9 +83,10 @@
     $: console.log("status:", status);
 </script>
 
+
 {#if status === "startup"}
     <article />
-{:else if status === "error"}
+{:else if status === "close"}
     <article>
         <h1>Lost Connection</h1>
         <p>The connection to {url} was lost {lostConnection}</p>

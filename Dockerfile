@@ -1,9 +1,9 @@
-# Build
-# sudo docker build . -t AV-Tools
-
-# Run
-# sudo docker run -d -p 4620:4620 -v $(pwd)/public:/app/public --restart unless-stopped --name AV-Tools AV-Tools
-# podman run -d -p 4620:4620 -v $(pwd)/public:/app/public:Z --restart unless-stopped --name av-Tools av-Tools
+# Docker
+# cd ~/av-server-ui
+# sudo docker build . -t av-server-ui
+# sudo docker stop av-server-ui
+# sudo docker rm av-server-ui
+# sudo docker run -d --name av-server-ui --hostname av-server-ui -p 4621:4621 -v home/trey/av-server-ui:/app av-server-ui
 
 # Lastest node image
 FROM node:lts-alpine

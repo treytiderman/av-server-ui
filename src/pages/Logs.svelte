@@ -2,13 +2,16 @@
     // Imports
     import { onMount, onDestroy } from "svelte";
     import { logger_v0 } from "../js/api.js";
-
+    import { state } from "../js/state.js";
+    
     // Components
     import Logger from "../components/Logger.svelte";
 
     // Variables
     const data = {
         logs: [],
+        filter: $state.logFilter,
+        logsFiltered: [],
     };
 
     // Functions
@@ -37,10 +40,17 @@
     async function getHistory() {
         parseHistory(await logger_v0.history.get())
     }
+    function filterLogs(logs, filter) {
+        if (filter === "") return logs
+        return logs.filter(log => log.message.includes(filter))
+    }
+
+    $: data.logsFiltered = filterLogs(data.logs, $state.logFilter)
     
     // Startup / Shutdown
     onMount(() => {
         logger_v0.log.sub((res) => parseLog(res))
+        getHistory()
     });
     onDestroy(() => {
         logger_v0.log.unsub();
@@ -50,9 +60,10 @@
 <section class="flex column">
     <div class="top">
         <button on:click={getHistory}>Pull History</button>
+        <input type="text" placeholder="filter..." bind:value={$state.logFilter}>
     </div>
     <div class="lines mono grow">
-        <Logger lines={data.logs}/>
+        <Logger lines={data.logsFiltered}/>
     </div>
 </section>
 
@@ -68,6 +79,7 @@
         width: 100%;
         height: 100%;
     }
+    input,
     button {
         background-color: var(--color-bg);
         border-radius: 0;
