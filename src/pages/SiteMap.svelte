@@ -1,7 +1,8 @@
 <script>
     // Imports
-    import { global } from "../js/global.js";
-    import { state } from "../js/state.js";
+    import { volatile as global } from "../js/global-volatile-store.js";
+    import { persistent as state } from "../js/global-persistent-store.js";
+    import Page from "../layout/Page.svelte";
 
     // Functions
     function addTab(event, tabAdded) {
@@ -28,20 +29,19 @@
     }
 </script>
 
-
-<article>
+<Page>
     <h2>Select a page</h2>
     <div class="flex column align-start">
-        {#each Object.entries($global.pages) as component}
+        {#each Object.keys($global.pages) as pageName}
             <button
-                on:click={() => addTabActive( {name: component[0]} )}
-                on:pointerdown={(event) =>  addTab( event, {name: component[0]} )}
+                on:click={() => addTabActive( {name: pageName} )}
+                on:pointerdown={(event) =>  addTab( event, {name: pageName} )}
             >
-                {component[0]}
+                {pageName}
             </button>
         {/each}
     </div>
-</article>
+</Page>
 
 <style>
     button {

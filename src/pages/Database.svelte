@@ -1,7 +1,8 @@
 <script>
     // Imports
     import { onMount, onDestroy } from "svelte";
-    import { database_v1 } from "../js/api.js";
+    import { database_v1 } from "../api/api.js";
+    import Page from "../layout/Page.svelte";
 
     // Variables
     const data = {
@@ -38,19 +39,19 @@
     });
 </script>
 
-<article>
+<Page>
     <h2>Database</h2>
     {#each data.databaseNames as name}
         <details>
             <summary>{name}</summary>
-            <pre>{JSON.stringify(
+            <pre class="mono">{JSON.stringify(
                     data.databases[name],
                     true,
                     4,
                 )}</pre>
         </details>
     {/each}
-</article>
+</Page>
 
 <style>
     details[open] pre {

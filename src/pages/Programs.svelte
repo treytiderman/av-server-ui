@@ -1,7 +1,7 @@
 <script>
     // Imports
     import { onMount, onDestroy } from "svelte";
-    import { api, program_v1 } from "../js/api.js";
+    import { program_v1 } from "../api/api.js";
 
     // Variables
     const data = {
@@ -235,7 +235,7 @@
             <button
                 class="cyan"
                 on:click={() => {
-                    api.programs.v0.create(
+                    program_v1.create(
                         data.form.name,
                         data.form.directory,
                         data.form.command,
@@ -251,7 +251,7 @@
             <button
                 class="green"
                 on:click={() => {
-                    api.programs.v0.start(
+                    program_v1.start(
                         data.form.name,
                         (res) => (data.response = res)
                     );
@@ -263,7 +263,7 @@
             <button
                 class="orange"
                 on:click={() => {
-                    api.programs.v0.send(
+                    program_v1.send(
                         data.form.name,
                         data.form.text,
                         (res) => (data.response = res)
@@ -276,7 +276,7 @@
             <button
                 class="red"
                 on:click={() => {
-                    api.programs.v0.kill(
+                    program_v1.kill(
                         data.form.name,
                         (res) => (data.response = res)
                     );
@@ -288,7 +288,7 @@
             <button
                 class="pink"
                 on:click={() => {
-                    api.programs.v0.restart(
+                    program_v1.restart(
                         data.form.name,
                         (res) => (data.response = res)
                     );
@@ -300,7 +300,7 @@
             <button
                 class="red"
                 on:click={() => {
-                    api.programs.v0.remove(
+                    program_v1.remove(
                         data.form.name,
                         (res) => (data.response = res)
                     );
@@ -312,7 +312,7 @@
             <button
                 class="yellow"
                 on:click={() => {
-                    api.programs.v0.setDirectory(
+                    program_v1.setDirectory(
                         data.form.name,
                         data.form.directory,
                         (res) => (data.response = res)
@@ -325,7 +325,7 @@
             <button
                 class="yellow"
                 on:click={() => {
-                    api.programs.v0.setCommand(
+                    program_v1.setCommand(
                         data.form.name,
                         data.form.command,
                         (res) => (data.response = res)
@@ -338,7 +338,7 @@
             <button
                 class="yellow"
                 on:click={() => {
-                    api.programs.v0.setStartOnBoot(
+                    program_v1.setStartOnBoot(
                         data.form.name,
                         data.form.startOnBoot,
                         (res) => (data.response = res)
@@ -351,7 +351,7 @@
             <button
                 class="yellow"
                 on:click={() => {
-                    api.programs.v0.setEnviromentVariables(
+                    program_v1.setEnviromentVariables(
                         data.form.name,
                         data.form.env,
                         (res) => (data.response = res)
@@ -364,7 +364,7 @@
             <button
                 class="green"
                 on:click={() => {
-                    api.programs.v0.startAll((res) => (data.response = res));
+                    program_v1.startAll((res) => (data.response = res));
                 }}
             >
                 Start All
@@ -373,7 +373,7 @@
             <button
                 class="orange"
                 on:click={() => {
-                    api.programs.v0.sendAll(
+                    program_v1.sendAll(
                         data.form.text,
                         (res) => (data.response = res)
                     );
@@ -385,7 +385,7 @@
             <button
                 class="red"
                 on:click={() => {
-                    api.programs.v0.killAll((res) => (data.response = res));
+                    program_v1.killAll((res) => (data.response = res));
                 }}
             >
                 Kill All
@@ -394,7 +394,7 @@
             <button
                 class="pink"
                 on:click={() => {
-                    api.programs.v0.restartAll((res) => (data.response = res));
+                    program_v1.restartAll((res) => (data.response = res));
                 }}
             >
                 Restart All
@@ -403,7 +403,7 @@
             <button
                 class="red"
                 on:click={() => {
-                    api.programs.v0.removeAll((res) => (data.response = res));
+                    program_v1.removeAll((res) => (data.response = res));
                 }}
             >
                 Remove All

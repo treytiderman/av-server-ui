@@ -1,9 +1,11 @@
 <script>
     // Imports
     import { onMount, onDestroy } from "svelte";
-    import { global } from "../js/global.js";
-    import { state } from "../js/state.js";
-    import { api, user_v1 } from "../js/api.js";
+    import { volatile } from "../js/global-volatile-store.js";
+    import { persistent } from "../js/global-persistent-store.js";
+
+    // Components
+    import Page from "../layout/Page.svelte";
     import {
         Server,
         UserCog,
@@ -17,30 +19,21 @@
         HeartPulse,
     } from "lucide-svelte";
 
-    // Variables
-    const data = {
-        me: {
-            username: "...",
-            groups: ["dragon"],
-        },
-        isNotAdmin: false,
-    };
-
     // Functions
     function addTab(event, tabAdded) {
         if (event.button === 1) {
             setTimeout(() => {
-                let windowActiveIndex = $state.windows.findIndex(
-                    (window) => window.id === $state.windowActiveId
+                let windowActiveIndex = $persistent.windows.findIndex(
+                    (window) => window.id === $persistent.windowActiveId
                 );
                 if (
-                    $state.windows[windowActiveIndex].state.tabs.some(
+                    $persistent.windows[windowActiveIndex].state.tabs.some(
                         (tab) => tab.name === tabAdded.name
                     )
                 ) {
                 } else {
-                    $state.windows[windowActiveIndex].state.tabs = [
-                        ...$state.windows[windowActiveIndex].state.tabs,
+                    $persistent.windows[windowActiveIndex].state.tabs = [
+                        ...$persistent.windows[windowActiveIndex].state.tabs,
                         tabAdded,
                     ];
                 }
@@ -49,56 +42,40 @@
     }
     function addTabActive(tabAdded) {
         setTimeout(() => {
-            let windowActiveIndex = $state.windows.findIndex(
-                (window) => window.id === $state.windowActiveId
+            let windowActiveIndex = $persistent.windows.findIndex(
+                (window) => window.id === $persistent.windowActiveId
             );
             if (
-                $state.windows[windowActiveIndex].state.tabs.some(
+                $persistent.windows[windowActiveIndex].state.tabs.some(
                     (tab) => tab.name === tabAdded.name
                 )
             ) {
-                $state.windows[windowActiveIndex].state.tabActive = tabAdded;
+                $persistent.windows[windowActiveIndex].state.tabActive = tabAdded;
             } else {
-                $state.windows[windowActiveIndex].state.tabs = [
-                    ...$state.windows[windowActiveIndex].state.tabs,
+                $persistent.windows[windowActiveIndex].state.tabs = [
+                    ...$persistent.windows[windowActiveIndex].state.tabs,
                     tabAdded,
                 ];
-                $state.windows[windowActiveIndex].state.tabActive = tabAdded;
+                $persistent.windows[windowActiveIndex].state.tabActive = tabAdded;
             }
         }, 1);
     }
-    function isNotAdmin(groups) {
-        return !groups.some((group) => group === "admin");
-    }
-
-    // Startup / Shutdown
-    onMount(() => {
-        user_v1.whoAmI.sub((res) => {
-            if (res.username) {
-                data.me = res;
-                data.isNotAdmin = isNotAdmin(data.me.groups);
-            }
-        });
-    });
-    onDestroy(() => {
-        user_v1.whoAmI.unsub();
-    });
 </script>
 
-<article>
+<Page>
     <h3 class="flex">
         <div>Welcome 
             <span
                 class="purple"
                 style="text-decoration: underline; text-underline-position: under;"
-            >{data.me.username}</span> !
+            >{$volatile.user.username}</span> !
         </div>
-        <div class="margin-left-auto">{data.isNotAdmin ? "USER" : "ADMIN"}</div>
+        <div class="margin-left-auto">{$volatile.user.isAdmin ? "ADMIN" : "USER"}</div>
     </h3>
-    <h2 class:display-none={data.isNotAdmin}>Server</h2>
+    <h2 class:display-none={!$volatile.user.isAdmin}>Server</h2>
     <div
         class="grid auto-sm gap align-start"
-        class:display-none={data.isNotAdmin}
+        class:display-none={!$volatile.user.isAdmin}
     >
         <button
             class="flex gap-sm align-center orange"
@@ -125,10 +102,10 @@
             Logs
         </button>
     </div>
-    <h2 class:display-none={data.isNotAdmin}>Programs</h2>
+    <h2 class:display-none={!$volatile.user.isAdmin}>Programs</h2>
     <div
         class="grid auto-sm gap align-start"
-        class:display-none={data.isNotAdmin}
+        class:display-none={!$volatile.user.isAdmin}
     >
         <button
             class="flex gap-sm align-center green"
@@ -235,7 +212,7 @@
         <button
             class="flex gap-sm align-center red"
             on:click={() => {
-                $state.windows = JSON.parse(JSON.stringify([$state.windowsDefault]))
+                $persistent.windows = JSON.parse(JSON.stringify([$persistent.windowsDefault]))
                 localStorage.removeItem("token");
                 location.reload();
             }}
@@ -244,9 +221,9 @@
         </button>
         <button
             class="flex gap-sm align-center"
-            class:display-none={data.isNotAdmin}
-            on:click={() => addTabActive({ name: "Pages" })}
-            on:pointerdown={(event) => addTab(event, { name: "Pages" })}
+            class:display-none={!$volatile.user.isAdmin}
+            on:click={() => addTabActive({ name: "Site Map" })}
+            on:pointerdown={(event) => addTab(event, { name: "Site Map" })}
         >
             Site Map
         </button>
@@ -258,7 +235,7 @@
             Site Settings
         </button>
     </div>
-</article>
+</Page>
 
 <style>
 </style>

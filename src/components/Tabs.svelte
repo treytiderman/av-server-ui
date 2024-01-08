@@ -1,6 +1,6 @@
 <script>
     // Imports
-    import { global } from "../js/global";
+    import { volatile as global } from "../js/global-volatile-store.js";
     import { createEventDispatcher } from "svelte";
     const dispatch = createEventDispatcher();
 

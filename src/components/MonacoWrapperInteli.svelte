@@ -5,7 +5,7 @@
     import htmlWorker from "monaco-editor/esm/vs/language/html/html.worker?worker";
     import tsWorker from "monaco-editor/esm/vs/language/typescript/ts.worker?worker";
     import { onMount } from "svelte";
-    import { state } from "../js/state.js";
+    import { persistent as state } from "../js/global-persistent-store.js";
     
     // Changed to dynamic import in onMount
     // import * as monaco from "monaco-editor";

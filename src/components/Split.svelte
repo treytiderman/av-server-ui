@@ -1,6 +1,6 @@
 <script>
     import { onMount } from "svelte";
-    import { throttle, debounce } from "../js/helper";
+    import { throttle, debounce } from "../modules/helper";
     import { createEventDispatcher } from "svelte";
     const dispatch = createEventDispatcher();
 

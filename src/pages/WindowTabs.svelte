@@ -1,8 +1,8 @@
 <script>
     // Imports
     import { onMount } from "svelte";
-    import { global } from "../js/global.js";
-    import { state } from "../js/state.js";
+    import { volatile as global } from "../js/global-volatile-store.js";
+    import { persistent as state } from "../js/global-persistent-store.js";
 
     // Components
     import { X, Columns, Rows, RotateCcw } from 'lucide-svelte';

@@ -1,5 +1,6 @@
 <script>
-    import { api, user_v1 } from "../js/api.js";
+    import { user_v1 } from "../api/api.js";
+    import Page from "../layout/Page.svelte";
 
     const data = {
         username: "admin",
@@ -8,16 +9,16 @@
     };
 
     async function login() {
-        const response = await user_v1.login(data.username, data.password)
+        const response = await user_v1.login(data.username, data.password);
         if (response.startsWith("error")) data.error = response;
         else {
             localStorage.setItem("token", response);
-            location.reload()
+            location.reload();
         }
     }
 </script>
 
-<article>
+<Page maxWidth="25rem">
     <h1>Login</h1>
     <label for="username"
         >Username <br />
@@ -39,10 +40,7 @@
     </label>
     <button class="fill-width purple" on:click={() => login()}>Login</button>
     <div>{data.error}</div>
-</article>
+</Page>
 
 <style>
-    article {
-        width: 25rem;
-    }
 </style>

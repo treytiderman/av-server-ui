@@ -1,81 +1,24 @@
 <script>
-    import { onMount } from "svelte";
-
-    onMount(() => {
-        let h1 = document.querySelectorAll("h1");
-        let h2 = document.querySelectorAll("h2");
-        for (let i = 0; i < h1.length; i++) {
-            h1[i].addEventListener("click", () => {
-                for (let i = 0; i < h2.length; i++) { setFolding(h2[i]) }
-            })
-        }
-        for (let i = 0; i < h2.length; i++) {
-            h2[i].addEventListener("click", () => toggleFolding(h2[i]))
-        }
-    })
-
-    function toggleFolding(heading) {
-        const array = findAllElementsBeforeNextTagName(heading, heading.tagName)
-        array.forEach(element => {
-            if (element.style.position === "fixed") {
-                heading.dataset.content = ""
-                element.style.position = "initial";
-                element.style.pointerEvents = "initial";
-                element.style.opacity = 1;
-            } else {
-                heading.dataset.content = "+"
-                element.style.position = "fixed";
-                element.style.pointerEvents = "none";
-                element.style.opacity = 0;
-            }
-        });
-    }
-    function setFolding(heading, fold = true) {
-        const array = findAllElementsBeforeNextTagName(heading, heading.tagName)
-        array.forEach(element => {
-            if (!fold) {
-                heading.dataset.content = ""
-                element.style.position = "initial";
-                element.style.pointerEvents = "initial";
-                element.style.opacity = 1;
-            } else {
-                heading.dataset.content = "+"
-                element.style.position = "fixed";
-                element.style.pointerEvents = "none";
-                element.style.opacity = 0;
-            }
-        });
-    }
-
-    function findAllElementsBeforeNextTagName(element, tagToFind, array = []) {
-        let nextElement = element.nextElementSibling
-        if (nextElement === null || nextElement.tagName === tagToFind) {
-            return array
-        } else {
-            array.push(nextElement)
-            array = findAllElementsBeforeNextTagName(nextElement, tagToFind, array)
-        }
-        return array
-    }
+    import Article from "../layout/Article.svelte";
 </script>
 
-<article class="section-numbers foldable">
+<Article>
     <!-- Headings and Paragraphs -->
-    <h1>Heading h1</h1>
-    <h2>Heading h2</h2>
+    <h1 class="border-bottom">Heading h1</h1>
+    <h2 class="border-bottom">Heading h2</h2>
     <h3>Heading h3</h3>
     <h4>Heading h4</h4>
     <h5>Heading h5</h5>
     <h6>Heading h6</h6>
 
-    <h2>Paragraph</h2>
+    <h2 class="border-bottom">Paragraph</h2>
     <p>
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore doloribus nobis error repellat vitae, sit quasi
         earum eveniet necessitatibus architecto alias officia nemo accusamus ratione, delectus sint aut porro nam.
     </p>
 
     <!-- Text decoration -->
-    <h2>Decoration</h2>
+    <h2 class="border-bottom">Decoration</h2>
     <div class="flex">
         <span> <i>Italic text</i> </span>
         <span> <b>Bold text</b> </span>
@@ -89,7 +32,7 @@
     </div>
 
     <!-- Lists -->
-    <h2>Lists</h2>
+    <h2 class="border-bottom">Lists</h2>
     <h3>Ordered List</h3>
     <ol>
         <li>Item 1</li>
@@ -127,7 +70,7 @@
     </dl>
     
     <!-- Block Text -->
-    <h2>Code and Quotes</h2>
+    <h2 class="border-bottom">Code and Quotes</h2>
     <h3>Code</h3>
     <p>
         <span>Here is a code element:</span>
@@ -155,18 +98,18 @@ array.sort(function (a, b) {
     </blockquote>
 
     <!-- Horizontal Rule -->
-    <h2>Horizontal Rule</h2>
+    <h2 class="border-bottom">Horizontal Rule</h2>
     <p>Text above</p>
     <hr>
     <p>Text below</p>
     
     <!-- Images -->
-    <h2>Images</h2>
+    <h2 class="border-bottom">Images</h2>
     <img src="./images/beach.png" alt="beach.png">
     <img src="./images/happy.png" alt="happy.png">
 
     <!-- Tables -->
-    <h2>Tables</h2>
+    <h2 class="border-bottom">Tables</h2>
     <h3>Default Table</h3>
     <div class="table-wrapper">
         <table>
@@ -234,7 +177,7 @@ array.sort(function (a, b) {
     </div>
 
     <!-- Buttons / Range -->
-    <h2>Buttons</h2>
+    <h2 class="border-bottom">Buttons</h2>
     <div class="flex">
         <button>Button Tag</button>
         <button disabled>Button disabled</button>
@@ -246,7 +189,7 @@ array.sort(function (a, b) {
     </div>
 
     <!-- Inputs -->
-    <h2>Inputs</h2>
+    <h2 class="border-bottom">Inputs</h2>
     <div>
         <label>
             Text Type <br />
@@ -308,7 +251,7 @@ array.sort(function (a, b) {
     </div>
 
     <!-- Checkbox / Radio -->
-    <h2>Checkbox / Radio</h2>
+    <h2 class="border-bottom">Checkbox / Radio</h2>
     <h3>Checkbox</h3>
     <div>
         <input type="checkbox" name="chxSet1" id="chx1" />
@@ -345,14 +288,14 @@ array.sort(function (a, b) {
     </div>
 
     <!-- Details -->
-    <h2>Details + Summary</h2>
+    <h2 class="border-bottom">Details + Summary</h2>
     <details>
         <summary>Details</summary>
         Lorem ipsum dolor sit, amet consectetur adipisicing elit. Similique in laboriosam incidunt at explicabo reprehenderit
         dolores. Eveniet, exercitationem sequi quis explicabo iure laudantium veritatis, aliquid odio, molestiae nulla assumenda
         pariatur.
     </details>
-</article>
+</Article>
 
 <!-- CSS -->
 <style>

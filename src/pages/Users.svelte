@@ -1,8 +1,9 @@
 <script>
     // Imports
     import { onMount, onDestroy } from "svelte";
-    import { state } from "../js/state.js";
-    import { api, user_v1 } from "../js/api.js";
+    import { persistent as state } from "../js/global-persistent-store.js";
+    import { user_v1 } from "../api/api.js";
+    import Page from "../layout/Page.svelte";
 
     // Variables
     const data = {
@@ -22,7 +23,7 @@
 
     // Startup / Shutdown
     onMount(async () => {
-        user_v1.users.sub((res) => (data.users = Object.values(res)));
+        user_v1.users.sub((res) => (data.users = res));
         user_v1.groups.sub((res) => (data.groups = res));
         user_v1.whoAmI.sub((res) => {
             if (res.username) data.me = res;
@@ -33,10 +34,12 @@
         await user_v1.groups.unsub();
         await user_v1.whoAmI.unsub();
     });
+
+    $: console.log(data);
 </script>
 
-<section class="pad grid gap-lg auto-md justify-start">
-    <div class="grid">
+<section class="grid gap auto-md justify-start">
+    <Page>
         <!-- Data -->
         <h2>Users</h2>
         {#each data.users as user}
@@ -61,9 +64,9 @@
                 <div class="tag">{group}</div>
             {/each}
         </div>
-    </div>
+    </Page>
 
-    <div class="grid">
+    <Page>
         <h2>Actions</h2>
         <label>
             Action <br />
@@ -282,7 +285,7 @@
         {/if}
 
         <div>{data.response}</div>
-    </div>
+    </Page>
 </section>
 
 <style>

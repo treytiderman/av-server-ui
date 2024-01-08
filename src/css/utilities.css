@@ -1,3 +1,8 @@
+/* Layout */
+.flow>*:not(:first-child) {
+    margin-top: 1.2em;
+}
+
 /* Flex */
 .flex {
     display: flex;
@@ -147,79 +152,6 @@ button.flex {
     justify-content: space-between;
 }
 
-/* Heading section numbers */
-.section-numbers h1 {
-    cursor: pointer;
-}
-
-.section-numbers h2 {
-    cursor: pointer;
-    counter-increment: h2-counter;
-    counter-reset: h3-counter;
-}
-
-.section-numbers h3 {
-    counter-increment: h3-counter;
-    counter-reset: h4-counter;
-}
-
-.section-numbers h4 {
-    counter-increment: h4-counter;
-    counter-reset: h5-counter;
-}
-
-.section-numbers h5 {
-    counter-increment: h5-counter;
-    counter-reset: h6-counter;
-}
-
-.section-numbers h6 {
-    counter-increment: h6-counter;
-}
-
-.section-numbers h1::before,
-.section-numbers h2::before,
-.section-numbers h3::before,
-.section-numbers h4::before,
-.section-numbers h5::before,
-.section-numbers h6::before {
-    color: var(--color-text-dim);
-    font-size: .8em;
-    margin-right: var(--gap-sm);
-}
-
-.section-numbers h2::before {
-    content: counter(h2-counter);
-}
-
-.section-numbers h3::before {
-    content: counter(h2-counter) "." counter(h3-counter);
-}
-
-.section-numbers h4::before {
-    content: counter(h2-counter) "." counter(h3-counter) "." counter(h4-counter);
-}
-
-.section-numbers h5::before {
-    content: counter(h2-counter) "." counter(h3-counter) "." counter(h4-counter) "." counter(h5-counter);
-}
-
-.section-numbers h6::before {
-    content: counter(h2-counter) "." counter(h3-counter) "." counter(h4-counter) "." counter(h5-counter) "." counter(h6-counter);
-}
-
-.foldable h1::after,
-.foldable h2::after,
-.foldable h3::after,
-.foldable h4::after,
-.foldable h5::after,
-.foldable h6::after {
-    content: attr(data-content);
-    color: var(--color-text-dim);
-    font-size: .8em;
-    margin-left: var(--gap-sm);
-}
-
 /* Tables */
 table.color-alt-rows th {
     background-color: var(--color-bg-grey);
@@ -362,6 +294,15 @@ blockquote.quote-bg p {
 
 .display-none {
     display: none;
+}
+
+/* Text */
+h1.border-bottom,
+h2.border-bottom,
+h3.border-bottom {
+    padding-bottom: var(--pad-y);
+    border-bottom: var(--border);
+    border-width: var(--border-width-2);
 }
 
 /* Misc */

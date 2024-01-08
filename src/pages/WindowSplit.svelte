@@ -1,11 +1,10 @@
 <script>
     // Imports
-    import { state } from "../js/state.js";
+    import { persistent as state } from "../js/global-persistent-store.js";
 
     // Components
-    import Split from "../components/Split2.svelte";
+    import Split from "../components/Split.svelte";
     import Tabs from "../pages/WindowTabs.svelte";
-
     import WindowSplit from "../pages/WindowSplit.svelte";
 
     // Variables

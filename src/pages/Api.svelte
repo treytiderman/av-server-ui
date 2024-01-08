@@ -1,70 +1,146 @@
 <script>
-    import { api } from "../js/api.js";
-    import { X, Plus } from "lucide-svelte";
+    // Imports
+    import { onMount, onDestroy } from "svelte";
+    import { persistentStore, volatileStore } from "../modules/store.js";
+    import { ws } from "../api/api.js";
 
-    const data = {
-        path: "/serial/v0/topic/available/",
+    // Components
+    import { X, Plus } from "lucide-svelte";
+    import Page from "../layout/Page.svelte";
+
+    // State
+    // const hdd = persistentStore("api", {})
+    const ram = volatileStore("api", {
+        path: "help",
         kvs: [
-            { key: "", value: "" },
+            // { key: "", value: "" }
         ],
         response: "",
-    };
+        apiGroup: "help",
+        help: {
+            help: [{ path: "help", body: {} }],
+        },
+    });
 
+    // Functions
     function add() {
-        data.kvs.push({ key: "", value: "" });
-        data.kvs = data.kvs;
+        $ram.kvs.push({ key: "", value: "" });
+        $ram.kvs = $ram.kvs;
     }
     function remove(i) {
-        data.kvs.splice(i, 1);
-        data.kvs = data.kvs;
+        $ram.kvs.splice(i, 1);
+        $ram.kvs = $ram.kvs;
     }
     function send() {
-        data.response = "";
+        $ram.response = "";
         let body = {};
-        data.kvs.forEach((kv) => (body[kv.key] = kv.value));
-        api.ws.send.path(data.path, body);
-        api.ws.receiveOnce.path(data.path, (response) => data.response = JSON.stringify(response, true, 4))
+        $ram.kvs.forEach((kv) => (body[kv.key] = kv.value));
+        ws.send.path($ram.path, body);
+        ws.receiveOnce.path($ram.path, (response) => {
+            $ram.response = JSON.stringify(response, true, 4);
+        });
     }
+    function helper(event) {
+        const path = event.target.value;
+        $ram.path = path;
+        console.log(path);
+
+        let body = {};
+        Object.keys($ram.help).forEach((apiGroup) => {
+            $ram.help[apiGroup].forEach((apiCall) => {
+                if (apiCall.path === path) {
+                    body = apiCall.body;
+                }
+            });
+        });
+
+        console.log(body);
+        $ram.kvs = [];
+        body &&
+            Object.entries(body).forEach((obj) => {
+                $ram.kvs.push({ key: obj[0], value: obj[1] ?? "" });
+                // $ram.kvs.push({ key: obj[0], value: JSON.stringify(obj[1]) })
+            });
+    }
+
+    // Startup / Shutdown
+    onMount(async () => {
+        $ram.help = await ws.api.send("help");
+    });
+    onDestroy(async () => {});
 </script>
 
-<article>
-    <h2>Api Call</h2>
-    <div class="grid gap-sm">
-        <h3>Path</h3>
-        <input
-            type="text"
-            class="fill-width"
-            placeholder="path"
-            bind:value={data.path}
-        />
-    </div>
-    <div class="grid gap-sm">
-        <h3>Body</h3>
-        {#each data.kvs as kv, i}
-            <div class="flex nowrap gap">
-                <input type="body" placeholder="Key" bind:value={kv.key} />
-                <input
-                    type="body"
-                    class="fill-width"
-                    placeholder="Value"
-                    bind:value={kv.value}
-                />
-                <button on:click={() => remove(i)}>
-                    <X size="1rem" strokeWidth="2.5" />
-                </button>
-            </div>
-        {/each}
-        <button class="margin-left-auto" on:click={() => add()}>
-            <Plus size="1rem" strokeWidth="2.5" />
-        </button>
-    </div>
-    <button class="fill-width cyan" on:click={() => send()}>Send</button>
-    <pre>{data.response}</pre>
-</article>
+<section class="grid gap auto-md justify-start">
+    <Page>
+        <h2>Helper</h2>
+        <label>
+            Group <br />
+            <select
+                value="help"
+                class="fill-width"
+                on:input={(ev) => ($ram.apiGroup = ev.target.value)}
+            >
+                {#each Object.keys($ram.help) as apiGroup}
+                    <option value={apiGroup}> {apiGroup} </option>
+                {/each}
+            </select>
+        </label>
+        <label>
+            Path <br />
+            <select value="help" class="fill-width" on:input={helper}>
+                {#each $ram.help[$ram.apiGroup] as apiCall}
+                    <option value={apiCall.path}> {apiCall.path} </option>
+                {/each}
+            </select>
+        </label>
+    </Page>
+    <Page>
+        <h2>Sender</h2>
+        <label>
+            Path <br />
+            <input
+                type="text"
+                class="fill-width"
+                placeholder="try 'help'"
+                bind:value={$ram.path}
+            />
+        </label>
+        <div class="grid gap-sm">
+            <lable for="val"> Body </lable>
+            {#each $ram.kvs as kv, i}
+                <div class="flex nowrap gap">
+                    <input type="body" placeholder="Key" bind:value={kv.key} />
+                    <input
+                        id="val"
+                        type="body"
+                        class="fill-width"
+                        placeholder="Value"
+                        bind:value={kv.value}
+                    />
+                    <button class="icon" on:click={() => remove(i)}>
+                        <X size="1rem" strokeWidth="2.5" />
+                    </button>
+                </div>
+            {/each}
+            <button class="margin-left-auto fill-width icon" on:click={() => add()}>
+                <Plus size="1rem" strokeWidth="2.5" />
+            </button>
+        </div>
+        <button class="fill-width cyan" on:click={() => send()}>Send</button>
+        <pre>{$ram.response}</pre>
+    </Page>
+</section>
 
 <style>
-    article {
-        min-width: 35rem;
+    section {
+        margin-inline: auto;
+        max-width: 60rem;
+    }
+    select {
+        width: 100%;
+    }
+    button.icon {
+        min-width: 2.8rem;
     }
     pre {
         overflow: auto;

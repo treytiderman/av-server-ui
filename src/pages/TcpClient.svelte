@@ -1,5 +1,5 @@
 <script>
-    import { api } from "../js/api";
+    // import { api } from "../js/api";
 
     // Components
     import { X, Settings } from "lucide-svelte";
@@ -87,79 +87,79 @@
         if (data.state.selectedAddressValue === "Add Connection") return;
 
         // Unsub from the previous active connections
-        api.tcpClient.v0.unsubData(data.activeConnection.address);
+        // api.tcpClient.v0.unsubData(data.activeConnection.address);
 
         // Sub to new active connection
         updateActiveConnection();
-        api.tcpClient.v0.subData(data.activeConnection.address, (res) => {
-            if (res) data.lines = [...data.lines, res];
-        });
+        // api.tcpClient.v0.subData(data.activeConnection.address, (res) => {
+        //     if (res) data.lines = [...data.lines, res];
+        // });
         if (data.state.pullHistory) {
-            api.tcpClient.v0.getHistory(
-                data.activeConnection.address,
-                (res) => {
-                    if (res) data.lines = res;
-                }
-            );
+            // api.tcpClient.v0.getHistory(
+            //     data.activeConnection.address,
+            //     (res) => {
+            //         if (res) data.lines = res;
+            //     }
+            // );
         }
     }
     async function openConnection(address, encoding) {
         console.log(`open(${address}, ${encoding})`);
         // data.state.selectedAddressValue = address
-        api.tcpClient.v0.open(address, encoding, (res) => {
-            if (res === "ok") return;
-            data.lines = [
-                {
-                    wasReceived: true,
-                    timestampISO: new Date().toISOString(),
-                    data: res,
-                },
-            ];
-        });
+        // api.tcpClient.v0.open(address, encoding, (res) => {
+        //     if (res === "ok") return;
+        //     data.lines = [
+        //         {
+        //             wasReceived: true,
+        //             timestampISO: new Date().toISOString(),
+        //             data: res,
+        //         },
+        //     ];
+        // });
     }
     async function closeConnection(address) {
         console.log(`close(${address})`);
-        api.tcpClient.v0.close(address, (res) => {
-            if (res === "ok") return;
-            data.lines = [
-                {
-                    wasReceived: true,
-                    timestampISO: new Date().toISOString(),
-                    data: res,
-                },
-            ];
-        });
+        // api.tcpClient.v0.close(address, (res) => {
+        //     if (res === "ok") return;
+        //     data.lines = [
+        //         {
+        //             wasReceived: true,
+        //             timestampISO: new Date().toISOString(),
+        //             data: res,
+        //         },
+        //     ];
+        // });
     }
     async function removeConnection(address) {
         console.log(`remove(${address})`);
-        api.tcpClient.v0.remove(address);
+        // api.tcpClient.v0.remove(address);
     }
     async function sendClick(text) {
         console.log(
             `send(${data.activeConnection.address}, ${text}. ${data.activeConnection.encoding})`
         );
-        api.tcpClient.v0.send(
-            data.activeConnection.address,
-            text,
-            data.activeConnection.encoding,
-            (res) => {
-                if (res === "ok") return;
-                data.lines = [
-                    {
-                        wasReceived: true,
-                        timestampISO: new Date().toISOString(),
-                        data: res,
-                    },
-                ];
-            }
-        );
+        // api.tcpClient.v0.send(
+        //     data.activeConnection.address,
+        //     text,
+        //     data.activeConnection.encoding,
+        //     (res) => {
+        //         if (res === "ok") return;
+        //         data.lines = [
+        //             {
+        //                 wasReceived: true,
+        //                 timestampISO: new Date().toISOString(),
+        //                 data: res,
+        //             },
+        //         ];
+        //     }
+        // );
     }
 
     // Api
-    api.tcpClient.v0.subClients((res) => {
-        data.connections = res;
-        if (res) updateActiveConnection();
-    });
+    // api.tcpClient.v0.subClients((res) => {
+    //     data.connections = res;
+    //     if (res) updateActiveConnection();
+    // });
 
     // Debug
     // $: console.log("data", data)

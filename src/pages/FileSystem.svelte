@@ -1,7 +1,7 @@
 <script>
     // Imports
     import { onMount, onDestroy } from "svelte";
-    import { api } from "../js/api.js";
+    // import { api } from "../api/api.js";
 
     // Variables
     const data = {

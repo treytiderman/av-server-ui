@@ -1,18 +1,23 @@
 <script>
     // Imports
     import { onMount, onDestroy } from "svelte";
-    import { logger_v0 } from "../js/api.js";
-    import { state } from "../js/state.js";
-    
+    import { logger_v0 } from "../api/api.js";
+    import { persistentStore, volatileStore } from "../modules/store.js"
+
     // Components
     import Logger from "../components/Logger.svelte";
 
-    // Variables
-    const data = {
+    // Exports
+    export let id = Date.now()
+
+    // State
+    const hdd = persistentStore("logs", {
+        filter: "",
+    })
+    const ram = volatileStore("logs", {
         logs: [],
-        filter: $state.logFilter,
         logsFiltered: [],
-    };
+    })
 
     // Functions
     function parseLog(line) {
@@ -26,15 +31,15 @@
             message: split[2].trim(),
             data: json,
         }
-        data.logs = [...data.logs, lineObj]
+        $ram.logs = [...$ram.logs, lineObj]
     }
     function parseHistory(res) {
-        data.logs = []
+        $ram.logs = []
         for (let i = 0; i < res.length; i++) {
             const line = res[i]
             setTimeout(() => {
                 parseLog(line)
-            }, i * 3);
+            }, i * 4);
         }
     }
     async function getHistory() {
@@ -44,9 +49,13 @@
         if (filter === "") return logs
         return logs.filter(log => log.message.includes(filter))
     }
+    async function sendMark() {
+        await logger_v0.log.warn("mark", "")
+    }
 
-    $: data.logsFiltered = filterLogs(data.logs, $state.logFilter)
-    
+    // Dynamic
+    $: $ram.logsFiltered = filterLogs($ram.logs, $hdd.filter)
+
     // Startup / Shutdown
     onMount(() => {
         logger_v0.log.sub((res) => parseLog(res))
@@ -60,10 +69,11 @@
 <section class="flex column">
     <div class="top">
         <button on:click={getHistory}>Pull History</button>
-        <input type="text" placeholder="filter..." bind:value={$state.logFilter}>
+        <button on:click={sendMark}>Mark</button>
+        <input type="text" placeholder="filter..." bind:value={$hdd.filter}>
     </div>
     <div class="lines mono grow">
-        <Logger lines={data.logsFiltered}/>
+        <Logger lines={$ram.logsFiltered}/>
     </div>
 </section>
 
