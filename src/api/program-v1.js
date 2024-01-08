@@ -1,5 +1,5 @@
 // Imports
-import { ws as api } from "../ws.js";
+import { ws as api } from "../js/ws.js";
 
 // Exports
 export {

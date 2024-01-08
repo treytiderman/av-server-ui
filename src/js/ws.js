@@ -18,6 +18,10 @@ export const ws = {
         text: send,
         json: sendJSON,
         path: sendPath,
+    },
+    api: {
+        send: sendApi,
+        sub: subApi,
     }
 }
 
@@ -146,4 +150,38 @@ function receivePathOnce(path, callback) {
     if (websocket.readyState === 1) {
         websocket.addEventListener('message', eventListenerFunction)
     }
+}
+function sendApi(path, body = {}) {
+    return new Promise((resolve, reject) => {
+
+        // Send
+        sendPath(path, body)
+
+        // Receive Once
+        receivePathOnce(path, (data) => resolve(data))
+
+    })
+}
+function subApi(path, callback) {
+
+    // Subscribe
+    sendPath(path)
+    if (websocket.readyState === 1) {
+        websocket.addEventListener('message', onMessage)
+    }
+    function onMessage(event) {
+        if (isJSON(event.data)) {
+            const obj = JSON.parse(event.data)
+            if (obj.path === path) callback(obj.body)
+            if (obj.path === path.replace("/sub/", "/pub/")) callback(obj.body)
+        }
+    }
+
+    // Unsubscribe
+    function unsub() {
+        sendPath(path.replace("/sub/", "/unsub/"))
+        websocket.removeEventListener('message', onMessage)
+    }
+
+    return unsub = () => websocket.removeEventListener('message', onMessage)
 }
