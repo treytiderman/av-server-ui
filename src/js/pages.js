@@ -5,7 +5,8 @@ import Database from "../pages/Database.svelte"
 import FileSystem from "../pages/FileSystem.svelte"
 import Logs from "../pages/Logs.svelte"
 import Monaco from "../pages/Monaco.svelte"
-import Pages from "../pages/Pages.svelte"
+import NewTab from "../pages/NewTab.svelte"
+import SiteMap from "../pages/SiteMap.svelte"
 import Programs from "../pages/Programs.svelte"
 import SerialPort from "../pages/SerialPort.svelte"
 import Settings from "../pages/Settings.svelte"
@@ -33,8 +34,8 @@ export const pages = {
     "Serial Port": SerialPort,
     
     // Test Page
-    "Pages": Pages,
+    "Site Map": SiteMap,
     "Article": Article,
     "Api": Api,
-    // "NewTab": NewTab,
+    "NewTab": NewTab,
 }
