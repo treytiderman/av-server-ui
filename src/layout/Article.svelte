@@ -72,6 +72,10 @@
         padding: var(--gap);
         max-width: var(--max-width);
         margin-inline: auto;
+        color: var(--color-text-section);
+        background-color: var(--color-bg-section);
+        border: var(--border);
+        border-radius: var(--border-radius);
     }
     article :global(> *:not(:first-child)) {
         margin-top: 1.2em;
@@ -80,7 +84,7 @@
     article :global(h2) {
         padding-bottom: var(--pad-y);
         border-bottom: var(--border);
-        border-width: var(--border-width-2);
+        border-width: var(--border-width);
     }
 
     /* Sections Numbers */

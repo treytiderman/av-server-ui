@@ -2,24 +2,25 @@
     export let maxWidth = "var(--max-width, 75ch)"
 </script>
 
-<section style={`max-width: ${maxWidth};`}>
+<article style={`max-width: ${maxWidth};`}>
     <slot />
-</section>
+</article>
 
 <style>
-    section {
+    article {
+        width: 100%;
+        /* height: 100%; */
         padding: var(--gap);
         max-width: var(--max-width);
         margin-inline: auto;
-        width: 100%;
     }
-    section :global(> *:not(:first-child)) {
+    article :global(> *:not(:first-child)) {
         margin-top: 1.2em;
     }
-    section :global(h1),
-    section :global(h2) {
+    article :global(h1),
+    article :global(h2) {
         padding-bottom: var(--pad-y);
         border-bottom: var(--border);
-        border-width: var(--border-width-2);
+        border-width: var(--border-width);
     }
 </style>
