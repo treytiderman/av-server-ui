@@ -1,7 +1,9 @@
 import { writable } from 'svelte/store'
 
+// DELETE
 export const state = writable({})
 
+// DELETE
 export function volatileStore(key, data) {
     const obj = writable(data)
     obj.subscribe(o => {
@@ -17,7 +19,8 @@ export function volatileStore(key, data) {
 export function persistentStore(key, data) {
 
     // Create Store
-    const store = writable(data)
+    const clone = JSON.parse(JSON.stringify(data))
+    const store = writable(clone)
     const { subscribe, set, update } = store
 
     // Get saved store and overwrite if valid
@@ -43,11 +46,14 @@ export function persistentStore(key, data) {
             set(updatedValue)
         },
         reset: () => {
+            const clone = JSON.parse(JSON.stringify(data))
+            set(clone)
             const resetValue = JSON.stringify(data)
             localStorage.setItem(key, resetValue)
-            set(resetValue)
         },
     }
+
+    // DELETE
     obj.subscribe(o => {
         state.update(s => {
             s[key + "-persistent"] = o
@@ -55,5 +61,7 @@ export function persistentStore(key, data) {
         })
         return o
     })
+
+    
     return obj
 }
