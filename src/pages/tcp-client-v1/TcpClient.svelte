@@ -15,6 +15,7 @@
     let subpage = "Functions";
 
     // State - Header
+    let select = "Functions";
     let isOpen = false;
     let encoding = "ascii";
     let addresses = [];
@@ -98,14 +99,18 @@
         encoding = selectedClient.encoding;
 
         // Subscribe to another address history
-        // lines = await tcpClient_v1.history.get(selectedClient.address);
-        // tcpClient_v1.data.sub(selectedClient.address, (res) => {
-        //     console.log("data.sub", res);
-        //     lines.push(res);
-        //     lines = lines
-        // });
-        tcpClient_v1.history.sub(selectedClient.address, (res) => {
-            lines = res
+        lines = await tcpClient_v1.history.get(selectedClient.address);
+        let lastData = ""
+        tcpClient_v1.data.sub(selectedClient.address, (res) => {
+            console.log("data.sub", res);
+
+            // Backend issue. Delete once fixed
+            if (lastData === JSON.stringify(res) || !res) return
+            lastData = JSON.stringify(res)
+            console.log("new data.sub", res);
+
+            lines.push(res);
+            lines = lines
         });
     }
     async function toggleEncoding(event) {
@@ -137,6 +142,13 @@
         formAddress = detail.address;
         formEncoding = detail.encoding;
         formReconnect = detail.reconnect;
+    }
+    async function clientOpen(event) {
+        const detail = event.detail;
+        console.log("tcp-client-clientOpen", detail);
+        subpage = "Log";
+        select = detail;
+        changeConnection({ detail: select });
     }
     async function open(event) {
         const detail = event.detail;
@@ -216,6 +228,8 @@
     async function lineClick(event) {
         const detail = event.detail;
         console.log("tcp-client-lineClick", detail);
+        const lineIndex = lines.findIndex(line => line.timestampISO === detail.timestampISO)
+        lines[lineIndex].mark = lines[lineIndex]?.mark ? false : true
     }
     async function sendsSend(event) {
         const detail = event.detail;
@@ -231,6 +245,7 @@
 <div class="page max-width" class:max-width={subpage !== "Log"}>
     {#if onlineWithApi}
         <TcpClientMain
+            bind:select
             {subpage}
             {isOpen}
             {encoding}
@@ -251,6 +266,7 @@
             on:header-changeConnection={changeConnection}
             on:header-toggleEncoding={toggleEncoding}
             on:clients-copy={clientCopy}
+            on:clients-open={clientOpen}
             on:functions-open={open}
             on:functions-reconnect={reconnect}
             on:functions-send={send}
@@ -269,6 +285,7 @@
     {:else}
         <div>Offline</div>
         <TcpClientMain
+            {select}
             {subpage}
             {isOpen}
             {encoding}
@@ -283,6 +300,7 @@
             {freezeCol1Col2}
             on:header-changeConnection={changeConnection}
             on:clients-copy={clientCopy}
+            on:clients-open={clientOpen}
             on:settings-escapeCRLF={escapeCRLFClick}
             on:settings-freezeCol1Col2={freezeCol1Col2Click}
             on:settings-prettyJSON={prettyJSONClick}

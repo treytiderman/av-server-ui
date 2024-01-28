@@ -18,7 +18,7 @@
         HeartPulse,
         LogOut,
         Map,
-        CircleOff,
+        StickyNote,
     } from "lucide-svelte";
 
     let headerWidth;
@@ -101,13 +101,13 @@
             <LogOut size="1.2rem" strokeWidth="2" />
         </button>
         <button
-            title="Blank"
+            title="Notes"
             class="border-none"
             class:hide={headerWidth < 800}
-            on:click={() => addTabActive({ name: "Blank" })}
-            on:pointerdown={(event) => addTab(event, { name: "Blank" })}
+            on:click={() => addTabActive({ name: "Notes" })}
+            on:pointerdown={(event) => addTab(event, { name: "Notes" })}
         >
-            <CircleOff size="1.2rem" strokeWidth="2" />
+            <StickyNote size="1.2rem" strokeWidth="2" />
         </button>
         <button
             title="Site Map"
@@ -136,6 +136,7 @@
             class:display-none={!$volatile.user.isAdmin}
         >
             <button
+                title="Open the User Management Page"
                 class="flex gap-sm align-center orange"
                 on:click={() => addTabActive({ name: "User" })}
                 on:pointerdown={(event) => addTab(event, { name: "User" })}
@@ -144,6 +145,7 @@
                 User Management
             </button>
             <button
+                title="Open this System's Page"
                 class="flex gap-sm align-center orange"
                 on:click={() => addTabActive({ name: "System" })}
                 on:pointerdown={(event) => addTab(event, { name: "System" })}
@@ -152,6 +154,7 @@
                 System
             </button>
             <button
+                title="Open the Logs Page"
                 class="flex gap-sm align-center orange"
                 on:click={() => addTabActive({ name: "Logs" })}
                 on:pointerdown={(event) => addTab(event, { name: "Logs" })}
@@ -167,6 +170,7 @@
         <h2 class="border-bottom">Programs</h2>
         <div class="grid auto-sm gap align-start">
             <button
+                title="Open the Programs / Scripts Page"
                 class="flex gap-sm align-center green"
                 on:click={() => addTabActive({ name: "Programs" })}
                 on:pointerdown={(event) => addTab(event, { name: "Programs" })}
@@ -175,6 +179,7 @@
                 Programs
             </button>
             <button
+                title="Open the Code Editor Page"
                 class="flex gap-sm align-center dim"
                 on:click={() => addTabActive({ name: "Code" })}
                 on:pointerdown={(event) => addTab(event, { name: "Code" })}
@@ -183,6 +188,7 @@
                 Code
             </button>
             <button
+                title="Open the Database Viewer Page"
                 class="flex gap-sm align-center green"
                 on:click={() => addTabActive({ name: "Database" })}
                 on:pointerdown={(event) => addTab(event, { name: "Database" })}
@@ -196,6 +202,7 @@
         <h2 class="border-bottom">Tools</h2>
         <div class="grid auto-sm gap align-start">
             <button
+                title="Open the HTTP Client Page"
                 class="flex gap-sm align-center dim"
                 on:click={() => addTabActive({ name: "HTTP Client" })}
                 on:pointerdown={(event) =>
@@ -205,6 +212,7 @@
                 HTTP Client
             </button>
             <button
+                title="Open the HTTP Server Page"
                 class="flex gap-sm align-center dim"
                 on:click={() => addTabActive({ name: "HTTP Server" })}
                 on:pointerdown={(event) =>
@@ -214,6 +222,7 @@
                 HTTP Server
             </button>
             <button
+                title="Open the TCP Client Page"
                 class="flex gap-sm align-center purple"
                 on:click={() => addTabActive({ name: "TCP Client" })}
                 on:pointerdown={(event) =>
@@ -223,6 +232,7 @@
                 TCP Client
             </button>
             <button
+                title="Open the TCP Server Page"
                 class="flex gap-sm align-center dim"
                 on:click={() => addTabActive({ name: "TCP Server" })}
                 on:pointerdown={(event) =>
@@ -232,6 +242,7 @@
                 TCP Server
             </button>
             <button
+                title="Open the UDP Client Page"
                 class="flex gap-sm align-center dim"
                 on:click={() => addTabActive({ name: "UDP Client" })}
                 on:pointerdown={(event) =>
@@ -241,6 +252,7 @@
                 UDP Client
             </button>
             <button
+                title="Open the UDP Server Page"
                 class="flex gap-sm align-center dim"
                 on:click={() => addTabActive({ name: "UDP Server" })}
                 on:pointerdown={(event) =>
@@ -250,6 +262,7 @@
                 UDP Server
             </button>
             <button
+                title="Open the WebSocket Client Page"
                 class="flex gap-sm align-center dim"
                 on:click={() => addTabActive({ name: "WebSocket Client" })}
                 on:pointerdown={(event) =>
@@ -259,6 +272,7 @@
                 WebSocket Client
             </button>
             <button
+                title="Open the WebSocket Server Page"
                 class="flex gap-sm align-center dim"
                 on:click={() => addTabActive({ name: "WebSocket Server" })}
                 on:pointerdown={(event) =>
@@ -268,6 +282,7 @@
                 WebSocket Server
             </button>
             <button
+                title="Open the Serial Port Page"
                 class="flex gap-sm align-center purple"
                 on:click={() => addTabActive({ name: "Serial Port" })}
                 on:pointerdown={(event) =>
@@ -277,6 +292,9 @@
                 Serial Port
             </button>
         </div>
+    </div>
+    <div class="dim">
+        Hint: Hover over buttons to see what they do.
     </div>
 </div>
 

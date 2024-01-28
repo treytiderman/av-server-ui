@@ -4,7 +4,7 @@
     const dispatch = createEventDispatcher();
 
     // Components
-    import { Circle, X, History, Copy } from "lucide-svelte";
+    import { Circle, X, History, Copy, ExternalLink } from "lucide-svelte";
 
     // State
     export let clients = [
@@ -71,10 +71,17 @@ is {client.isOpen ? 'open' : 'closed'}
                 <History size="1.2rem" strokeWidth="2" />
             </div>
             <button
+                class="margin-left-auto"
                 title="Copy info into the Form"
                 on:click={() => dispatch("clients-copy", client)}
             >
                 <Copy size="1.2rem" strokeWidth="2" />
+            </button>
+            <button
+                title="Open '{client.address}' in the Terminal"
+                on:click={() => dispatch("clients-open", client.address)}
+            >
+                <ExternalLink size="1.2rem" strokeWidth="2" />
             </button>
         </div>
     {/each}
@@ -83,8 +90,7 @@ is {client.isOpen ? 'open' : 'closed'}
 <style>
     button {
         border: none;
-        margin-left: auto;
-        color: var(--color-bg-1);
+        color: var(--color-bg-3);
         background-color: var(--color-bg-1);
         padding: var(--gap-xs);
     }

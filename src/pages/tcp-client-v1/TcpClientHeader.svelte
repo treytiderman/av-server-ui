@@ -3,6 +3,7 @@
     const dispatch = createEventDispatcher();
 
     // State
+    export let select = "Functions";
     export let isOpen = false;
     export let encoding = "ascii";
     export let showButtons = true;
@@ -42,7 +43,8 @@
     <select
         class="address"
         title="Select an address"
-        on:change={(event) => {
+        bind:value={select}
+        on:input={(event) => {
             dispatch("header-changeConnection", event.target.value);
         }}
     >
@@ -80,7 +82,7 @@
 <style>
     .wrapper {
         display: flex;
-        gap: var(--gap-sm);
+        gap: var(--gap);
     }
 
     /* Prevent wrapping until the response div is hidden */

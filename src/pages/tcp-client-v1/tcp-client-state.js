@@ -4,7 +4,7 @@ export { state, def }
 
 const def = {
     settings: {
-        showBorders: false,
+        showBorders: true,
         escapeCRLF: true,
         prettyJSON: false,
         freezeCol1Col2: false,

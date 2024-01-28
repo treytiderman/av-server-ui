@@ -11,6 +11,7 @@
     export let subpage = "Functions";
 
     // State - Header
+    export let select = "Functions";
     export let isOpen = false;
     export let encoding = "ascii";
     export let addresses = ["192.168.1.9:23", "192.168.1.42:8080"];
@@ -67,6 +68,7 @@
 <div class="wrapper">
     <div class="header">
         <TcpClientHeader
+            bind:select
             {addresses}
             {isOpen}
             {encoding}
@@ -81,7 +83,7 @@
 
     <div class="functions" class:hide={subpage !== "Functions"}>
         <div class="section flow grow">
-            <TcpClientClients {clients} on:clients-copy />
+            <TcpClientClients {clients} on:clients-copy on:clients-open />
         </div>
 
         <!-- Functions -->
