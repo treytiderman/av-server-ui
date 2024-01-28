@@ -51,6 +51,9 @@
         setTheme: (theme) => {
             monaco.editor.setTheme(theme || "dark")
         },
+        hideLineNumbers: (theme) => {
+            data.editor.updateOptions({ lineNumbers: "off", folding: false })
+        },
         setFontSize: (number) => {
             if (number >= 8 && number <= 36) {
                 data.editor.updateOptions({ fontSize: number })
@@ -753,10 +756,6 @@
             "editor.selectionHighlightBorder": "#30343b",
         },
     };
-    // f9fafa
-    // f4f4f6
-    // dddfe3
-    // 2e3138
     const themeWhite = {
         base: "vs",
         inherit: true,
@@ -787,24 +786,28 @@
         monaco.editor.defineTheme("white", themeWhite);
         let screenWidth = document.documentElement.offsetWidth;
         let fontSize = document.documentElement.style.getPropertyValue("--font-size")
-        fontSize = fontSize.replace("px", "") - 0
+        fontSize = fontSize.replace("px", "") - 2
         data.editor = monaco.editor.create(data.element, {
             value: initValue,
             language: initLanguage,
             theme: $state.theme,
-            fontSize: fontSize + "px",
+            fontSize: fontSize,
+            // lineNumbers: "off",
+            // folding: false,
             automaticLayout: true,
-            minimap: {
-                enabled: false,
-            },
+            minimap: { enabled: false },
         });
         if (screenWidth < 600) {data.editor.getModel().updateOptions({ tabSize: 2 })}
         else {data.editor.getModel().updateOptions({ tabSize: 4 });}
         
         // Update theme
         state.subscribe(stateUpdate => {
+            if (screenWidth < 600) data.hideLineNumbers()
             data.setTheme(stateUpdate.theme)
-            data.setFontSize(stateUpdate.fontSize)
+
+            let size = JSON.stringify(stateUpdate.fontSize)
+            size = size.replace("px", "") - 2
+            data.setFontSize(size)
         })
 
         data.loading = false;
