@@ -6,7 +6,7 @@
     import tsWorker from "monaco-editor/esm/vs/language/typescript/ts.worker?worker";
     import { onMount } from "svelte";
     import { persistent as state } from "../js/global-persistent-store.js";
-    
+
     // Changed to dynamic import in onMount
     // import * as monaco from "monaco-editor";
     let monaco;
@@ -49,20 +49,20 @@
             return data.editor.getValue();
         },
         setTheme: (theme) => {
-            monaco.editor.setTheme(theme || "dark")
+            monaco.editor.setTheme(theme || "dark");
         },
         hideLineNumbers: (theme) => {
-            data.editor.updateOptions({ lineNumbers: "off", folding: false })
+            data.editor.updateOptions({ lineNumbers: "off", folding: false });
         },
         setFontSize: (number) => {
             if (number >= 8 && number <= 36) {
-                data.editor.updateOptions({ fontSize: number })
+                data.editor.updateOptions({ fontSize: number });
             }
-        }
-    }
+        },
+    };
     const themeBlack = {
         base: "vs-dark",
-        inherit: true,
+        // inherit: true,
         rules: [
             {
                 background: "24292e",
@@ -410,8 +410,195 @@
     };
     const themeDark = {
         base: "vs-dark",
-        inherit: true,
+        // inherit: true,
         rules: [
+            { foreground: "#6A737D", token: "comment" },
+            { foreground: "#6A737D", token: "punctuation.definition.comment" },
+            { foreground: "#6A737D", token: "string.comment" },
+            { foreground: "#79B8FF", token: "constant" },
+            { foreground: "#79B8FF", token: "entity.name.constant" },
+            { foreground: "#79B8FF", token: "variable.other.constant" },
+            { foreground: "#79B8FF", token: "variable.other.enummember" },
+            { foreground: "#79B8FF", token: "variable.language" },
+            { foreground: "#B392F0", token: "entity" },
+            { foreground: "#B392F0", token: "entity.name" },
+            { foreground: "#E1E4E8", token: "variable.parameter.function" },
+            { foreground: "#85E89D", token: "entity.name.tag" },
+            { foreground: "#F97583", token: "keyword" },
+            { foreground: "#F97583", token: "storage" },
+            { foreground: "#F97583", token: "storage.type" },
+            { foreground: "#E1E4E8", token: "storage.modifier.package" },
+            { foreground: "#E1E4E8", token: "storage.modifier.import" },
+            { foreground: "#E1E4E8", token: "storage.type.java" },
+            { foreground: "#9ECBFF", token: "string" },
+            { foreground: "#9ECBFF", token: "punctuation.definition.string" },
+            {
+                foreground: "#9ECBFF",
+                token: "string punctuation.section.embedded source",
+            },
+            { foreground: "#79B8FF", token: "support" },
+            { foreground: "#79B8FF", token: "meta.property-name" },
+            { foreground: "#FFAB70", token: "variable" },
+            { foreground: "#E1E4E8", token: "variable.other" },
+            {
+                foreground: "#FDAEB7",
+                fontStyle: "italic",
+                token: "invalid.broken",
+            },
+            {
+                foreground: "#FDAEB7",
+                fontStyle: "italic",
+                token: "invalid.deprecated",
+            },
+            {
+                foreground: "#FDAEB7",
+                fontStyle: "italic",
+                token: "invalid.illegal",
+            },
+            {
+                foreground: "#FDAEB7",
+                fontStyle: "italic",
+                token: "invalid.unimplemented",
+            },
+            {
+                foreground: "#24292E",
+                background: "#F97583",
+                fontStyle: "italic underline",
+                token: "carriage-return",
+            },
+            { foreground: "#FDAEB7", token: "message.error" },
+            { foreground: "#79B8FF", token: "string variable" },
+            { foreground: "#DBEDFF", token: "source.regexp" },
+            { foreground: "#DBEDFF", token: "string.regexp" },
+            { foreground: "#DBEDFF", token: "string.regexp.character-class" },
+            {
+                foreground: "#DBEDFF",
+                token: "string.regexp constant.character.escape",
+            },
+            {
+                foreground: "#DBEDFF",
+                token: "string.regexp source.ruby.embedded",
+            },
+            {
+                foreground: "#DBEDFF",
+                token: "string.regexp string.regexp.arbitrary-repitition",
+            },
+            {
+                foreground: "#85E89D",
+                fontStyle: "bold",
+                token: "string.regexp constant.character.escape",
+            },
+            { foreground: "#79B8FF", token: "support.constant" },
+            { foreground: "#79B8FF", token: "support.variable" },
+            { foreground: "#79B8FF", token: "meta.module-reference" },
+            {
+                foreground: "#FFAB70",
+                token: "punctuation.definition.list.begin.markdown",
+            },
+            {
+                foreground: "#79B8FF",
+                fontStyle: "bold",
+                token: "markup.heading",
+            },
+            {
+                foreground: "#79B8FF",
+                fontStyle: "bold",
+                token: "markup.heading entity.name",
+            },
+            { foreground: "#85E89D", token: "markup.quote" },
+            {
+                foreground: "#E1E4E8",
+                fontStyle: "italic",
+                token: "markup.italic",
+            },
+            { foreground: "#E1E4E8", fontStyle: "bold", token: "markup.bold" },
+            { fontStyle: "underline", token: "markup.underline" },
+            { fontStyle: "strikethrough", token: "markup.strikethrough" },
+            { foreground: "#79B8FF", token: "markup.inline.raw" },
+            {
+                foreground: "#FDAEB7",
+                background: "#86181D",
+                token: "markup.deleted",
+            },
+            {
+                foreground: "#FDAEB7",
+                background: "#86181D",
+                token: "meta.diff.header.from-file",
+            },
+            {
+                foreground: "#FDAEB7",
+                background: "#86181D",
+                token: "punctuation.definition.deleted",
+            },
+            {
+                foreground: "#85E89D",
+                background: "#144620",
+                token: "markup.inserted",
+            },
+            {
+                foreground: "#85E89D",
+                background: "#144620",
+                token: "meta.diff.header.to-file",
+            },
+            {
+                foreground: "#85E89D",
+                background: "#144620",
+                token: "punctuation.definition.inserted",
+            },
+            {
+                foreground: "#FFAB70",
+                background: "#C24E00",
+                token: "markup.changed",
+            },
+            {
+                foreground: "#FFAB70",
+                background: "#C24E00",
+                token: "punctuation.definition.changed",
+            },
+            {
+                foreground: "#2F363D",
+                background: "#79B8FF",
+                token: "markup.ignored",
+            },
+            {
+                foreground: "#2F363D",
+                background: "#79B8FF",
+                token: "markup.untracked",
+            },
+            {
+                foreground: "#B392F0",
+                fontStyle: "bold",
+                token: "meta.diff.range",
+            },
+            { foreground: "#79B8FF", token: "meta.diff.header" },
+            {
+                foreground: "#79B8FF",
+                fontStyle: "bold",
+                token: "meta.separator",
+            },
+            { foreground: "#79B8FF", token: "meta.output" },
+            { foreground: "#D1D5DA", token: "brackethighlighter.tag" },
+            { foreground: "#D1D5DA", token: "brackethighlighter.curly" },
+            { foreground: "#D1D5DA", token: "brackethighlighter.round" },
+            { foreground: "#D1D5DA", token: "brackethighlighter.square" },
+            { foreground: "#D1D5DA", token: "brackethighlighter.angle" },
+            { foreground: "#D1D5DA", token: "brackethighlighter.quote" },
+            { foreground: "#FDAEB7", token: "brackethighlighter.unmatched" },
+            {
+                foreground: "#DBEDFF",
+                fontStyle: "underline",
+                token: "constant.other.reference.link",
+            },
+            {
+                foreground: "#DBEDFF",
+                fontStyle: "underline",
+                token: "string.other.link",
+            },
+            { foreground: "#6796E6", token: "token.info-token" },
+            { foreground: "#CD9731", token: "token.warn-token" },
+            { foreground: "#F44747", token: "token.error-token" },
+            { foreground: "#B267E6", token: "token.debug-token" },
+
             {
                 background: "24292e",
                 token: "",
@@ -745,7 +932,7 @@
         ],
         colors: {
             "editor.foreground": "#b392f0",
-            "editor.background": "#1c1e22",
+            "editor.background": "#25272d",
             "editor.selectionBackground": "#30343b",
             "editor.inactiveSelectionBackground": "#30343b",
             "editor.lineHighlightBackground": "#25272d",
@@ -773,10 +960,9 @@
             "editorCursor.foreground": "#000000",
         },
     };
-    
+
     // Startup
     onMount(async () => {
-
         // Dynamically import Monaco so it isn't loaded unless needed
         monaco = await import("monaco-editor");
 
@@ -785,8 +971,9 @@
         monaco.editor.defineTheme("light", themeWhite);
         monaco.editor.defineTheme("white", themeWhite);
         let screenWidth = document.documentElement.offsetWidth;
-        let fontSize = document.documentElement.style.getPropertyValue("--font-size")
-        fontSize = fontSize.replace("px", "") - 2
+        let fontSize =
+            document.documentElement.style.getPropertyValue("--font-size");
+        fontSize = fontSize.replace("px", "") - 2;
         data.editor = monaco.editor.create(data.element, {
             value: initValue,
             language: initLanguage,
@@ -797,18 +984,21 @@
             automaticLayout: true,
             minimap: { enabled: false },
         });
-        if (screenWidth < 600) {data.editor.getModel().updateOptions({ tabSize: 2 })}
-        else {data.editor.getModel().updateOptions({ tabSize: 4 });}
-        
-        // Update theme
-        state.subscribe(stateUpdate => {
-            if (screenWidth < 600) data.hideLineNumbers()
-            data.setTheme(stateUpdate.theme)
+        if (screenWidth < 600) {
+            data.editor.getModel().updateOptions({ tabSize: 2 });
+        } else {
+            data.editor.getModel().updateOptions({ tabSize: 4 });
+        }
 
-            let size = JSON.stringify(stateUpdate.fontSize)
-            size = size.replace("px", "") - 2
-            data.setFontSize(size)
-        })
+        // Update theme
+        state.subscribe((stateUpdate) => {
+            if (screenWidth < 600) data.hideLineNumbers();
+            data.setTheme(stateUpdate.theme);
+
+            let size = JSON.stringify(stateUpdate.fontSize);
+            size = size.replace("px", "") - 2;
+            data.setFontSize(size);
+        });
 
         data.loading = false;
     });
