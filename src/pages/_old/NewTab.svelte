@@ -1,11 +1,11 @@
 <script>
     // Imports
     import { onMount, onDestroy } from "svelte";
-    import { volatile } from "../js/global-volatile-store.js";
-    import { persistent } from "../js/global-persistent-store.js";
+    import { volatile } from "../../js/global-volatile-store.js";
+    import { persistent } from "../../js/global-persistent-store.js";
 
     // Components
-    import Page from "../layout/Page.svelte";
+    import Page from "../../layout/Page.svelte.js";
     import {
         Server,
         UserCog,

@@ -1,9 +1,9 @@
 <script>
     // Imports
     import { onMount, onDestroy } from "svelte";
-    import { persistent as state } from "../js/global-persistent-store.js";
-    import { user_v1 } from "../api/api.js";
-    import Page from "../layout/Page.svelte";
+    import { persistent as state } from "../../js/global-persistent-store.js";
+    import { user_v1 } from "../../api/api.js";
+    import Page from "../../layout/Page.svelte.js";
 
     // Variables
     const data = {
@@ -84,9 +84,9 @@
                     <option value="userDelete">user delete</option>
                     <option value="userAddGroup">user add group</option>
                     <option value="userRemoveGroup">user remove group</option>
-                    <option value="userChangePassword"
-                        >user change password</option
-                    >
+                    <option value="userChangePassword">
+                        user change password
+                    </option>
                 </optgroup>
                 <optgroup label="All Users">
                     <option value="resetToDefault">reset to default</option>
