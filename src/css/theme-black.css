@@ -11,7 +11,7 @@ html.black {
     --color-bg-3: hsl(220, 10%, 24%);
     --color-text-0: hsl(220, 10%, 36%);
     --color-text-1: hsl(220, 10%, 52%);
-    --color-text-2: hsl(220, 10%, 64%);
+    --color-text-2: hsl(220, 10%, 72%);
     --color-text-3: hsl(220, 10%, 80%);
 
     --color-bg-grey:   hsl(220, 10%, 12%);
@@ -47,8 +47,8 @@ html.black {
     /* Color */
     --color-bg: var(--color-bg-0);
     --color-text: var(--color-text-2);
-    --color-border: hsl(220, 10%, 12%);
-    --color-outline: var(--color-text-2);
+    --color-border: var(--color-bg-2);
+    --color-outline: var(--color-text-0);
 
     --color-bg-scrollbar: var(--color-border);
     --color-text-heading: var(--color-text-3);

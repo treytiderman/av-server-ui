@@ -148,7 +148,7 @@
 <style>
     .logger {
         height: 100%;
-        background-color: var(--color-bg);
+        background-color: var(--color-bg-section);
         font-family: var(--font-family-mono);
         font-size: var(--font-family-mono);
         display: grid;
@@ -162,7 +162,7 @@
         align-items: center;
 
         color: var(--color-text);
-        background-color: var(--color-bg);
+        background-color: var(--color-bg-section);
         
         border-bottom: var(--border);
     }

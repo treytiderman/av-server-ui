@@ -189,7 +189,7 @@
 
     /* Divider */
     .divider {
-        background-color: var(--color-text);
+        background-color: var(--color-text-1);
         border: none;
         border-radius: 0;
         padding: 0;
@@ -225,7 +225,7 @@
     }
 
     button.divider:hover::after {
-        background-color: var(--color-text);
+        background-color: var(--color-text-1);
     }
     button.divider:active::after {
         opacity: 0;

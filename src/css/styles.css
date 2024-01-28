@@ -61,7 +61,7 @@ html {
     --color-bg: var(--color-bg-0);
     --color-text: var(--color-text-2);
     --color-border: var(--color-bg-2);
-    --color-outline: var(--color-text-2);
+    --color-outline: var(--color-text-0);
 
     --color-bg-scrollbar: var(--color-text-0);
     --color-text-heading: var(--color-text-3);
