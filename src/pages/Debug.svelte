@@ -11,8 +11,11 @@
 
 <div>
     <Page>
-        <button on:click={() => localStorage.clear()}>
-            Clear
+        <button on:click={() => {
+            localStorage.clear()
+            location.reload(true)
+        }}>
+            Clear localStorage and reload
         </button>
         {#each Object.entries($state) as val}
             {#if val[0].endsWith("-volatile")}

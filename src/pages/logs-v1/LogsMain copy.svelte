@@ -7,6 +7,9 @@
     // Components
     import Logger from "../components/Logger.svelte";
 
+    // Exports
+    export let id = Date.now()
+
     // State
     const hdd = persistentStore("logs", {
         filter: "",
