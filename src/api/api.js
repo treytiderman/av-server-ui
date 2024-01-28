@@ -9,8 +9,8 @@ import * as user_v1 from "./user-v1.js";
 
 // Extensions
 import * as program_v1 from "./program-v1.js";
-// import * as serial_v1 from "./serial-v1.js";
-// import * as tcpClient_v1 from "./tcp-client-v1.js";
+import * as serial_v1 from "./serial-v1.js";
+import * as tcpClient_v1 from "./tcp-client-v1.js";
 
 // Exports
 export {
@@ -28,7 +28,7 @@ export {
 
     // Extensions
     program_v1,
-    // serial_v1,
-    // tcpClient_v1,
+    serial_v1,
+    tcpClient_v1,
 
 }
