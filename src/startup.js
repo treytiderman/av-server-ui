@@ -2,7 +2,8 @@ import { ws, user_v1 } from "./api/api.js"
 import { volatile } from "./js/global-volatile-store.js"
 
 // State
-const url = "ws://192.168.1.1:4620"
+// const url = "ws://192.168.1.1:4620"
+const url = ws.url()
 
 // Connect
 ws.connect(url, (status) => {
