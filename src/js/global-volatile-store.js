@@ -19,10 +19,10 @@ export const volatile = volatileStore("global", {
     // Info
     themes: ["black", "dark", "light"],
 
-    // Helpfuls
+    // Helpful
     hasFocus: true, // window / browser tab is in focus?
     window: getWindow(), // dpr, width, height, portrait
-    url: getUrl(), // protocal, ip, port, path, querystring
+    url: getUrl(), // protocol, ip, port, path, querystring
 
 })
 
@@ -69,7 +69,7 @@ function getWindow() {
 function getUrl() {
     return {
         href: document.location.href,
-        protocal: document.location.protocol.replace(":", ""),
+        protocol: document.location.protocol.replace(":", ""),
         ip: document.location.hostname,
         port: document.location.port,
         path: document.location.pathname,

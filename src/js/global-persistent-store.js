@@ -79,5 +79,7 @@ persistent.subscribe(val => {
 window.addEventListener("error", () => {
     console.log("error")
     persistent.reset()
+    // localStorage.clear()
+    // location.reload(true)
     return true
 })
