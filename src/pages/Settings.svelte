@@ -1,10 +1,10 @@
 <script>
     import { volatile } from "../js/global-volatile-store"
     import { persistent } from "../js/global-persistent-store.js"
-    import Page from "../layout/Page.svelte";
 </script>
 
-<Page maxWidth="30rem">
+<div class="page">
+<div class="section flow">
     <h2>Settings</h2>
     <label>
         Theme <br />
@@ -26,9 +26,14 @@
     >
         Reset All Settings
     </button>
-</Page>
+</div>
+</div>
 
 <style>
+    div {
+        max-width: 30ch;
+        margin-inline: auto;
+    }
     input,
     select,
     button {

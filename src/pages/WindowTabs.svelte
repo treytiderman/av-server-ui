@@ -7,13 +7,12 @@
     // Components
     import { X, Columns, Rows, RotateCcw } from 'lucide-svelte';
     import Tabs from "../components/Tabs.svelte";
-    import NewTab from "../pages/NewTab.svelte";
 
     // Variables
     export let id
     const newTab = {
         name: "New Tab",
-        component: NewTab,
+        component: $global.pages["NewTab"],
     };
     let contextMenuItems = []
     $: windowIndex = $state.windows.findIndex(window => window.id === id)

@@ -1,7 +1,7 @@
 <script>
     // Imports
     import { onMount, onDestroy } from "svelte";
-    import { persistentStore, volatileStore } from "../modules/store.js";
+    import { persistentStore } from "../modules/store.js";
     import { ws } from "../api/api.js";
 
     // Components
@@ -10,62 +10,73 @@
 
     // State
     // const hdd = persistentStore("api", {})
-    const ram = volatileStore("api", {
+    const ram = {
         path: "help",
         kvs: [
             // { key: "", value: "" }
         ],
+        hint: "",
         response: "",
         apiGroup: "help",
         help: {
             help: [{ path: "help", body: {} }],
         },
-    });
+    };
 
     // Functions
     function add() {
-        $ram.kvs.push({ key: "", value: "" });
-        $ram.kvs = $ram.kvs;
+        ram.kvs.push({ key: "", value: "" });
+        ram.kvs = ram.kvs;
     }
     function remove(i) {
-        $ram.kvs.splice(i, 1);
-        $ram.kvs = $ram.kvs;
+        ram.kvs.splice(i, 1);
+        ram.kvs = ram.kvs;
     }
     function send() {
-        $ram.response = "";
+        ram.response = "";
         let body = {};
-        $ram.kvs.forEach((kv) => (body[kv.key] = kv.value));
-        ws.send.path($ram.path, body);
-        ws.receiveOnce.path($ram.path, (response) => {
-            $ram.response = JSON.stringify(response, true, 4);
+        ram.kvs.forEach((kv) => (body[kv.key] = kv.value));
+        ws.send.path(ram.path, body);
+        ws.receiveOnce.path(ram.path, (response) => {
+            ram.response = JSON.stringify(response, true, 4);
         });
     }
     function helper(event) {
         const path = event.target.value;
-        $ram.path = path;
-        console.log(path);
+        ram.path = path;
 
+        // Parse Path
+        const params = path.split("/:").splice(1).map(t => `":${t.replace("/", "")}"`)
+        if (params.length === 0) {
+            ram.hint = ""
+        } else if (params.length === 1) {
+            ram.hint = `hint: ${params.join(", ")} is a parameter to change`
+        } else {
+            ram.hint = `hint: ${params.join(", ")} are parameters to change`
+        }
+
+        // Parse Body
+        ram.kvs = [];
         let body = {};
-        Object.keys($ram.help).forEach((apiGroup) => {
-            $ram.help[apiGroup].forEach((apiCall) => {
+        Object.keys(ram.help).forEach((apiGroup) => {
+            ram.help[apiGroup].forEach((apiCall) => {
                 if (apiCall.path === path) {
                     body = apiCall.body;
                 }
             });
         });
-
-        console.log(body);
-        $ram.kvs = [];
         body &&
             Object.entries(body).forEach((obj) => {
-                $ram.kvs.push({ key: obj[0], value: obj[1] ?? "" });
-                // $ram.kvs.push({ key: obj[0], value: JSON.stringify(obj[1]) })
+                if (typeof obj[1] === 'object') {
+                    obj[1] = JSON.stringify(obj[1])
+                }
+                ram.kvs.push({ key: obj[0], value: obj[1] ?? "" });
             });
     }
 
     // Startup / Shutdown
     onMount(async () => {
-        $ram.help = await ws.api.send("help");
+        ram.help = await ws.api.send("help");
     });
     onDestroy(async () => {});
 </script>
@@ -78,9 +89,9 @@
             <select
                 value="help"
                 class="fill-width"
-                on:input={(ev) => ($ram.apiGroup = ev.target.value)}
+                on:input={(ev) => (ram.apiGroup = ev.target.value)}
             >
-                {#each Object.keys($ram.help) as apiGroup}
+                {#each Object.keys(ram.help) as apiGroup}
                     <option value={apiGroup}> {apiGroup} </option>
                 {/each}
             </select>
@@ -88,11 +99,14 @@
         <label>
             Path <br />
             <select value="help" class="fill-width" on:input={helper}>
-                {#each $ram.help[$ram.apiGroup] as apiCall}
+                {#each ram.help[ram.apiGroup] as apiCall}
                     <option value={apiCall.path}> {apiCall.path} </option>
                 {/each}
             </select>
         </label>
+        <div>
+            {ram.hint}
+        </div>
     </Page>
     <Page>
         <h2>Sender</h2>
@@ -102,12 +116,12 @@
                 type="text"
                 class="fill-width"
                 placeholder="try 'help'"
-                bind:value={$ram.path}
+                bind:value={ram.path}
             />
         </label>
         <div class="grid gap-sm">
             <lable for="val"> Body </lable>
-            {#each $ram.kvs as kv, i}
+            {#each ram.kvs as kv, i}
                 <div class="flex nowrap gap">
                     <input type="body" placeholder="Key" bind:value={kv.key} />
                     <input
@@ -122,12 +136,15 @@
                     </button>
                 </div>
             {/each}
-            <button class="margin-left-auto fill-width icon" on:click={() => add()}>
+            <button
+                class="margin-left-auto fill-width icon"
+                on:click={() => add()}
+            >
                 <Plus size="1rem" strokeWidth="2.5" />
             </button>
         </div>
         <button class="fill-width cyan" on:click={() => send()}>Send</button>
-        <pre>{$ram.response}</pre>
+        <pre>{ram.response}</pre>
     </Page>
 </section>
 

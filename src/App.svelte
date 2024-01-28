@@ -8,11 +8,7 @@
 </script>
 
 {#if $volatile.url.query?.debug === "true"}
-    <Split
-        isResizable={true}
-        isVertical={false}
-        oneInit_percent={18}
-    >
+    <Split isResizable={true} isVertical={false} oneInit_percent={18}>
         <div slot="one">
             <Debug />
         </div>

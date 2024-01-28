@@ -11,6 +11,9 @@
 
 <div>
     <Page>
+        <button on:click={() => localStorage.clear()}>
+            Clear
+        </button>
         {#each Object.entries($state) as val}
             {#if val[0].endsWith("-volatile")}
                 <details>
@@ -58,7 +61,7 @@
         font-size: 1.4rem;
         border-bottom: var(--border);
         padding-bottom: var(--pad-y);
-        border-width: var(--border-width-2);
+        border-width: var(--border-width);
     }
     pre {
         font-size: 0.8rem;

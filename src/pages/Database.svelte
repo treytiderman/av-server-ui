@@ -2,7 +2,6 @@
     // Imports
     import { onMount, onDestroy } from "svelte";
     import { database_v1 } from "../api/api.js";
-    import Page from "../layout/Page.svelte";
 
     // Variables
     const data = {
@@ -12,15 +11,14 @@
     };
 
     function namesUpdate(names) {
-        
         // unsub
         data.databaseNames.forEach((name) => {
             database_v1.db.unsub(name);
         });
-        
+
         // new names
         data.databaseNames = names;
-        
+
         // sub
         names.forEach((name) => {
             database_v1.db.sub(name, (res) => {
@@ -39,23 +37,41 @@
     });
 </script>
 
-<Page>
-    <h2>Database</h2>
-    {#each data.databaseNames as name}
-        <details>
-            <summary>{name}</summary>
-            <pre class="mono">{JSON.stringify(
-                    data.databases[name],
-                    true,
-                    4,
-                )}</pre>
-        </details>
-    {/each}
-</Page>
+<div class="page">
+    <div class="section flow">
+        <h2>Database</h2>
+        {#each data.databaseNames as name}
+            <details>
+                <summary>{name}</summary>
+                <pre class="mono">{JSON.stringify(
+                        data.databases[name],
+                        true,
+                        4,
+                    )}</pre>
+            </details>
+        {/each}
+    </div>
+</div>
 
 <style>
-    details[open] pre {
-        max-height: 60vh;
+    .page {
+        max-width: 60rem;
+        margin-inline: auto;
+    }
+    details {
+        width: 100%;
+        /* height: 100%; */
+        /* overflow: auto; */
+    }
+    summary {
+        padding: var(--padding);
+    }
+    pre {
+        width: 100%;
+        padding: var(--gap);
+        border-radius: var(--border-radius);
+        background-color: var(--color-bg);
+        max-height: 40vh;
         overflow: auto;
     }
 </style>
