@@ -1,8 +1,3 @@
-/* 
-    Required: loaded before this file
-    <link rel="stylesheet" href="/src/css/theme.css"> 
-*/
-
 /* Reset | Clear most default styles and spacing */
 *,
 *::before,
@@ -14,6 +9,108 @@
     margin: 0;
     padding: 0;
     font: inherit;
+}
+
+/* Theme */
+html {
+
+    /* Builtin Theme */
+    --color-scheme: dark;
+
+    /* Palette */
+    --color-bg-0: hsl(220, 10%, 12%);
+    --color-bg-1: hsl(220, 10%, 16%);
+    --color-bg-2: hsl(220, 10%, 21%);
+    --color-bg-3: hsl(220, 10%, 26%);
+    --color-text-0: hsl(220, 10%, 36%);
+    --color-text-1: hsl(220, 10%, 48%);
+    --color-text-2: hsl(220, 10%, 69%);
+    --color-text-3: hsl(220, 10%, 80%);
+
+    --color-bg-grey:   hsl(220, 10%, 21%);
+    --color-bg-red:    hsl(  5, 30%, 21%);
+    --color-bg-orange: hsl( 30, 30%, 21%);
+    --color-bg-yellow: hsl( 60, 30%, 21%);
+    --color-bg-green:  hsl(130, 30%, 21%);
+    --color-bg-cyan:   hsl(180, 30%, 21%);
+    --color-bg-blue:   hsl(220, 30%, 21%);
+    --color-bg-purple: hsl(265, 30%, 21%);
+    --color-bg-pink:   hsl(315, 30%, 21%);
+
+    --color-text-grey:   hsl(220, 10%, 76%);
+    --color-text-red:    hsl(  5, 90%, 80%);
+    --color-text-orange: hsl( 30, 90%, 80%);
+    --color-text-yellow: hsl( 60, 90%, 76%);
+    --color-text-green:  hsl(130, 90%, 78%);
+    --color-text-cyan:   hsl(180, 90%, 80%);
+    --color-text-blue:   hsl(220, 90%, 84%);
+    --color-text-purple: hsl(265, 90%, 86%);
+    --color-text-pink:   hsl(315, 90%, 84%);
+
+    --color-border-grey:   hsl(220, 10%, 32%);
+    --color-border-red:    hsl(  5, 90%, 32%);
+    --color-border-orange: hsl( 30, 90%, 32%);
+    --color-border-yellow: hsl( 60, 90%, 28%);
+    --color-border-green:  hsl(130, 90%, 30%);
+    --color-border-cyan:   hsl(180, 90%, 32%);
+    --color-border-blue:   hsl(220, 90%, 46%);
+    --color-border-purple: hsl(265, 90%, 52%);
+    --color-border-pink:   hsl(315, 90%, 40%);
+
+    /* Color */
+    --color-bg: var(--color-bg-0);
+    --color-text: var(--color-text-2);
+    --color-border: var(--color-bg-2);
+    --color-outline: var(--color-text-2);
+
+    --color-bg-scrollbar: var(--color-text-0);
+    --color-text-heading: var(--color-text-3);
+    --color-text-placeholder: var(--color-text-0);
+
+    --color-bg-section: var(--color-bg-1);
+    --color-text-section: var(--color-text-2);
+
+    --color-bg-button: var(--color-bg-grey);
+    --color-text-button: var(--color-text-grey);
+
+    --color-bg-input: var(--color-bg-dark);
+    --color-text-input: var(--color-text-grey);
+
+    --color-text-link: hsl(265, 90%, 74%);
+
+    --color-bg-mark: hsl(265, 90%, 64%);
+    --color-text-mark: hsl(265, 30%, 7%);
+
+    /* Text */
+    --font-size: 16px;
+    --font-family: 'Rubik', helvetica, arial, sans-serif;
+    --font-size-mono: calc(var(--font-size) - 3px);
+    --font-family-mono: 'Fira Code', Menlo, Consolas, monospace;
+    --line-height: 1.6;
+    --max-p-width: 80ch;
+    --max-page-width: 120ch;
+
+    /* Margin, Padding, Gap */
+    --pad-x: 0.8rem;
+    --pad-y: 0.5rem;
+    --padding: var(--pad-y) var(--pad-x);
+
+    --gap-xs: 0.25rem;
+    --gap-sm: 0.5rem;
+    --gap:    1.0rem;
+    --gap-lg: 2.0rem;
+    --gap-xl: 2.0rem;
+
+    /*  Border, Border Radius, Outline */
+    --border-width: 2px;
+    --border-radius: 0.4rem;
+    --border-radius-lg: 1.0rem;
+    --border: var(--border-width) solid var(--color-border);
+
+    /* Filters for hover, disable, active */
+    --filter-brightness-hover: brightness(115%);
+    --filter-brightness-disable: brightness(75%);
+    --filter-brightness-active: brightness(85%);
 }
 
 /* Base */
@@ -38,17 +135,6 @@ body {
     height: 100svh;
     color: var(--color-text);
     background-color: var(--color-bg);
-}
-
-/* Mobile */
-@media (max-width: 500px) {
-    html {
-        font-size: var(--font-size-mobile);
-    }
-
-    code {
-        font-size: var(--font-size-mobile-mono);
-    }
 }
 
 /* Headings */
@@ -85,7 +171,7 @@ h6 {
 
 /* Paragraphs */
 p {
-    max-width: var(--max-width);
+    max-width: var(--max-p-width);
     line-height: var(--line-height);
     overflow-wrap: break-word;
     text-wrap: pretty;
@@ -113,6 +199,7 @@ q {
 
 /* Underline */
 u {
+    text-decoration: underline;
     text-underline-position: under;
 }
 
@@ -135,8 +222,8 @@ small {
 mark {
     color: var(--color-text-mark);
     background-color: var(--color-bg-mark);
-    border-left: var(--border-width-2) solid var(--color-bg-mark);
-    border-right: var(--border-width-2) solid var(--color-bg-mark);
+    border-left: var(--border-width) solid var(--color-bg-mark);
+    border-right: var(--border-width) solid var(--color-bg-mark);
 }
 
 /* Inline code */
@@ -181,7 +268,7 @@ blockquote {
     border: var(--border);
     position: relative;
 
-    max-width: var(--max-width);
+    max-width: var(--max-p-width);
     page-break-inside: avoid;
     overflow: hidden;
 
@@ -245,9 +332,9 @@ video {
 hr {
     border: none;
     border-radius: 99px;
-    height: var(--border-width-2);
+    height: var(--border-width);
     margin: var(--gap) auto;
-    background-color: var(--color-border-grey);
+    background-color: var(--color-border);
     width: 100%;
 }
 
@@ -273,7 +360,7 @@ th {
 
 /* Bottom border */
 th {
-    box-shadow: inset 0 1px 0 var(--color-bg), inset 0 -1px 0 var(--color-border-grey);
+    box-shadow: inset 0 1px 0 var(--color-bg), inset 0 -1px 0 var(--color-border);
 }
 
 tr:hover td {
@@ -300,6 +387,7 @@ select {
 
 label {
     display: block;
+    line-height: 1.5;
 }
 
 input+label {
@@ -311,6 +399,7 @@ input,
 button,
 select,
 textarea {
+    line-height: 1.2;
     padding: var(--padding);
     border-radius: var(--border-radius);
     color: var(--color-text-input);
@@ -358,7 +447,6 @@ input[type=color] {
 
 /* Select Icon */
 select {
-    line-height: 1.4;
     padding-right: 3rem;
     background-image:
         linear-gradient(45deg, transparent 50%, currentColor 50%),
@@ -376,7 +464,6 @@ select {
 select option,
 optgroup {
     background: var(--color-bg);
-    color: var(--color-text-section);
 }
 
 /* Date + Time if iOS */
@@ -402,12 +489,13 @@ input[type="checkbox"] {
     display: inline-grid;
     place-content: center;
     cursor: pointer;
+    padding: 0;
 
-    width: 1.6em;
-    height: 1.6em;
+    width: 1.5em;
+    height: 1.5em;
     vertical-align: baseline;
 
-    margin-right: var(--pad-x);
+    margin-right: var(--gap-sm);
 }
 
 input[type="radio"] {
@@ -448,10 +536,6 @@ details {
     display: grid;
     gap: var(--gap);
     align-items: baseline;
-    background-color: var(--color-bg-section);
-    padding: var(--padding);
-    border: var(--border);
-    border-radius: var(--border-radius);
 }
 
 details summary {
@@ -482,7 +566,7 @@ details summary::-webkit-details-marker {
 
 /* Placeholder */
 ::placeholder {
-    color: var(--color-text-dim);
+    color: var(--color-text-placeholder);
 }
 
 /* Hover */
@@ -502,9 +586,9 @@ details summary::-webkit-details-marker {
 /* Focus */
 @media (hover: hover) {
     :focus-visible {
-        outline: var(--border-width-2) solid var(--color-text-heading);
-        outline-offset: calc(-1*var(--border-width-2));
-        box-shadow: inset 0 0 0 var(--border-width-2) var(--color-bg);
+        outline: var(--border-width) solid var(--color-outline);
+        outline-offset: calc(-1*var(--border-width));
+        box-shadow: inset 0 0 0 var(--border-width) var(--color-bg);
         filter: var(--filter-brightness-hover);
     }
 }
@@ -514,7 +598,6 @@ input:active,
 button:active {
     filter: var(--filter-brightness-active);
 }
-
 
 /* Disabled */
 :disabled,
@@ -548,9 +631,9 @@ button:active {
 
 ::-webkit-scrollbar-thumb {
     /* background-color: var(--color-border-grey); */
-    box-shadow: inset 0 0 10px 10px var(--color-border-grey);
+    box-shadow: inset 0 0 10px 10px var(--color-bg-scrollbar);
     border: solid var(--gap-xs) transparent;
-    border-radius: var(--border-radius);
+    border-radius: 99px;
 }
 
 ::-webkit-scrollbar-track {

@@ -1,0 +1,131 @@
+/*
+
+Colors:
+
+grey
+red
+orange
+yellow
+green
+cyan
+blue
+purple
+pink
+
+*/
+
+/* General */
+.dim {
+    color: var(--color-text-1);
+}
+
+.clear {
+    background-color: transparent;
+}
+
+.border {
+    border: var(--border);
+}
+
+.border-none {
+    border: none;
+}
+
+/* Text */
+span.grey {
+    color: var(--color-text-grey);
+}
+
+span.red {
+    color: var(--color-text-red);
+}
+
+span.orange {
+    color: var(--color-text-orange);
+}
+
+span.yellow {
+    color: var(--color-text-yellow);
+}
+
+span.green {
+    color: var(--color-text-green);
+}
+
+span.cyan {
+    color: var(--color-text-cyan);
+}
+
+span.blue {
+    color: var(--color-text-blue);
+}
+
+span.purple {
+    color: var(--color-text-purple);
+}
+
+span.pink {
+    color: var(--color-text-pink);
+}
+
+/* Button */
+button.dim {
+    background-color: var(--color-bg);
+    color: var(--color-text-1);
+}
+
+button.red {
+    background-color: var(--color-bg-red);
+    color: var(--color-text-red);
+    border: var(--border);
+    border-color: var(--color-border-red);
+}
+
+button.orange {
+    background-color: var(--color-bg-orange);
+    color: var(--color-text-orange);
+    border: var(--border);
+    border-color: var(--color-border-orange);
+}
+
+button.yellow {
+    background-color: var(--color-bg-yellow);
+    color: var(--color-text-yellow);
+    border: var(--border);
+    border-color: var(--color-border-yellow);
+}
+
+button.green {
+    background-color: var(--color-bg-green);
+    color: var(--color-text-green);
+    border: var(--border);
+    border-color: var(--color-border-green);
+}
+
+button.cyan {
+    background-color: var(--color-bg-cyan);
+    color: var(--color-text-cyan);
+    border: var(--border);
+    border-color: var(--color-border-cyan);
+}
+
+button.blue {
+    background-color: var(--color-bg-blue);
+    color: var(--color-text-blue);
+    border: var(--border);
+    border-color: var(--color-border-blue);
+}
+
+button.purple {
+    background-color: var(--color-bg-purple);
+    color: var(--color-text-purple);
+    border: var(--border);
+    border-color: var(--color-border-purple);
+}
+
+button.pink {
+    background-color: var(--color-bg-pink);
+    color: var(--color-text-pink);
+    border: var(--border);
+    border-color: var(--color-border-pink);
+}

@@ -60,6 +60,7 @@
             class="tab-add center"
             class:tab-active={tabActive.name === newTab.name}
             on:click={() => dispatch("newTabClick", newTab)}
+            title="Create a New Tab"
         >
             <Plus size=1.2rem strokeWidth=2.5 />
         </button>
@@ -99,8 +100,9 @@
     }
 
     .header {
-        background-color: var(--color-bg-dark);
+        background-color: var(--color-bg-section);
         border-bottom: var(--border);
+        border-width: var(--border-width);
         padding: var(--gap-sm);
         gap: var(--gap-sm);
     }
@@ -125,7 +127,7 @@
 
     /* Buttons */
     .tab-button {
-        background-color: var(--color-bg-dark);
+        background-color: var(--color-bg-section);
         color: var(--color-text);
         padding: 0 var(--gap-xs) 0 var(--gap-sm);
         height: var(--gap-lg);
@@ -138,7 +140,7 @@
 
         border-color: transparent;
 
-        background-color: var(--color-bg-dark);
+        background-color: var(--color-bg-section);
 
         margin-left: var(--gap-sm);
         padding: var(--gap-xs);
@@ -151,7 +153,7 @@
     }
 
     .tab-add {
-        background-color: var(--color-bg-dark);
+        background-color: var(--color-bg-section);
         color: var(--color-text);
         padding: var(--gap-xs);
         width: var(--gap-lg);
@@ -160,7 +162,7 @@
     }
     .context-menu {
         margin-left: auto;
-        background-color: var(--color-bg-dark);
+        background-color: var(--color-bg-section);
         color: var(--color-text);
         padding: var(--gap-xs);
         width: var(--gap-lg);

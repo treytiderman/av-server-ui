@@ -4,13 +4,16 @@ html.dark {
     /* Builtin Theme */
     --color-scheme: dark;
 
-    /* Colors - Base */
-    --color-bg: hsl(220, 10%, 16%);
-    --color-text: hsl(220, 10%, 67%);
-    --color-text-dim: hsl(220, 10%, 48%);
-    --color-text-heading: hsl(220, 10%, 80%);
-    
-    /* Colors - Palette */
+    /* Palette */
+    --color-bg-0: hsl(220, 10%, 12%);
+    --color-bg-1: hsl(220, 10%, 16%);
+    --color-bg-2: hsl(220, 10%, 21%);
+    --color-bg-3: hsl(220, 10%, 26%);
+    --color-text-0: hsl(220, 10%, 36%);
+    --color-text-1: hsl(220, 10%, 48%);
+    --color-text-2: hsl(220, 10%, 69%);
+    --color-text-3: hsl(220, 10%, 80%);
+
     --color-bg-grey:   hsl(220, 10%, 21%);
     --color-bg-red:    hsl(  5, 30%, 21%);
     --color-bg-orange: hsl( 30, 30%, 21%);
@@ -41,52 +44,55 @@ html.dark {
     --color-border-purple: hsl(265, 90%, 52%);
     --color-border-pink:   hsl(315, 90%, 40%);
 
-    --color-text-link: hsl(180, 90%, 67%);
+    /* Color */
+    --color-bg: var(--color-bg-0);
+    --color-text: var(--color-text-2);
+    --color-border: var(--color-bg-3);
+    --color-outline: var(--color-text-2);
+
+    --color-bg-scrollbar: var(--color-text-0);
+    --color-text-heading: var(--color-text-3);
+    --color-text-placeholder: var(--color-text-0);
+
+    --color-bg-section: var(--color-bg-1);
+    --color-text-section: var(--color-text-2);
+
+    --color-bg-button: var(--color-bg);
+    --color-text-button: var(--color-text);
+
+    --color-bg-input: var(--color-bg);
+    --color-text-input: var(--color-text);
+
+    --color-text-link: hsl(265, 90%, 74%);
 
     --color-bg-mark: hsl(265, 90%, 64%);
     --color-text-mark: hsl(265, 30%, 7%);
-
-    --color-bg-button: var(--color-bg-grey);
-    --color-text-button: var(--color-text-grey);
-
-    --color-bg-input: var(--color-bg-dark);
-    --color-text-input: var(--color-text-grey);
-
-    --color-bg-dark: hsl(220, 10%, 12%);
-    --color-text-dark: hsl(220, 10%, 12%);
-    --color-border-dark: hsl(220, 10%, 12%);
-
-    --color-bg-section: hsl(220, 10%, 21%);
-    --color-text-section: hsl(220, 10%, 76%);
-    --color-border-section: hsl(220, 10%, 32%);
 
     /* Text */
     --font-size: 16px;
     --font-family: 'Rubik', helvetica, arial, sans-serif;
     --font-size-mono: calc(var(--font-size) - 3px);
     --font-family-mono: 'Fira Code', Menlo, Consolas, monospace;
-    --line-height: 1.7;
-    --max-width: 120ch;
-    
-    /* Text Size on small screens (width > 500px) */
-    --font-size-mobile: calc(var(--font-size) - 2px);
-    --font-size-mobile-mono: calc(var(--font-size) - 4px);
+    --line-height: 1.6;
+    --max-p-width: 80ch;
+    --max-page-width: 90ch;
 
     /* Margin, Padding, Gap */
     --pad-x: 0.8rem;
     --pad-y: 0.5rem;
     --padding: var(--pad-y) var(--pad-x);
+
     --gap-xs: 0.25rem;
-    --gap-sm: 0.5rem;
-    --gap: 1.0rem;
+    --gap-sm: 0.4rem;
+    --gap:    0.8rem;
     --gap-lg: 2.0rem;
+    --gap-xl: 2.0rem;
 
     /*  Border, Border Radius, Outline */
-    --border-width: 1.4px;
-    --border-width-2: 2px;
-    --border: var(--border-width) solid var(--color-border-section);
-    --border-radius: 0.5rem;
+    --border-width: 2px;
+    --border-radius: 0.4rem;
     --border-radius-lg: 1.0rem;
+    --border: var(--border-width) solid var(--color-border);
 
     /* Filters for hover, disable, active */
     --filter-brightness-hover: brightness(115%);

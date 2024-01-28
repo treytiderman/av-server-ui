@@ -149,9 +149,10 @@
         text-align: left;
         border: none;
         padding: var(--gap-sm);
+        background-color: var(--color-bg-section);
     }
     hr {
-        background-color: var(--color-border-grey);
+        background-color: var(--color-border);
         margin: var(--gap-sm);
     }
 </style>

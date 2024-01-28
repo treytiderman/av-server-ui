@@ -1,0 +1,71 @@
+/* Tables */
+table.color-alt-rows th {
+    background-color: var(--color-bg-grey);
+}
+
+table.color-alt-rows tr:nth-child(odd) td {
+    background-color: var(--color-bg-dark);
+}
+
+table.color-alt-rows tr:hover td {
+    filter: var(--filter-brightness-hover);
+    background-color: var(--color-bg-section);
+}
+
+table.border {
+    border: var(--border);
+    border-top: none;
+}
+
+table.border th {
+    box-shadow: inset 0 1px 0 var(--color-border-grey),
+        inset 0 -1px 0 var(--color-border-grey);
+}
+
+table.border-all th,
+table.border-all td {
+    box-shadow: inset -1px 0 0 var(--color-border-grey),
+        inset 0 -1px 0 var(--color-border-grey);
+}
+
+table.border-all th {
+    box-shadow: inset 0 1px 0 var(--color-border-grey),
+        inset -1px 0 0 var(--color-border-grey),
+        inset 0 -1px 0 var(--color-border-grey);
+}
+
+table.border-all th:first-child {
+    box-shadow: inset -1px 0 0 var(--color-border-grey),
+        inset 0 1px 0 var(--color-border-grey),
+        inset 1px 0 0 var(--color-border-grey),
+        inset 0 -1px 0 var(--color-border-grey);
+}
+
+table.border-all td:first-child {
+    box-shadow: inset -1px 0 0 var(--color-border-grey),
+        inset 1px 0 0 var(--color-border-grey),
+        inset 0 -1px 0 var(--color-border-grey);
+}
+
+table.freeze-header th {
+    z-index: 1;
+    position: sticky;
+    top: 0;
+    border-top: none;
+    border-bottom: none;
+}
+
+table.freeze-header tbody tr:first-child td {
+    border-top: none;
+}
+
+table.freeze-header thead th {
+    background-clip: padding-box
+}
+
+table.nowrap th,
+table.nowrap td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

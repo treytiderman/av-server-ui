@@ -1,0 +1,31 @@
+/* Blockquote */
+blockquote.quote-bg::before {
+    content: open-quote;
+    font-family: sans-serif;
+    font-size: 3rem;
+    color: var(--color-text-dim);
+    left: var(--gap-sm);
+    position: absolute;
+    line-height: 1;
+    top: var(--gap-sm);
+}
+
+blockquote.quote-bg::after {
+    content: close-quote;
+    font-family: sans-serif;
+    font-size: 3rem;
+    color: var(--color-text-dim);
+    right: var(--gap-sm);
+    position: absolute;
+    line-height: 1;
+    bottom: var(--gap-sm);
+    transform: translateY(2rem);
+}
+
+blockquote.quote-bg p {
+    z-index: 1;
+}
+
+.indent {
+    text-indent: var(--gap);
+}
