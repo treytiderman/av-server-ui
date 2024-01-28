@@ -1,5 +1,5 @@
 import { volatileStore } from "../modules/store.js";
-import { pages } from "./pages.js";
+import { pages } from "../pages/pages.js";
 
 // Store
 export const volatile = volatileStore("global", {
