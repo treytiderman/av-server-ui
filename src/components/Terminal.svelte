@@ -4,30 +4,84 @@
     const dispatch = createEventDispatcher();
 
     // Components
-    import { Circle, X } from 'lucide-svelte';
+    import { Circle, X } from "lucide-svelte";
 
     // Exports
-    export let showCRLF = true;
+    export let showBorders = false;
+    export let escapeCRLF = false;
+    export let prettyJSON = false;
+    export let freezeCol1Col2 = false;
     export let lines = [
         {
             wasReceived: false,
             timestampISO: "2022-10-16T21:05:38.425Z",
-            data: '{"boolean": true, "string": "Yes", "number": 200}',
+            data: JSON.stringify(
+                { boolean: true, string: "Yes", number: 200 },
+                true,
+                4,
+            ),
+        },
+        {
+            wasReceived: false,
+            timestampISO: "2022-10-16T21:05:38.425Z",
+            data: JSON.stringify(
+                {
+                    available: [
+                        {
+                            directory: "../private/programs/examples",
+                            command: "node template.mjs",
+                            env: {},
+                            files: ["quick-start.mjs", "template.mjs"],
+                        },
+                        {
+                            directory: "../private/programs/other",
+                            command: "",
+                            env: {},
+                            files: [],
+                        },
+                        {
+                            directory: "../private/programs/tests",
+                            command: "node test.mjs",
+                            env: {
+                                key: "value",
+                                name: "arlo",
+                                port: "23",
+                                id: "9",
+                            },
+                            files: [
+                                ".env",
+                                "api.mjs",
+                                "api2.mjs",
+                                "echo.mjs",
+                                "env.js",
+                                "interval.js",
+                                "log.js",
+                                "log.py",
+                                "tcp.mjs",
+                                "test.mjs",
+                            ],
+                        },
+                    ],
+                },
+                true,
+                0,
+            ),
         },
         {
             wasReceived: true,
             timestampISO: "2022-10-16T21:05:38.447Z",
-            data: "OFF",
+            data: "OFF\n\r",
         },
         {
             wasReceived: false,
             timestampISO: "2022-10-16T21:05:38.425Z",
             data: "\x4f\x46\x46",
+            mark: true,
         },
         {
             wasReceived: true,
             timestampISO: "2022-10-16T21:05:38.536Z",
-            data: "Weeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee Weeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee!!!",
+            data: "Weeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\nWeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee!!!",
         },
         {
             wasReceived: true,
@@ -35,115 +89,160 @@
             data: "OK",
         },
     ];
-    
+
     // Variables
-    let terminalElement;
-    let terminalElementWidth;
-    let linesElement;
+    let sectionElement;
+    let sectionElementWidth;
 
     // Time Column
-    $: timeColFormat = terminalElementWidth > 600 ? "time" : "timeShort";
-    $: timeColWidth = terminalElementWidth > 600 ? "8rem" : "4rem";
+    $: timeColFormat = sectionElementWidth > 600 ? "time" : "timeShort";
+    $: timeColWidth = sectionElementWidth > 600 ? "9rem" : "5rem";
     function timePress() {
         if (timeColFormat === "datetime") {
             timeColFormat = "time";
-            timeColWidth = "8rem";
+            timeColWidth = "9rem";
         } else if (timeColFormat === "time") {
             timeColFormat = "timeShort";
-            timeColWidth = "4rem";
+            timeColWidth = "5rem";
         } else {
             timeColFormat = "datetime";
-            timeColWidth = "15rem";
+            timeColWidth = "16rem";
         }
     }
 
     // Scroll to the bottom of the Terminal if the scroll bar is at the bottom everytime "lines" updates
     function scrollToBottomOfElement(element) {
-        const manualOffset = 10
+        const manualOffset = 100
         const currentScrollHeight = element?.scrollTop + element?.offsetHeight + manualOffset;
         const totalScrollHeight = element?.scrollHeight;
         
-        // If the scroll bar is at the bottom
+        // If the scroll bar is near the bottom
+        // console.log(currentScrollHeight >= totalScrollHeight, currentScrollHeight, totalScrollHeight);
         if (currentScrollHeight >= totalScrollHeight) {
             setTimeout(() => (element.scrollTop += 100), 2);
         }
     }
-    $: if (lines) scrollToBottomOfElement(linesElement);
-    
-    // Unescape the delimiter if needed
-    $: if (showCRLF) escapeCRLF(lines);
-    function escapeCRLF(lines) {
-        lines.forEach((line) => {
-            line.data = String(line.data).replace(/\r/g, "\\r");
-            line.data = String(line.data).replace(/\n/g, "\\n");
-        });
+    $: if (lines) scrollToBottomOfElement(sectionElement);
+
+    // Fucntions
+    function parseData(line) {
+        line.parsedData = line.data;
+
+        if (!escapeCRLF && prettyJSON && isJSON(line.data)) {
+            line.parsedData = JSON.stringify(
+                JSON.parse(line.parsedData),
+                true,
+                4,
+            );
+        }
+        if (escapeCRLF) {
+            line.parsedData = String(line.parsedData).replace(/\r/g, "\\r");
+            line.parsedData = String(line.parsedData).replace(/\n/g, "\\n");
+        }
+        return line.parsedData;
+    }
+    function isJSON(text) {
+        try {
+            JSON.parse(text);
+        } catch (error) {
+            return false;
+        }
+        return true;
     }
 </script>
 
 <!-- HTML -->
 <section
-    class="terminal"
+    class:borders={showBorders}
+    class:freeze-col1-col2={freezeCol1Col2}
     style="--col2-width: {timeColWidth};"
-    bind:this={terminalElement}
-    bind:offsetWidth={terminalElementWidth}
+    bind:this={sectionElement}
+    bind:offsetWidth={sectionElementWidth}
 >
     <!-- Header -->
     <div class="header">
-        <div class="col1"></div>
-        <button class="col2 textButton" on:click={timePress}>
-            {timeColFormat === "datetime" ? "Date Time" : "Time"}
-        </button>
-        <div class="col3 flex nowrap gap-sm align-center">
-            <span>Sent</span>
-            <X size=.8rem strokeWidth=2.5 color="var(--color-text-orange)" />
-            <span>/</span>
-            <span>Received</span>
-            <Circle size=.8rem strokeWidth=2.5 color="var(--color-text-blue)" />
+        <div class="row">
+            <div class="col1"></div>
+            <div class="col2">
+                <button on:click={timePress}>
+                    {timeColFormat === "datetime" ? "Date Time" : "Time"}
+                </button>
+            </div>
+            <div class="col3">
+                <div>
+                    Sent
+                    <X
+                        size=".8rem"
+                        strokeWidth="3"
+                        color="var(--color-text-orange)"
+                    />
+                    / Received
+                    <Circle
+                        size=".7rem"
+                        strokeWidth="3"
+                        color="var(--color-text-blue)"
+                    />
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Lines -->
-    <div class="lines" bind:this={linesElement}>
+    <!-- Log -->
+    <div class="log">
         {#each lines as line}
-            <!-- svelte-ignore a11y-click-events-have-key-events -->
-            <div class="line" class:mark={line.mark} on:click={() => dispatch("lineClick", line)}>
-
+            <div class="row" class:mark={line.mark}>
                 <!-- Col1 -->
-                {#if line.wasReceived}
-                    <div class="col1">
-                        <Circle size=.8rem strokeWidth=2.5 color="var(--color-text-blue)" />
-                    </div>
-                {:else}
-                    <div class="col1">
-                        <X size=.8rem strokeWidth=2.5 color="var(--color-text-orange)" />
-                    </div>
-                {/if}
+                <div class="col1">
+                    <button on:click={() => dispatch("lineClick", line)}>
+                        <div>
+                            {#if line.wasReceived}
+                                <Circle
+                                    size=".7rem"
+                                    strokeWidth="3"
+                                    color="var(--color-text-blue)"
+                                />
+                            {:else}
+                                <X
+                                    size=".8rem"
+                                    strokeWidth="3"
+                                    color="var(--color-text-orange)"
+                                />
+                            {/if}
+                        </div>
+                    </button>
+                </div>
 
                 <!-- Col2 -->
                 <div class="col2">
-                    {#if timeColFormat === "datetime"}
-                        <span>
-                            {line.timestampISO.split("T")[0]}
-                        </span>
-                        <span>
-                            {line.timestampISO.split("T")[1].split("Z")[0]}
-                        </span>
-                    {:else if timeColFormat === "time"}
-                        <span>
-                            {line.timestampISO.split("T")[1].split("Z")[0]}
-                        </span>
-                    {:else}
-                        <span>
-                            {line.timestampISO.split("T")[1].slice(3).split(".")[0]}
-                        </span>
-                    {/if}
+                    <div>
+                        {#if timeColFormat === "datetime"}
+                            <span>
+                                {line.timestampISO.split("T")[0]}
+                            </span>
+                            <span>
+                                {line.timestampISO.split("T")[1].split("Z")[0]}
+                            </span>
+                        {:else if timeColFormat === "time"}
+                            <span>
+                                {line.timestampISO.split("T")[1].split("Z")[0]}
+                            </span>
+                        {:else}
+                            <span>
+                                {line.timestampISO
+                                    .split("T")[1]
+                                    .slice(3)
+                                    .split(".")[0]}
+                            </span>
+                        {/if}
+                    </div>
                 </div>
 
                 <!-- Col3 -->
                 <div class="col3">
-                    <pre>{line.data}</pre>
+                    <div>
+                        <pre>{parseData(line)}</pre>
+                    </div>
                 </div>
-
             </div>
         {/each}
     </div>
@@ -151,67 +250,169 @@
 
 <!-- CSS -->
 <style>
-    .terminal {
-        height: 100%;
-        background-color: var(--color-bg);
-        font-family: var(--font-family-mono);
-        font-size: var(--font-family-mono);
-        display: grid;
-        align-content: flex-start;
-    }
-    
-    /* Header */
-    .header {
-        padding: var(--gap-sm);
-        display: flex;
-        align-items: center;
+    /*
 
-        color: var(--color-text);
-        background-color: var(--color-bg);
-        
-        border-bottom: var(--border);
-    }
-    
-    /* Lines */
-    .lines {
-        padding: var(--gap-sm);
-        min-height: 4rem;
+section
+- header
+    - div .row
+        - div .col1
+        - div .col2
+            - button
+        - div .col3
+            - span
+- log
+    - div .row
+        - div .col1
+            - button
+        - div .col2
+            - span
+        - div .col3
+            - pre
+
+*/
+
+    /* Elements */
+    section {
+        width: 100%;
         height: 100%;
+        display: grid;
+        align-content: start;
+        font-family: var(--font-family-mono);
         overflow: auto;
     }
-    .line {
-        display: flex;
-        flex-wrap: nowrap;
-        align-items: center;
-    }
-    .line:hover,
-    .line:active,
-    .line:focus {
-        background-color: var(--color-bg-section);
-        filter: var(--filter-brightness-hover);
+
+    button {
+        border: none;
+        border-radius: 0;
+        background-color: transparent;
+        text-align: left;
+        padding: 0;
     }
 
     /* Columns */
     .col1 {
-        min-width: 1.5rem;
-        display: flex;
-        align-items: center;
+        min-width: 2.4rem;
+        width: 2.4rem;
+        max-width: 2.4rem;
+        background-color: var(--color-bg-section);
     }
     .col2 {
         min-width: var(--col2-width);
-        color: var(--color-text-dim);
+        width: var(--col2-width);
+        max-width: var(--col2-width);
+        background-color: var(--color-bg-section);
+    }
+    .col3 {
+        width: 100%;
+        background-color: var(--color-bg-section);
     }
 
-    /* Buttons */
-    .textButton {
-        padding: 0;
-        background-color: transparent;
-        text-align: left;
-        color: currentColor;
-        border-radius: 0;
-        border: 0;
+    /* Header */
+    .header {
+        position: sticky;
+        top: 0;
+        z-index: 1;
     }
-    .mark {
-        background-color: var(--color-bg-yellow);
+    .header .row {
+        display: flex;
+        border-bottom: var(--border);
+    }
+    .header .col2 button {
+        height: 2rem;
+        width: 100%;
+        background-color: var(--color-bg-section);
+        padding: 0 var(--pad-x);
+    }
+    .header .col3 div {
+        height: 2rem;
+        display: flex;
+        align-items: center;
+        gap: var(--gap-sm);
+        padding: 0 var(--pad-x);
+    }
+
+    /* Log */
+    .log {
+        flex-grow: 1;
+        display: grid;
+        align-content: flex-start;
+    }
+    .log .row {
+        display: flex;
+    }
+    .log .row:hover,
+    .log .row:active,
+    .log .row:focus {
+        background-color: var(--color-bg-section);
+        filter: var(--filter-brightness-hover);
+    }
+    .log .col1 button {
+        width: 100%;
+        height: 100%;
+        display: flex;
+    }
+    .log .col1 button div {
+        width: 100%;
+        height: 1.8rem;
+        display: grid;
+        place-items: center;
+    }
+    .log .col2 div {
+        height: 100%;
+        display: flex;
+        padding: 0 var(--pad-x);
+        gap: var(--gap);
+    }
+    .log .col2 div span {
+        height: 1.8rem;
+        display: grid;
+        place-items: center;
+    }
+    .log .col3 div {
+        height: 100%;
+        display: flex;
+        /* align-items: start; */
+        padding: 0 var(--pad-x);
+        gap: var(--gap-sm);
+    }
+    .log .col3 div pre {
+        display: grid;
+        place-items: center;
+    }
+
+    /* Freeze First and Second columns */
+    .freeze-col1-col2 .col1 {
+        position: sticky;
+        left: 0;
+        background-color: var(--color-bg-section);
+    }
+    .freeze-col1-col2 .col2 {
+        position: sticky;
+        left: 2.4rem;
+        background-color: var(--color-bg-section);
+    }
+
+    /* Borders */
+    .borders .col1 {
+        border-right: var(--border);
+        border-bottom: var(--border);
+    }
+    .borders .col2 {
+        border-right: var(--border);
+        border-bottom: var(--border);
+    }
+    .borders .col3 {
+        border-bottom: var(--border);
+    }
+    .borders .header .row {
+        border: none;
+    }
+
+    /* Marked Row */
+    .log .mark .col1,
+    .log .mark .col2,
+    .log .mark .col3 {
+        color: var(--color-text-purple);
+        background-color: var(--color-bg-purple);
     }
 </style>
