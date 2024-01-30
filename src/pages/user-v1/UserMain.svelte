@@ -21,8 +21,8 @@
     export let response = "server response here...";
 </script>
 
-<div class="wrapper">
-    <div class="users-groups-wrapper grow">
+<div class="wrapper flex top gap">
+    <div class="flex column gap grow">
         <div class="section flow">
             <UserGroups {groups} />
         </div>
@@ -51,18 +51,4 @@
 </div>
 
 <style>
-    .wrapper {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: start;
-        gap: var(--gap);
-    }
-    /* .wrapper :global(> *) {
-        flex: 1 0 0%;
-    } */
-    .users-groups-wrapper {
-        display: flex;
-        flex-direction: column;
-        gap: var(--gap);
-    }
 </style>
