@@ -27,6 +27,14 @@
             encoding: "utf8",
         },
     ];
+    let available = [
+        {
+            "path": "COM1",
+            "manufacturer": "(Standard port types)",
+            "pnpId": "ACPI\\PNP0501\\0",
+            "friendlyName": "Communications Port (COM1)"
+        }
+    ];
 </script>
 
 <h2 class="border-bottom">Clients</h2>

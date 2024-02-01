@@ -4,6 +4,7 @@ import { volatile } from "./js/global-volatile-store.js"
 // State
 // const url = "ws://192.168.1.1:4620"
 const url = ws.url()
+// const url = ws.url().replace("4621", "4620")
 
 // Connect
 ws.connect(url, (status) => {

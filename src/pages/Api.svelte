@@ -6,7 +6,6 @@
 
     // Components
     import { X, Plus } from "lucide-svelte";
-    import Page from "../layout/Page.svelte";
 
     // State
     // const hdd = persistentStore("api", {})
@@ -81,8 +80,8 @@
     onDestroy(async () => {});
 </script>
 
-<section class="grid gap auto-md justify-start">
-    <Page>
+<article class="page max-width flex top even gap">
+    <section class="section flow">
         <h2>Helper</h2>
         <label>
             Group <br />
@@ -107,8 +106,8 @@
         <div>
             {ram.hint}
         </div>
-    </Page>
-    <Page>
+    </section>
+    <section class="section flow">
         <h2>Sender</h2>
         <label>
             Path <br />
@@ -145,14 +144,10 @@
         </div>
         <button class="fill-width cyan" on:click={() => send()}>Send</button>
         <pre>{ram.response}</pre>
-    </Page>
-</section>
+    </section>
+</article>
 
 <style>
-    section {
-        margin-inline: auto;
-        max-width: 60rem;
-    }
     select {
         width: 100%;
     }

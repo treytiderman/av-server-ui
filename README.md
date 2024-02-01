@@ -61,7 +61,8 @@ git clone https://github.com/treytiderman/av-server-ui.git
 
 ## Run
 
-1. Run the following commands in the `/av-server-ui` folder
+1. Run the following commands in the `../av-server-ui` folder
+
 2. Install project dependencies (package.json)
 
 ```
@@ -75,6 +76,7 @@ npm run dev
 ```
 
 4. Go to http://SERVER_IP:4621, Example http://192.168.1.1:4621
+
 5. Build a bundle and put it in the public folder of the av-server `../av-server/public/av-server-ui`
 
 ```
@@ -84,6 +86,7 @@ npm run build
 ## Podman
 
 1. Run the following commands in the `/av-server-ui` folder
+
 2. Build the image
 
 ```
