@@ -14,16 +14,12 @@
     export let lines = [
         {
             wasReceived: false,
-            timestampISO: "2022-10-16T21:05:38.425Z",
-            data: JSON.stringify(
-                { boolean: true, string: "Yes", number: 200 },
-                true,
-                4,
-            ),
+            timestamp: "2022-10-16T21:05:38.425Z",
+            data: JSON.stringify({ boolean: true, string: "Yes", number: 200 }, true, 4),
         },
         {
             wasReceived: false,
-            timestampISO: "2022-10-16T21:05:38.425Z",
+            timestamp: "2022-10-16T21:05:38.425Z",
             data: JSON.stringify(
                 {
                     available: [
@@ -69,23 +65,23 @@
         },
         {
             wasReceived: true,
-            timestampISO: "2022-10-16T21:05:38.447Z",
+            timestamp: "2022-10-16T21:05:38.447Z",
             data: "OFF\n\r",
         },
         {
             wasReceived: false,
-            timestampISO: "2022-10-16T21:05:38.425Z",
+            timestamp: "2022-10-16T21:05:38.425Z",
             data: "\x4f\x46\x46",
             mark: true,
         },
         {
             wasReceived: true,
-            timestampISO: "2022-10-16T21:05:38.536Z",
+            timestamp: "2022-10-16T21:05:38.536Z",
             data: "Weeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\nWeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee!!!",
         },
         {
             wasReceived: true,
-            timestampISO: "2022-10-16T21:05:38.543Z",
+            timestamp: "2022-10-16T21:05:38.543Z",
             data: "OK",
         },
     ];
@@ -112,10 +108,10 @@
 
     // Scroll to the bottom of the Terminal if the scroll bar is at the bottom everytime "lines" updates
     function scrollToBottomOfElement(element) {
-        const manualOffset = 100
+        const manualOffset = 100;
         const currentScrollHeight = element?.scrollTop + element?.offsetHeight + manualOffset;
         const totalScrollHeight = element?.scrollHeight;
-        
+
         // If the scroll bar is near the bottom
         // console.log(currentScrollHeight >= totalScrollHeight, currentScrollHeight, totalScrollHeight);
         if (currentScrollHeight >= totalScrollHeight) {
@@ -129,11 +125,7 @@
         line.parsedData = line.data;
 
         if (!escapeCRLF && prettyJSON && isJSON(line.data)) {
-            line.parsedData = JSON.stringify(
-                JSON.parse(line.parsedData),
-                true,
-                4,
-            );
+            line.parsedData = JSON.stringify(JSON.parse(line.parsedData), true, 4);
         }
         if (escapeCRLF) {
             line.parsedData = String(line.parsedData).replace(/\r/g, "\\r");
@@ -171,17 +163,9 @@
             <div class="col3">
                 <div>
                     Sent
-                    <X
-                        size=".8rem"
-                        strokeWidth="3"
-                        color="var(--color-text-orange)"
-                    />
+                    <X size=".8rem" strokeWidth="3" color="var(--color-text-orange)" />
                     / Received
-                    <Circle
-                        size=".7rem"
-                        strokeWidth="3"
-                        color="var(--color-text-blue)"
-                    />
+                    <Circle size=".7rem" strokeWidth="3" color="var(--color-text-blue)" />
                 </div>
             </div>
         </div>
@@ -196,17 +180,9 @@
                     <button on:click={() => dispatch("lineClick", line)}>
                         <div>
                             {#if line.wasReceived}
-                                <Circle
-                                    size=".7rem"
-                                    strokeWidth="3"
-                                    color="var(--color-text-blue)"
-                                />
+                                <Circle size=".7rem" strokeWidth="3" color="var(--color-text-blue)" />
                             {:else}
-                                <X
-                                    size=".8rem"
-                                    strokeWidth="3"
-                                    color="var(--color-text-orange)"
-                                />
+                                <X size=".8rem" strokeWidth="3" color="var(--color-text-orange)" />
                             {/if}
                         </div>
                     </button>
@@ -217,21 +193,18 @@
                     <div>
                         {#if timeColFormat === "datetime"}
                             <span>
-                                {line.timestampISO.split("T")[0]}
+                                {line.timestamp ? line.timestamp.split("T")[0] : ""}
                             </span>
                             <span>
-                                {line.timestampISO.split("T")[1].split("Z")[0]}
+                                {line.timestamp ? line.timestamp.split("T")[1].split("Z")[0] : ""}
                             </span>
                         {:else if timeColFormat === "time"}
                             <span>
-                                {line.timestampISO.split("T")[1].split("Z")[0]}
+                                {line.timestamp ? line.timestamp.split("T")[1].split("Z")[0] : ""}
                             </span>
                         {:else}
                             <span>
-                                {line.timestampISO
-                                    .split("T")[1]
-                                    .slice(3)
-                                    .split(".")[0]}
+                                {line.timestamp ? line.timestamp.split("T")[1].slice(3).split(".")[0] : ""}
                             </span>
                         {/if}
                     </div>

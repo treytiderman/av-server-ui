@@ -10,19 +10,19 @@
     export let showCRLF = false;
     export let lines = [
         {
-            timestampISO: "2023-10-16T01:01:57.154Z",
+            timestamp: "2023-10-16T01:01:57.154Z",
             level: 'DEBUG',
             message: '1ms createDatabase("test-database-2", defaultData)',
             data: JSON.stringify({ defaultData: { num: 72, array: [ 1, 2 ] } }),
         },
         {
-            timestampISO: "2023-10-16T01:01:57.155Z",
+            timestamp: "2023-10-16T01:01:57.155Z",
             level: 'DEBUG',
             message: '3ms writeDatabase("test-database-2") -> "ok',
             data: JSON.stringify({}),
         },
         {
-            timestampISO: "2023-10-16T01:01:57.163Z",
+            timestamp: "2023-10-16T01:01:57.163Z",
             level: 'DEBUG',
             message: '0ms deleteDatabase("test-database-2") -> "ok',
             data: JSON.stringify({}),
@@ -99,18 +99,18 @@
                 <div class="col1">
                     {#if timeColFormat === "datetime"}
                         <span>
-                            {line.timestampISO.split("T")[0]}
+                            {line.timestamp.split("T")[0]}
                         </span>
                         <span>
-                            {line.timestampISO.split("T")[1].split("Z")[0]}
+                            {line.timestamp.split("T")[1].split("Z")[0]}
                         </span>
                     {:else if timeColFormat === "time"}
                         <span>
-                            {line.timestampISO.split("T")[1].split("Z")[0]}
+                            {line.timestamp.split("T")[1].split("Z")[0]}
                         </span>
                     {:else}
                         <span>
-                            {line.timestampISO.split("T")[1].slice(3).split(".")[0]}
+                            {line.timestamp.split("T")[1].slice(3).split(".")[0]}
                         </span>
                     {/if}
                 </div>
