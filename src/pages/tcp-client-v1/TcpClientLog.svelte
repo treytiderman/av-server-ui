@@ -6,13 +6,13 @@
     export let lines = [
         {
             wasReceived: false,
-            timestampISO: "2022-10-16T21:05:38.425Z",
+            timestamp: "2022-10-16T21:05:38.425Z",
             data: "OFF\r",
             mark: true,
         },
         {
             wasReceived: true,
-            timestampISO: "2022-10-16T21:05:38.543Z",
+            timestamp: "2022-10-16T21:05:38.543Z",
             data: "OFF OK\r",
         },
     ];

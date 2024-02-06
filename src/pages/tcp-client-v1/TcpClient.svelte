@@ -8,7 +8,7 @@
     import TcpClientMain from "./TcpClientMain.svelte";
 
     // State
-    let onlineWithApi = true;
+    let onlineWithApi = false;
     let selectedClient;
 
     // State - Main
@@ -18,11 +18,23 @@
     let select = "Functions";
     let isOpen = false;
     let encoding = "ascii";
-    let addresses = [];
+    let addresses = onlineWithApi ? [] : ["192.168.1.9:23", "192.168.1.42:8080"];
 
     // State - Clients
-    let clients = [];
-    $: console.log("clients", clients);
+    let clients = onlineWithApi ? [] : [
+        {
+            isOpen: false,
+            reconnect: false,
+            address: "192.168.1.9:23",
+            encoding: "ascii",
+        },
+        {
+            isOpen: true,
+            reconnect: true,
+            address: "192.168.1.42:8080",
+            encoding: "hex",
+        },
+    ];
 
     // State - Functions
     // let formAddress = "";
@@ -52,9 +64,7 @@
             clients = Object.values(res);
             addresses = Object.keys(res);
             if (selectedClient?.address) {
-                const client = clients.find(
-                    (c) => c.address === selectedClient.address,
-                );
+                const client = clients.find((c) => c.address === selectedClient.address);
                 if (!client) return (subpage = "Functions");
                 selectedClient = client;
                 isOpen = selectedClient.isOpen;
@@ -82,7 +92,7 @@
         }
 
         // Unsubscribe to another address history
-        if (selectedClient?.address) {
+        if (onlineWithApi && selectedClient?.address) {
             tcpClient_v1.data.unsub(selectedClient.address);
         }
 
@@ -90,37 +100,33 @@
         subpage = "Log";
         selectedClient = clients.find((c) => c.address === detail);
         if (!selectedClient) return (subpage = "Functions");
-        console.log(
-            "tcp-client-changeConnection new selectedClient",
-            selectedClient,
-        );
+        console.log("tcp-client-changeConnection new selectedClient", selectedClient);
 
         isOpen = selectedClient.isOpen;
         encoding = selectedClient.encoding;
 
         // Subscribe to another address history
-        lines = await tcpClient_v1.history.get(selectedClient.address);
-        let lastData = ""
-        tcpClient_v1.data.sub(selectedClient.address, (res) => {
-            console.log("data.sub", res);
-
-            // Backend issue. Delete once fixed
-            if (lastData === JSON.stringify(res) || !res) return
-            lastData = JSON.stringify(res)
-            console.log("new data.sub", res);
-
-            lines.push(res);
-            lines = lines
-        });
+        if (onlineWithApi) {
+            lines = await tcpClient_v1.history.get(selectedClient.address);
+            let lastData = "";
+            tcpClient_v1.data.sub(selectedClient.address, (res) => {
+                console.log("data.sub", res);
+    
+                // Backend issue. Delete once fixed
+                if (lastData === JSON.stringify(res) || !res) return;
+                lastData = JSON.stringify(res);
+                console.log("new data.sub", res);
+    
+                lines.push(res);
+                lines = lines;
+            });
+        }
     }
     async function toggleEncoding(event) {
         const detail = event.detail;
         console.log("tcp-client-toggleEncoding", selectedClient);
         const encoding = selectedClient.encoding === "ascii" ? "hex" : "ascii";
-        response = await tcpClient_v1.client.setEncoding(
-            selectedClient.address,
-            encoding,
-        );
+        response = await tcpClient_v1.client.setEncoding(selectedClient.address, encoding);
     }
     async function headerOpen(event) {
         const detail = event.detail;
@@ -153,29 +159,17 @@
     async function open(event) {
         const detail = event.detail;
         console.log("tcp-client-open", detail);
-        response = await tcpClient_v1.client.open(
-            detail.address,
-            detail.encoding,
-            detail.reconnect,
-        );
+        response = await tcpClient_v1.client.open(detail.address, detail.encoding, detail.reconnect);
     }
     async function reconnect(event) {
         const detail = event.detail;
         console.log("tcp-client-reconnect", detail);
-        response = await tcpClient_v1.client.reconnect(
-            detail.address,
-            detail.encoding,
-            detail.reconnect,
-        );
+        response = await tcpClient_v1.client.reconnect(detail.address, detail.encoding, detail.reconnect);
     }
     async function send(event) {
         const detail = event.detail;
         console.log("tcp-client-send", detail);
-        response = await tcpClient_v1.client.send(
-            detail.address,
-            detail.data,
-            detail.encoding,
-        );
+        response = await tcpClient_v1.client.send(detail.address, detail.data, detail.encoding);
     }
     async function close(event) {
         const detail = event.detail;
@@ -190,10 +184,7 @@
     async function setEncoding(event) {
         const detail = event.detail;
         console.log("tcp-client-setEncoding", detail);
-        response = await tcpClient_v1.client.setEncoding(
-            detail.address,
-            detail.encoding,
-        );
+        response = await tcpClient_v1.client.setEncoding(detail.address, detail.encoding);
     }
     async function closeAll(event) {
         const detail = event.detail;
@@ -228,21 +219,17 @@
     async function lineClick(event) {
         const detail = event.detail;
         console.log("tcp-client-lineClick", detail);
-        const lineIndex = lines.findIndex(line => line.timestampISO === detail.timestampISO)
-        lines[lineIndex].mark = lines[lineIndex]?.mark ? false : true
+        const lineIndex = lines.findIndex((line) => line.timestamp === detail.timestamp);
+        lines[lineIndex].mark = lines[lineIndex]?.mark ? false : true;
     }
     async function sendsSend(event) {
         const detail = event.detail;
         console.log("tcp-client-sendsSend", selectedClient, detail);
-        response = await tcpClient_v1.client.send(
-            selectedClient.address,
-            detail,
-            selectedClient.encoding,
-        );
+        response = await tcpClient_v1.client.send(selectedClient.address, detail, selectedClient.encoding);
     }
 </script>
 
-<div class="page max-width" class:max-width={subpage !== "Log"}>
+<div class="page flex column max-width" class:max-width={subpage !== "Log"}>
     {#if onlineWithApi}
         <TcpClientMain
             bind:select
@@ -285,10 +272,12 @@
     {:else}
         <div>Offline</div>
         <TcpClientMain
-            {select}
+            bind:select
             {subpage}
             {isOpen}
             {encoding}
+            {addresses}
+            {clients}
             {formAddress}
             {formEncoding}
             {formReconnect}
@@ -298,6 +287,7 @@
             {escapeCRLF}
             {prettyJSON}
             {freezeCol1Col2}
+            {lines}
             on:header-changeConnection={changeConnection}
             on:clients-copy={clientCopy}
             on:clients-open={clientOpen}

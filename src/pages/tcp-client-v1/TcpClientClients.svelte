@@ -41,8 +41,7 @@
         <div
             class="flex gap y-center client"
             title="
-TCP Client with the address '{client.address}' 
-is {client.isOpen ? 'open' : 'closed'}
+TCP Client with the address '{client.address}' is {client.isOpen ? 'open' : 'closed'}
 {client.reconnect ? 'and will try to reconnect on close' : ''}"
         >
             {#if client.isOpen}
@@ -66,7 +65,7 @@ is {client.isOpen ? 'open' : 'closed'}
                 <span class="dim">:</span>
                 {client.address.split(":")[1]}
             </h4>
-            <small class="dim">{client.encoding}</small>
+            <small class="">{client.encoding}</small>
             <div class:hide={!client.reconnect}>
                 <History size="1.2rem" strokeWidth="2" />
             </div>
