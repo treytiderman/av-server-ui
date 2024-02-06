@@ -7,6 +7,7 @@ import FileSystem from "../pages/FileSystem.svelte"
 import SiteMap from "../pages/SiteMap.svelte"
 import Settings from "../pages/Settings.svelte"
 
+import Browser from "./browser-v1/Browser.svelte"
 import Code from "./code-editor-v1/Code.svelte"
 import Logs from "../pages/logs-v1/Logs.svelte"
 import NewTab from "../pages/new-tab-v1/NewTab.svelte"
@@ -43,4 +44,5 @@ export const pages = {
     "NewTab": NewTab,
     "Blank": Blank,
     "Notes": Notes,
+    "Browser": Browser,
 }
