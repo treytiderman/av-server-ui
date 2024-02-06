@@ -14,28 +14,38 @@
     export let select = "Functions";
     export let isOpen = false;
     export let encoding = "ascii";
-    export let addresses = ["192.168.1.9:23", "192.168.1.42:8080"];
+    export let baudrate = 9600;
+    export let paths = ["COM3", "COM4"];
 
-    // State - Clients
-    export let clients = [
+    // State - Ports
+    export let ports = [
         {
-            isOpen: false,
-            reconnect: false,
-            address: "192.168.1.9:23",
-            encoding: "ascii",
+            path: "COM1",
+            manufacturer: "(Standard port types)",
+            pnpId: "ACPI\\PNP0501\\0",
+            friendlyName: "Communications Port (COM1)",
         },
         {
+            path: "COM4",
+            manufacturer: "FTDI",
+            serialNumber: "A10NQRTP",
+            pnpId: "FTDIBUS\\VID_0403+PID_6001+A10NQRTPA\\0000",
+            friendlyName: "USB Serial Port (COM4)",
+            vendorId: "0403",
+            productId: "6001",
+
             isOpen: true,
-            reconnect: true,
-            address: "192.168.1.42:8080",
-            encoding: "hex",
+            baudrate: 9600,
+            encoding: "ascii",
+            delimiter: "none",
         },
     ];
 
     // State - Functions
-    export let formAddress = "";
+    export let formPath = "";
     export let formEncoding = "";
-    export let formReconnect = "";
+    export let formBaudrate = "";
+    export let formDelimiter = "";
     export let formData = "";
     export let response = "...";
 
@@ -49,13 +59,13 @@
     export let lines = [
         {
             wasReceived: false,
-            timestampISO: "2022-10-16T21:05:38.425Z",
+            timestamp: "2022-10-16T21:05:38.425Z",
             data: "OFF\r",
             mark: true,
         },
         {
             wasReceived: true,
-            timestampISO: "2022-10-16T21:05:38.543Z",
+            timestamp: "2022-10-16T21:05:38.543Z",
             data: "OFF OK\r",
         },
     ];
@@ -69,36 +79,39 @@
     <div class="header">
         <SerialPortHeader
             bind:select
-            {addresses}
+            {paths}
             {isOpen}
             {encoding}
+            {baudrate}
             {response}
             showButtons={subpage === "Log"}
             on:header-open
             on:header-close
             on:header-toggleEncoding
-            on:header-changeConnection
+            on:header-changePage
         />
     </div>
 
     <div class="functions" class:hide={subpage !== "Functions"}>
         <div class="section flow grow">
-            <SerialPortPorts {clients} on:clients-copy on:clients-open />
+            <SerialPortPorts {ports} on:ports-copy on:ports-open />
         </div>
 
         <!-- Functions -->
         <div class="section flow grow">
             <SerialPortFunctions
-                address={formAddress}
+                path={formPath}
                 encoding={formEncoding}
-                reconnect={formReconnect}
+                baudrate={formBaudrate}
+                delimiter={formDelimiter}
                 data={formData}
                 on:functions-open
-                on:functions-reconnect
                 on:functions-send
                 on:functions-close
                 on:functions-remove
                 on:functions-setEncoding
+                on:functions-setBaudrate
+                on:functions-setDelimiter
                 on:functions-closeAll
                 on:functions-removeAll
             />
@@ -120,15 +133,9 @@
     </div>
 
     <div class:hide={subpage !== "Log"} class="log">
-        <SerialPortLog
-            {lines}
-            {showBorders}
-            {escapeCRLF}
-            {prettyJSON}
-            {freezeCol1Col2}
-            on:lineClick
-        />
+        <SerialPortLog {lines} {showBorders} {escapeCRLF} {prettyJSON} {freezeCol1Col2} on:lineClick />
     </div>
+
     <div class:hide={subpage !== "Log"} class="sends">
         <SerialPortSends on:send />
     </div>

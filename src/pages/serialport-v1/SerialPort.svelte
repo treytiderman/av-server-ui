@@ -1,15 +1,15 @@
 <script>
     // Imports
     import { state } from "./serialport-state.js";
-    import { tcpClient_v1 } from "../../api/api.js";
+    import { serial_v1 as api } from "../../api/api.js";
     import { onMount, onDestroy } from "svelte";
 
     // Components
     import SerialPortMain from "./SerialPortMain.svelte";
 
     // State
-    let onlineWithApi = false;
-    let selectedClient;
+    let onlineWithApi = true;
+    let selectedPort;
 
     // State - Main
     let subpage = "Functions";
@@ -18,20 +18,46 @@
     let select = "Functions";
     let isOpen = false;
     let encoding = "ascii";
-    let addresses = [];
+    let baudrate = 9600;
+    let delimiter = "none";
+    let paths = onlineWithApi ? [] : ["COM4"];
 
-    // State - Clients
-    let clients = [];
-    $: console.log("clients", clients);
+    // State - Ports
+    let ports = onlineWithApi
+        ? []
+        : [
+              {
+                  path: "COM1",
+                  manufacturer: "(Standard port types)",
+                  pnpId: "ACPI\\PNP0501\\0",
+                  friendlyName: "Communications Port (COM1)",
+              },
+              {
+                  path: "COM4",
+                  manufacturer: "FTDI",
+                  serialNumber: "A10NQRTP",
+                  pnpId: "FTDIBUS\\VID_0403+PID_6001+A10NQRTPA\\0000",
+                  friendlyName: "USB Serial Port (COM4)",
+                  vendorId: "0403",
+                  productId: "6001",
+
+                  isOpen: true,
+                  baudrate: 9600,
+                  encoding: "ascii",
+                  delimiter: "none",
+              },
+          ];
 
     // State - Functions
-    // let formAddress = "";
+    // let formPath = "";
     // let formEncoding = "";
-    // let formReconnect = "";
+    // let formBaudrate = 9600;
+    // let formDelimiter = "";
     // let formData = "";
-    let formAddress = "192.168.1.9:23";
+    let formPath = "COM3";
     let formEncoding = "ascii";
-    let formReconnect = "false";
+    let formBaudrate = 9600;
+    let formDelimiter = "none";
     let formData = "data";
     let response = "...";
 
@@ -48,197 +74,202 @@
     // Startup / Shutdown
     onMount(async () => {
         if (!onlineWithApi) return;
-        tcpClient_v1.clients.sub((res) => {
-            clients = Object.values(res);
-            addresses = Object.keys(res);
-            if (selectedClient?.address) {
-                const client = clients.find(
-                    (c) => c.address === selectedClient.address,
-                );
-                if (!client) return (subpage = "Functions");
-                selectedClient = client;
-                isOpen = selectedClient.isOpen;
-                encoding = selectedClient.encoding;
+        api.available.sub(async (res) => {
+            ports = await getPorts();
+        });
+        api.ports.sub(async (res) => {
+            ports = await getPorts();
+
+            paths = Object.keys(res);
+            paths.filter((p) => p.isOpen === undefined);
+
+            if (selectedPort?.path) {
+                const port = ports.find((c) => c.path === selectedPort.path);
+                if (!port) return (subpage = "Functions");
+                selectedPort = port;
+                isOpen = selectedPort.isOpen;
+                baudrate = selectedPort.baudrate;
+                encoding = selectedPort.encoding;
+                delimiter = selectedPort.delimiter;
             }
         });
     });
     onDestroy(async () => {
         if (!onlineWithApi) return;
-        await tcpClient_v1.clients.unsub();
+        await api.ports.unsub();
     });
 
     // Functions
-    async function changeConnection(event) {
-        const detail = event.detail; // "Functions" || "Settings" || "192.168.1.9:23"
-        console.log("tcp-client-changeConnection", detail);
+    async function getPorts() {
+        const available = await api.available.get();
+        const statuses = await api.ports.get();
+
+        Object.values(statuses).forEach((status) => {
+            const index = available.findIndex((p) => p.path === status.path);
+            if (index) {
+                available[index].isOpen = status.isOpen;
+                available[index].baudrate = status.baudrate;
+                available[index].encoding = status.encoding;
+                available[index].delimiter = status.delimiter;
+            }
+        });
+
+        return available;
+    }
+    async function changePage(event) {
+        const detail = event.detail; // "Functions" || "Settings" || "COM3"
+        console.log("serial-port-changePage", detail);
 
         // Change pages
-        if (detail === "Functions") {
-            subpage = "Functions";
-            return;
-        } else if (detail === "Settings") {
-            subpage = "Settings";
+        if (detail === "Functions" || detail === "Settings") {
+            subpage = detail;
             return;
         }
 
-        // Unsubscribe to another address history
-        if (selectedClient?.address) {
-            tcpClient_v1.data.unsub(selectedClient.address);
+        // Unsubscribe last history
+        if (onlineWithApi && selectedPort?.path) {
+            api.data.unsub(selectedPort.path);
         }
 
         // Update state
         subpage = "Log";
-        selectedClient = clients.find((c) => c.address === detail);
-        if (!selectedClient) return (subpage = "Functions");
-        console.log(
-            "tcp-client-changeConnection new selectedClient",
-            selectedClient,
-        );
+        selectedPort = ports.find((c) => c.path === detail);
+        if (!selectedPort) return (subpage = "Functions");
+        console.log("selectedPort", selectedPort);
 
-        isOpen = selectedClient.isOpen;
-        encoding = selectedClient.encoding;
+        isOpen = selectedPort.isOpen;
+        encoding = selectedPort.encoding;
+        baudrate = selectedPort.baudrate;
+        delimiter = selectedPort.delimiter;
 
-        // Subscribe to another address history
-        lines = await tcpClient_v1.history.get(selectedClient.address);
-        let lastData = ""
-        tcpClient_v1.data.sub(selectedClient.address, (res) => {
-            console.log("data.sub", res);
+        // Subscribe new history
+        if (onlineWithApi) {
+            lines = await api.history.get(selectedPort.path);
+            let lastData = "";
+            api.data.sub(selectedPort.path, (res) => {
+                console.log("data.sub", res);
 
-            // Backend issue. Delete once fixed
-            if (lastData === JSON.stringify(res) || !res) return
-            lastData = JSON.stringify(res)
-            console.log("new data.sub", res);
+                // Backend issue. Delete once fixed
+                if (lastData === JSON.stringify(res) || !res) return;
+                lastData = JSON.stringify(res);
+                console.log("new data.sub", res);
 
-            lines.push(res);
-            lines = lines
-        });
+                lines.push(res);
+                lines = lines;
+            });
+        }
     }
     async function toggleEncoding(event) {
         const detail = event.detail;
-        console.log("tcp-client-toggleEncoding", selectedClient);
-        const encoding = selectedClient.encoding === "ascii" ? "hex" : "ascii";
-        response = await tcpClient_v1.client.setEncoding(
-            selectedClient.address,
-            encoding,
-        );
+        console.log("serial-port-toggleEncoding", selectedPort);
+        const encoding = selectedPort.encoding === "ascii" ? "hex" : "ascii";
+        response = await api.port.setEncoding(selectedPort.path, encoding);
     }
     async function headerOpen(event) {
         const detail = event.detail;
-        console.log("tcp-client-headerOpen", selectedClient);
-        response = await tcpClient_v1.client.open(
-            selectedClient.address,
-            selectedClient.encoding,
-            selectedClient.reconnect,
+        console.log("serial-port-headerOpen", selectedPort);
+        response = await api.port.open(
+            selectedPort.path,
+            selectedPort.baudrate,
+            selectedPort.encoding,
+            selectedPort.delimiter,
         );
     }
     async function headerClose(event) {
         const detail = event.detail;
-        console.log("tcp-client-headerClose", selectedClient);
-        response = await tcpClient_v1.client.close(selectedClient.address);
+        console.log("serial-port-headerClose", selectedPort);
+        response = await api.port.close(selectedPort.path);
     }
-    async function clientCopy(event) {
+    async function portCopy(event) {
         const detail = event.detail;
-        console.log("tcp-client-clientCopy", detail);
-        formAddress = detail.address;
+        console.log("serial-port-portCopy", detail);
+        formPath = detail.path;
         formEncoding = detail.encoding;
-        formReconnect = detail.reconnect;
+        formBaudrate = detail.baudrate;
+        formDelimiter = detail.delimiter;
     }
-    async function clientOpen(event) {
+    async function portOpen(event) {
         const detail = event.detail;
-        console.log("tcp-client-clientOpen", detail);
+        console.log("serial-port-portOpen", detail);
         subpage = "Log";
         select = detail;
-        changeConnection({ detail: select });
+        changePage({ detail: select });
     }
     async function open(event) {
         const detail = event.detail;
-        console.log("tcp-client-open", detail);
-        response = await tcpClient_v1.client.open(
-            detail.address,
-            detail.encoding,
-            detail.reconnect,
-        );
-    }
-    async function reconnect(event) {
-        const detail = event.detail;
-        console.log("tcp-client-reconnect", detail);
-        response = await tcpClient_v1.client.reconnect(
-            detail.address,
-            detail.encoding,
-            detail.reconnect,
-        );
+        console.log("serial-port-open", detail);
+        response = await api.port.open(detail.path, detail.baudrate, detail.encoding, detail.delimiter);
     }
     async function send(event) {
         const detail = event.detail;
-        console.log("tcp-client-send", detail);
-        response = await tcpClient_v1.client.send(
-            detail.address,
-            detail.data,
-            detail.encoding,
-        );
+        console.log("serial-port-send", detail);
+        response = await api.port.send(detail.path, detail.data, detail.encoding);
     }
     async function close(event) {
         const detail = event.detail;
-        console.log("tcp-client-close", detail);
-        response = await tcpClient_v1.client.close(detail.address);
+        console.log("serial-port-close", detail);
+        response = await api.port.close(detail.path);
     }
     async function remove(event) {
         const detail = event.detail;
-        console.log("tcp-client-remove", detail);
-        response = await tcpClient_v1.client.remove(detail.address);
+        console.log("serial-port-remove", detail);
+        response = await api.port.remove(detail.path);
     }
     async function setEncoding(event) {
         const detail = event.detail;
-        console.log("tcp-client-setEncoding", detail);
-        response = await tcpClient_v1.client.setEncoding(
-            detail.address,
-            detail.encoding,
-        );
+        console.log("serial-port-setEncoding", detail);
+        response = await api.port.setEncoding(detail.path, detail.encoding);
+    }
+    async function setBaudrate(event) {
+        const detail = event.detail;
+        console.log("serial-port-setBaudrate", detail);
+        response = await api.port.setBaudrate(detail.path, detail.baudrate);
+    }
+    async function setDelimiter(event) {
+        const detail = event.detail;
+        console.log("serial-port-setDelimiter", detail);
+        response = await api.port.setDelimiter(detail.path, detail.delimiter);
     }
     async function closeAll(event) {
         const detail = event.detail;
-        console.log("tcp-client-closeAll", detail);
-        response = await tcpClient_v1.clients.close();
+        console.log("serial-port-closeAll", detail);
+        response = await api.ports.close();
     }
     async function removeAll(event) {
         const detail = event.detail;
-        console.log("tcp-client-removeAll", detail);
-        response = await tcpClient_v1.clients.remove();
+        console.log("serial-port-removeAll", detail);
+        response = await api.ports.remove();
     }
     async function escapeCRLFClick(event) {
         const detail = event.detail;
-        console.log("tcp-client-escapeCRLFClick", detail);
+        console.log("serial-port-escapeCRLFClick", detail);
         $state.settings.escapeCRLF = !$state.settings.escapeCRLF;
     }
     async function freezeCol1Col2Click(event) {
         const detail = event.detail;
-        console.log("tcp-client-freezeCol1Col2Click", detail);
+        console.log("serial-port-freezeCol1Col2Click", detail);
         $state.settings.freezeCol1Col2 = !$state.settings.freezeCol1Col2;
     }
     async function prettyJSONClick(event) {
         const detail = event.detail;
-        console.log("tcp-client-prettyJSONClick", detail);
+        console.log("serial-port-prettyJSONClick", detail);
         $state.settings.prettyJSON = !$state.settings.prettyJSON;
     }
     async function showBordersClick(event) {
         const detail = event.detail;
-        console.log("tcp-client-showBordersClick", detail);
+        console.log("serial-port-showBordersClick", detail);
         $state.settings.showBorders = !$state.settings.showBorders;
     }
     async function lineClick(event) {
         const detail = event.detail;
-        console.log("tcp-client-lineClick", detail);
-        const lineIndex = lines.findIndex(line => line.timestampISO === detail.timestampISO)
-        lines[lineIndex].mark = lines[lineIndex]?.mark ? false : true
+        console.log("serial-port-lineClick", detail);
+        const lineIndex = lines.findIndex((line) => line.timestamp === detail.timestamp);
+        lines[lineIndex].mark = lines[lineIndex]?.mark ? false : true;
     }
     async function sendsSend(event) {
         const detail = event.detail;
-        console.log("tcp-client-sendsSend", selectedClient, detail);
-        response = await tcpClient_v1.client.send(
-            selectedClient.address,
-            detail,
-            selectedClient.encoding,
-        );
+        console.log("serial-port-sendsSend", selectedPort, detail);
+        response = await api.port.send(selectedPort.path, detail, selectedPort.encoding);
     }
 </script>
 
@@ -249,11 +280,13 @@
             {subpage}
             {isOpen}
             {encoding}
-            {addresses}
-            {clients}
-            {formAddress}
+            {baudrate}
+            {paths}
+            {ports}
+            {formPath}
             {formEncoding}
-            {formReconnect}
+            {formBaudrate}
+            {formDelimiter}
             {formData}
             {response}
             {showBorders}
@@ -263,16 +296,17 @@
             {lines}
             on:header-open={headerOpen}
             on:header-close={headerClose}
-            on:header-changeConnection={changeConnection}
+            on:header-changePage={changePage}
             on:header-toggleEncoding={toggleEncoding}
-            on:clients-copy={clientCopy}
-            on:clients-open={clientOpen}
+            on:ports-copy={portCopy}
+            on:ports-open={portOpen}
             on:functions-open={open}
-            on:functions-reconnect={reconnect}
             on:functions-send={send}
             on:functions-close={close}
             on:functions-remove={remove}
             on:functions-setEncoding={setEncoding}
+            on:functions-setBaudrate={setBaudrate}
+            on:functions-setDelimiter={setDelimiter}
             on:functions-closeAll={closeAll}
             on:functions-removeAll={removeAll}
             on:settings-escapeCRLF={escapeCRLFClick}
@@ -285,22 +319,27 @@
     {:else}
         <div>Offline</div>
         <SerialPortMain
-            {select}
+            bind:select
             {subpage}
             {isOpen}
             {encoding}
-            {formAddress}
+            {baudrate}
+            {paths}
+            {ports}
+            {formPath}
             {formEncoding}
-            {formReconnect}
+            {formBaudrate}
+            {formDelimiter}
             {formData}
             {response}
             {showBorders}
             {escapeCRLF}
             {prettyJSON}
             {freezeCol1Col2}
-            on:header-changeConnection={changeConnection}
-            on:clients-copy={clientCopy}
-            on:clients-open={clientOpen}
+            {lines}
+            on:header-changePage={changePage}
+            on:ports-copy={portCopy}
+            on:ports-open={portOpen}
             on:settings-escapeCRLF={escapeCRLFClick}
             on:settings-freezeCol1Col2={freezeCol1Col2Click}
             on:settings-prettyJSON={prettyJSONClick}

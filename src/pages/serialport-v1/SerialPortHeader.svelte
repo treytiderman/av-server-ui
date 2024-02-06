@@ -2,62 +2,74 @@
     import { createEventDispatcher } from "svelte";
     const dispatch = createEventDispatcher();
 
-    // State
+    // Variables
+    const baudrates = [9600, 19200, 38400, 57600, 115200];
+    let wrapperWidth;
+
+    // State - Header
     export let select = "Functions";
     export let isOpen = false;
     export let encoding = "ascii";
+    export let baudrate = 9600;
     export let showButtons = true;
-    export let addresses = ["192.168.1.9:23", "172.100.100.100:58080"];
+    export let paths = ["COM3", "COM4"];
     export let response = "...";
-    let wrapperWidth;
 </script>
 
-<section
-    class="wrapper"
-    class:wrapper-wrap={wrapperWidth < 500}
-    bind:clientWidth={wrapperWidth}
->
+<section class="wrapper" class:wrapper-wrap={wrapperWidth < 500} bind:clientWidth={wrapperWidth}>
     {#if showButtons}
         <!-- Open / Close Button -->
         {#if isOpen}
             <button
                 class="open"
                 class:close={!isOpen}
-                title="Close the tcp client connection"
+                title="Close port"
                 on:click={(event) => dispatch("header-close")}
             >
                 Open
             </button>
         {:else}
-            <button
-                class="close"
-                title="Open a tcp client connection"
-                on:click={(event) => dispatch("header-open")}
-            >
-                Closed
-            </button>
+            <button class="close" title="Open port" on:click={(event) => dispatch("header-open")}> Closed </button>
         {/if}
     {/if}
 
     <!-- Address Selector -->
     <select
-        class="address"
-        title="Select an address"
+        class="path"
+        title="Select a path"
         bind:value={select}
         on:input={(event) => {
-            dispatch("header-changeConnection", event.target.value);
+            dispatch("header-changePage", event.target.value);
         }}
     >
-        <option value="Functions">Functions</option>
-        <option value="Settings">Settings</option>
-        <optgroup label={addresses.length === 0 ? "No Clients" : "Clients"}>
-            {#each addresses as address}
-                <option value={address}>{address}</option>
+        <optgroup label="Pages">
+            <option value="Functions">Functions</option>
+            <option value="Settings">Settings</option>
+        </optgroup>
+        <optgroup label={paths.length === 0 ? "No Serial Ports" : "Serial Ports"}>
+            {#each paths as path}
+                <option value={path}>{path}</option>
             {/each}
         </optgroup>
     </select>
 
     {#if showButtons}
+        <!-- Baud Rate -->
+        <select
+            class="baudrate"
+            title="Select baudrate"
+            value={baudrate}
+            on:input={(event) => {
+                dispatch("header-changeBaudrate", event.target.value);
+            }}
+        >
+            <optgroup label="Baud Rate">
+                {#each baudrates as baud}
+                    <option value={baud}>{baud}</option>
+                {/each}
+            </optgroup>
+        </select>
+
         <!-- Ascii / Hex Button -->
         <button
             class="encoding"
@@ -67,16 +79,12 @@
         >
             {encoding}
         </button>
-
-        <!-- Api Response -->
-        <div
-            class="response"
-            class:hide={wrapperWidth < 750}
-            title="Response from the api"
-        >
-            {response}
-        </div>
     {/if}
+
+    <!-- Api Response -->
+    <div class="response" class:hide={wrapperWidth < 750} title="Response from the api">
+        {response}
+    </div>
 </section>
 
 <style>
@@ -98,6 +106,9 @@
     }
 
     /* Classes */
+    .baudrate {
+        min-width: 8rem;
+    }
     .response {
         line-height: 1;
         flex-grow: 1;

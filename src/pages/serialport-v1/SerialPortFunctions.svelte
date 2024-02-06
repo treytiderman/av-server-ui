@@ -3,29 +3,31 @@
     import { createEventDispatcher } from "svelte";
     const dispatch = createEventDispatcher();
 
-    // State
+    // State - Functions
     let func = "open";
-    export let address = "";
+    export let path = "";
     export let encoding = "";
-    export let reconnect = "";
+    export let baudrate = 9600;
+    export let delimiter = "";
     export let data = "";
 </script>
 
-<h2 class="border-bottom">TCP Client Functions</h2>
+<h2 class="border-bottom">Serial Port Functions</h2>
 
 <!-- Select -->
 <label>
     Function <br />
     <select bind:value={func}>
-        <optgroup label="TCP Client">
+        <optgroup label="Serial Port">
             <option value="open">open</option>
-            <option value="reconnect">reconnect</option>
             <option value="send">send</option>
             <option value="close">close</option>
             <option value="remove">remove</option>
             <option value="setEncoding">set encoding</option>
+            <option value="setBaudrate">set baudrate</option>
+            <option value="setDelimiter">set delimiter</option>
         </optgroup>
-        <optgroup label="All TCP Clients">
+        <optgroup label="All Serial Ports">
             <option value="closeAll">close all</option>
             <option value="removeAll">remove all</option>
         </optgroup>
@@ -37,31 +39,33 @@
     <label
         class:hide={!(
             func === "open" ||
-            func === "reconnect" ||
             func === "send" ||
             func === "close" ||
             func === "remove" ||
-            func === "setEncoding"
+            func === "setEncoding" ||
+            func === "setBaudrate" ||
+            func === "setDelimiter"
         )}
     >
-        Address <small class="dim">ip:port</small> <br />
-        <input type="text" placeholder="192.168.1.9:23" bind:value={address} />
+        Path <br />
+        <input type="text" placeholder="COM3" bind:value={path} />
     </label>
-    <label
-        class:hide={!(
-            func === "open" ||
-            func === "reconnect" ||
-            func === "send" ||
-            func === "setEncoding"
-        )}
-    >
+
+    <label class:hide={!(func === "open" || func === "send" || func === "setEncoding")}>
         Encoding <small class="dim">ascii | hex</small> <br />
         <input type="text" placeholder="ascii" bind:value={encoding} />
     </label>
-    <label class:hide={!(func === "open" || func === "reconnect")}>
-        Reconnect <small class="dim">true | false</small> <br />
-        <input type="text" placeholder="true" bind:value={reconnect} />
+
+    <label class:hide={!(func === "open" || func === "setBaudrate")}>
+        Baud Rate <small class="dim">9600 | 19200 | 38400 | 57600 | 115200</small> <br />
+        <input type="number" placeholder=9600 bind:value={baudrate} />
     </label>
+
+    <label class:hide={!(func === "open" || func === "setDelimiter")}>
+        Delimiter <small class="dim">\r\n | 0D 0A | none</small> <br />
+        <input type="text" placeholder="\r\n" bind:value={delimiter} />
+    </label>
+
     <label class:hide={!(func === "send")}>
         <div class="flex y-center gap-sm">
             Data
@@ -79,65 +83,70 @@
             class="cyan"
             on:click={() => {
                 dispatch("functions-open", {
-                    address,
+                    path,
                     encoding,
-                    reconnect,
+                    baudrate,
+                    delimiter,
                 });
             }}
         >
             Open Connection
-        </button>
-    {:else if func === "reconnect"}
-        <button
-            class="green"
-            on:click={() =>
-                dispatch("functions-reconnect", {
-                    address,
-                    encoding,
-                    reconnect,
-                })}
-        >
-            Reconnect
         </button>
     {:else if func === "send"}
         <button
             class="orange"
             on:click={() =>
                 dispatch("functions-send", {
-                    address,
-                    data,
+                    path,
                     encoding,
+                    data,
                 })}
         >
             Send
         </button>
     {:else if func === "close"}
-        <button class="red" on:click={() => dispatch("functions-close", { address })}>
-            Close Connection
-        </button>
+        <button class="red" on:click={() => dispatch("functions-close", { path })}> Close Connection </button>
     {:else if func === "remove"}
-        <button class="red" on:click={() => dispatch("functions-remove", { address })}>
+        <button class="red" on:click={() => dispatch("functions-remove", { path })}>
             Remove client history
+        </button>
+    {:else if func === "setBaudrate"}
+        <button
+            class="yellow"
+            on:click={() =>
+                dispatch("functions-setBaudrate", {
+                    path,
+                    baudrate,
+                })}
+        >
+            Set Baudrate
         </button>
     {:else if func === "setEncoding"}
         <button
             class="yellow"
             on:click={() =>
                 dispatch("functions-setEncoding", {
-                    address,
+                    path,
                     encoding,
                 })}
         >
             Set Encoding
         </button>
+    {:else if func === "setDelimiter"}
+        <button
+            class="yellow"
+            on:click={() =>
+                dispatch("functions-setDelimiter", {
+                    path,
+                    delimiter,
+                })}
+        >
+            Set Delimiter
+        </button>
     {:else if func === "closeAll"}
-        <button class="red" on:click={() => dispatch("functions-closeAll")}>
-            Close All Connections
-        </button>
+        <button class="red" on:click={() => dispatch("functions-closeAll")}> Close All Connections </button>
     {:else if func === "removeAll"}
-        <button class="red" on:click={() => dispatch("functions-removeAll")}>
-            Remove All Connections
-        </button>
+        <button class="red" on:click={() => dispatch("functions-removeAll")}> Remove All Connections </button>
     {/if}
 </form>
 
