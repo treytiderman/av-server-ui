@@ -49,7 +49,7 @@
         lines: [
             {
                 wasReceived: true,
-                timestampISO: "2022-10-16T21:05:38.257Z",
+                timestamp: "2022-10-16T21:05:38.257Z",
                 data: "No data yet...",
             },
         ],
@@ -100,7 +100,7 @@
             ...data.lines,
             {
                 wasReceived: false,
-                timestampISO: new Date().toISOString(),
+                timestamp: new Date().toISOString(),
                 data: text,
             },
         ];
@@ -123,7 +123,7 @@
         //       if (data.error !== "") data.hex += " <- " + data.error
         //       linesFromServer.push({
         //         wasReceived: data.wasReceived,
-        //         timestampISO: data.timestampISO,
+        //         timestamp: data.timestamp,
         //         data: data.hex,
         //       })
         //     })
@@ -133,7 +133,7 @@
         //       if (data.error !== "") data.ascii += " <- " + data.error
         //       linesFromServer.push({
         //         wasReceived: data.wasReceived,
-        //         timestampISO: data.timestampISO,
+        //         timestamp: data.timestamp,
         //         data: data.ascii,
         //       })
         //     })
@@ -143,7 +143,7 @@
         // }
     }
     function lineClick(line) {
-        let line2 = data.lines.find(lineIter => line.timestampISO === lineIter.timestampISO)
+        let line2 = data.lines.find(lineIter => line.timestamp === lineIter.timestamp)
         line2.mark = true
         console.log(line2);
         console.log(data.lines);
@@ -161,7 +161,7 @@
     //         ...data.lines,
     //         {
     //             wasReceived: true,
-    //             timestampISO: new Date().toISOString(),
+    //             timestamp: new Date().toISOString(),
     //             data: Date.now(),
     //         },
     //     ];
@@ -172,7 +172,7 @@
     //         ...data.lines,
     //         {
     //             wasReceived: false,
-    //             timestampISO: new Date().toISOString(),
+    //             timestamp: new Date().toISOString(),
     //             data: mark ? "yes" : "no",
     //             mark: mark,
     //         },

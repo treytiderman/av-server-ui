@@ -9,7 +9,7 @@
     export let filter = "";
     export let lines = [
         {
-            timestampISO: "2023-10-16T01:01:57.154Z",
+            timestamp: "2023-10-16T01:01:57.154Z",
             level: "DEBUG",
             message: '1ms createDatabase("test-database-2", defaultData)',
             data: JSON.stringify(
@@ -19,13 +19,13 @@
             ),
         },
         {
-            timestampISO: "2023-10-16T01:01:57.155Z",
+            timestamp: "2023-10-16T01:01:57.155Z",
             level: "DEBUG",
             message: '3ms writeDatabase("test-database-2") -> "ok',
             data: JSON.stringify({}),
         },
         {
-            timestampISO: "2023-10-16T01:01:57.163Z",
+            timestamp: "2023-10-16T01:01:57.163Z",
             level: "DEBUG",
             message: '0ms deleteDatabase("test-database-2") -> "ok',
             data: JSON.stringify({}),

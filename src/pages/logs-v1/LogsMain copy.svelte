@@ -26,7 +26,7 @@
         try { json = JSON.stringify(JSON.parse(split[3]), true, 4) }
         catch (error) { json = split[3] }
         const lineObj = {
-            timestampISO: split[0],
+            timestamp: split[0],
             level: split[1].trim(),
             message: split[2].trim(),
             data: json,
