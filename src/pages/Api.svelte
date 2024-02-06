@@ -45,13 +45,16 @@
         ram.path = path;
 
         // Parse Path
-        const params = path.split("/:").splice(1).map(t => `":${t.replace("/", "")}"`)
+        const params = path
+            .split("/:")
+            .splice(1)
+            .map((t) => `":${t.replace("/", "")}"`);
         if (params.length === 0) {
-            ram.hint = ""
+            ram.hint = "";
         } else if (params.length === 1) {
-            ram.hint = `hint: ${params.join(", ")} is a parameter to change`
+            ram.hint = `hint: ${params.join(", ")} is a parameter to change`;
         } else {
-            ram.hint = `hint: ${params.join(", ")} are parameters to change`
+            ram.hint = `hint: ${params.join(", ")} are parameters to change`;
         }
 
         // Parse Body
@@ -66,8 +69,8 @@
         });
         body &&
             Object.entries(body).forEach((obj) => {
-                if (typeof obj[1] === 'object') {
-                    obj[1] = JSON.stringify(obj[1])
+                if (typeof obj[1] === "object") {
+                    obj[1] = JSON.stringify(obj[1]);
                 }
                 ram.kvs.push({ key: obj[0], value: obj[1] ?? "" });
             });
@@ -88,7 +91,11 @@
             <select
                 value="help"
                 class="fill-width"
-                on:input={(ev) => (ram.apiGroup = ev.target.value)}
+                on:input={(ev) => {
+                    ram.apiGroup = ev.target.value;
+                    const path = ram.help[ram.apiGroup][0].path;
+                    helper({ target: { value: path } });
+                }}
             >
                 {#each Object.keys(ram.help) as apiGroup}
                     <option value={apiGroup}> {apiGroup} </option>
@@ -111,34 +118,20 @@
         <h2>Sender</h2>
         <label>
             Path <br />
-            <input
-                type="text"
-                class="fill-width"
-                placeholder="try 'help'"
-                bind:value={ram.path}
-            />
+            <input type="text" class="fill-width" placeholder="try 'help'" bind:value={ram.path} />
         </label>
         <div class="grid gap-sm">
             <lable for="val"> Body </lable>
             {#each ram.kvs as kv, i}
                 <div class="flex nowrap gap">
                     <input type="body" placeholder="Key" bind:value={kv.key} />
-                    <input
-                        id="val"
-                        type="body"
-                        class="fill-width"
-                        placeholder="Value"
-                        bind:value={kv.value}
-                    />
+                    <input id="val" type="body" class="fill-width" placeholder="Value" bind:value={kv.value} />
                     <button class="icon" on:click={() => remove(i)}>
                         <X size="1rem" strokeWidth="2.5" />
                     </button>
                 </div>
             {/each}
-            <button
-                class="margin-left-auto fill-width icon"
-                on:click={() => add()}
-            >
+            <button class="margin-left-auto fill-width icon" on:click={() => add()}>
                 <Plus size="1rem" strokeWidth="2.5" />
             </button>
         </div>
