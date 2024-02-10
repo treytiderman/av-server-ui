@@ -1,17 +1,36 @@
 import { ws, user_v1 } from "./api/api.js"
-import { volatile } from "./js/global-volatile-store.js"
+import { volatile } from "./pages/store-global-volatile.js"
 
 // State
 const url = ws.url().replace("4621", "4620")
 // const url = "ws://192.168.1.1:4620" // if developing av-server-ui on a different pc than av-server is running
 
-// Connect
-ws.connect(url, (status) => {
-    if (status === "open") onConnect()
-    else onFailedToConnect()
-})
+// Startup
+// onStartup()
 
 // Functions
+async function onStartup() {
+    volatile.update(val => {
+
+        // Offline Dev
+        if (val.apiStatus === "offline") {
+            val.user.username = "admin"
+            val.user.groups = ["admin"]
+            val.user.isAdmin = true
+        }
+
+        // Online with WebSocket connection to api
+        else {
+            ws.connect(url, (status) => {
+                if (status === "open") onConnect()
+                else onFailedToConnect()
+            })
+        }
+
+        return val
+    })
+}
+
 async function onConnect() {
     volatile.update(val => {
         val.apiStatus = "connected"

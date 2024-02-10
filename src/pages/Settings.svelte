@@ -1,6 +1,6 @@
 <script>
-    import { volatile } from "../js/global-volatile-store"
-    import { persistent } from "../js/global-persistent-store.js"
+    import { global } from "../app-volatile-store"
+    import { persistent } from "./global-persistent-state.js"
 </script>
 
 <div class="page">
@@ -9,7 +9,7 @@
     <label>
         Theme <br />
         <select bind:value={$persistent.theme}>
-            {#each $volatile.themes as theme}
+            {#each $global.themes as theme}
                 <option value={theme} selected={$persistent.theme === theme}>
                     {theme}
                 </option>

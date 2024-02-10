@@ -1,7 +1,7 @@
 <script>
     import { state } from "../modules/store.js";
-    import { volatile } from "../js/global-volatile-store.js";
-    import { persistent } from "../js/global-persistent-store.js";
+    import { volatile } from "./store-global-volatile.js";
+    import { persistent } from "./store-global-persistent.js";
     import Page from "../layout/Page.svelte";
 
     let data = {

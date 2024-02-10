@@ -1,6 +1,6 @@
 <script>
     // Imports
-    import { persistent } from "../../js/global-persistent-store.js";
+    // import { persistent } from "../global-persistent-state.js";
     import { onMount, onDestroy } from "svelte";
     import { user_v1 } from "../../api/api.js";
 
@@ -88,14 +88,14 @@
         const obj = event.detail;
         console.log("login", obj);
         response = await user_v1.login(obj.username, obj.password);
-        $persistent.windows = JSON.parse(JSON.stringify([$persistent.windowsDefault]));
+        // $persistent.windows = JSON.parse(JSON.stringify([$persistent.windowsDefault]));
         localStorage.setItem("token", obj.response);
         location.reload();
     }
     async function logout(event) {
         const obj = event.detail;
         console.log("logout", obj);
-        $persistent.windows = JSON.parse(JSON.stringify([$persistent.windowsDefault]));
+        // $persistent.windows = JSON.parse(JSON.stringify([$persistent.windowsDefault]));
         localStorage.removeItem("token");
         location.reload();
     }

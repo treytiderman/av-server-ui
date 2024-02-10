@@ -1,8 +1,8 @@
 <script>
     // Imports
     import { onMount, onDestroy } from "svelte";
-    import { volatile } from "../../js/global-volatile-store.js";
-    import { persistent } from "../../js/global-persistent-store.js";
+    import { global } from "../../app-volatile-store.js";
+    import { persistent } from "../global-persistent-state.js";
 
     // Components
     import {
@@ -81,17 +81,17 @@
         <h3 class="long-name" class:hide={headerWidth < 800}>
             Welcome
             <span class="purple">
-                <u>{$volatile.user.username}</u>
+                <u>{$global.user.username}</u>
             </span>
             !
         </h3>
         <h3 class="long-name-sm" class:hide={headerWidth > 800}>
             <span class="purple">
-                <u>{$volatile.user.username}</u>
+                <u>{$global.user.username}</u>
             </span>
         </h3>
         <div class="margin-left-auto" class:hide={headerWidth < 800}>
-            {$volatile.user.isAdmin ? "ADMIN" : "USER"}
+            {$global.user.isAdmin ? "ADMIN" : "USER"}
         </div>
         <button
             title="Logout"
@@ -129,11 +129,11 @@
     </div>
 
     <!-- System Links -->
-    <div class="section flow" class:display-none={!$volatile.user.isAdmin}>
+    <div class="section flow" class:display-none={!$global.user.isAdmin}>
         <h2 class="border-bottom">Server</h2>
         <div
             class="grid auto-sm gap align-start"
-            class:display-none={!$volatile.user.isAdmin}
+            class:display-none={!$global.user.isAdmin}
         >
             <button
                 title="Open the User Management Page"
@@ -166,7 +166,7 @@
     </div>
 
     <!-- Program Links -->
-    <div class="section flow" class:display-none={!$volatile.user.isAdmin}>
+    <div class="section flow" class:display-none={!$global.user.isAdmin}>
         <h2 class="border-bottom">Programs</h2>
         <div class="grid auto-sm gap align-start">
             <button

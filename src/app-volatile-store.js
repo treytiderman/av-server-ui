@@ -1,23 +1,11 @@
-import { volatileStore } from "../modules/store.js";
-import { pages } from "../pages/pages.js";
+import { volatileStore } from "./js/store.js";
+import { pages } from "./pages/pages.js";
 
 // Store
-export const volatile = volatileStore("global", {
-
-    // State
-    apiStatus: "startup", // "connected", "authorized", "closed"
-    lostConnectionAt: "",
-    user: {
-        username: undefined,
-        groups: [],
-        isAdmin: false,
-    },
+export const store = volatileStore("app", {
 
     // All Pages as an object { "name": component, ... }
     pages: pages,
-
-    // Info
-    themes: ["black", "dark", "light"],
 
     // Helpful
     hasFocus: true, // window / browser tab is in focus?
@@ -28,19 +16,19 @@ export const volatile = volatileStore("global", {
 
 // Events
 window.addEventListener('resize', event => {
-    volatile.update(val => {
+    store.update(val => {
         val.window = getWindow()
         return val
     })
 })
 window.addEventListener("focus", (event) => {
-    volatile.update(val => {
+    store.update(val => {
         val.hasFocus = true
         return val
     })
 })
 window.addEventListener("blur", (event) => {
-    volatile.update(val => {
+    store.update(val => {
         val.hasFocus = false
         return val
     })
@@ -49,11 +37,9 @@ window.addEventListener("blur", (event) => {
 // Helper Functions
 function parseQuerystring(string) {
     let obj = {}
-    const urlSearchs = string.replace("?", "").split('&')
-    urlSearchs.forEach(urlSearch => {
-        let pair = urlSearch.split("=")
-        let key = pair[0]
-        let value = pair[1]
+    const keyValuePairs = string.replace("?", "").split('&')
+    keyValuePairs.forEach(keyValuePair => {
+        const [key, value] = keyValuePair.split("=")
         obj[key] = value
     })
     return obj

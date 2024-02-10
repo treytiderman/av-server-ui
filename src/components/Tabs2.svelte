@@ -1,41 +1,20 @@
 <script>
     // Imports
+    import { volatile as global } from "../pages/global-volatile-state.js";
     import { createEventDispatcher } from "svelte";
     const dispatch = createEventDispatcher();
 
     // Components
-    import { X, Plus, MoreVertical } from "lucide-svelte";
-    import ContextMenu from "../components/ContextMenu.svelte";
-    import TestPage from "../components/TestPage.svelte";
+    import { X, Plus, MoreVertical } from 'lucide-svelte';
+    import ContextMenu from "./ContextMenu.svelte.js";
 
     // Variables
     let contextMenuElement;
-
-    // State
-    export let tabs = [
-        { name: "Tab 1", component: TestPage },
-        { name: "Tab 2", component: TestPage },
-    ];
-    export let newTab = { name: "New Tab", component: TestPage };
-    export let tabActive = "New Tab";
-    export let windowActive = true;
-    export let contextMenuItems = [
-        {
-            hide: false,
-            button: "Context Menu Button",
-            iconComponent: Plus,
-            onClick: () => console.log( "Context Menu Button" ),
-        },
-        {
-            hr: true,
-        },
-        {
-            hide: false,
-            button: "Context Menu Button",
-            iconComponent: Plus,
-            onClick: () => console.log( "Context Menu Button" ),
-        },
-    ];
+    export let tabs = [];
+    export let newTab = { name: "New Tab", component: "" };
+    export let tabActive = newTab;
+    export let windowActive = false;
+    export let contextMenuItems = [];
 </script>
 
 <ContextMenu
@@ -47,7 +26,7 @@
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div
-    class="wrapper flex column"
+    class="container flex column"
     class:active={windowActive}
     on:click={() => dispatch("tabActive")}
 >
@@ -58,7 +37,7 @@
             <div class="tab">
                 <button
                     class="tab-button flex nowrap"
-                    class:tab-active={tabActive === tab.name}
+                    class:tab-active={tabActive.name === tab.name}
                     on:pointerdown={(event) => {
                         if (event.button === 1) dispatch("closeTabClick", tab);
                     }}
@@ -67,10 +46,10 @@
                     {tab.name}
                     <button
                         class="tab-close"
-                        class:tab-active={tabActive === tab.name}
+                        class:tab-active={tabActive.name === tab.name}
                         on:click={() => dispatch("closeTabClick", tab)}
                     >
-                        <X size="1rem" strokeWidth="2.5" />
+                        <X size=1rem strokeWidth=2.5 />
                     </button>
                 </button>
             </div>
@@ -79,11 +58,11 @@
         <!-- New Tab -->
         <button
             class="tab-add center"
-            class:tab-active={tabActive === newTab.name}
+            class:tab-active={tabActive.name === newTab.name}
             on:click={() => dispatch("newTabClick", newTab)}
             title="Create a New Tab"
         >
-            <Plus size="1.2rem" strokeWidth="2.5" />
+            <Plus size=1.2rem strokeWidth=2.5 />
         </button>
 
         <!-- Context Menu -->
@@ -91,32 +70,33 @@
             class="context-menu center"
             on:click={(e) => contextMenuElement.showAtEvent(e)}
         >
-            <MoreVertical size="1.2rem" strokeWidth="2.5" />
+            <MoreVertical size=1.2rem strokeWidth=2.5 />
         </button>
     </div>
 
     <!-- Content -->
-    <!-- Load all tabs so scroll position and any input remain how they were -->
+    <!-- Always show tabs so scroll position and any input remain how they were -->
     {#each tabs as tab}
-        <div class="content grow" class:hide={tabActive !== tab.name}>
-            <svelte:component this={tab.component} />
+        <div class="content" class:display-none={tabActive.name !== tab.name}>
+            <!-- await breaks everything and flashes every time something is clicked -->
+            <!-- {#await import(tab.componentFilePath) then component}
+                <svelte:component this={component.default}/>
+            {/await} -->
+            <svelte:component this={$global.pages[tab.name]} />
         </div>
     {/each}
-    <div class="content grow" class:hide={tabActive !== newTab.name}>
+    <div class="content" class:display-none={tabActive.name !== newTab.name}>
         <svelte:component this={newTab.component} />
     </div>
 </div>
 
 <style>
-    .wrapper {
+    .container {
         height: 100%;
     }
     .content {
         height: 100%;
         overflow: auto;
-    }
-    .hide {
-        display: none;
     }
 
     .header {

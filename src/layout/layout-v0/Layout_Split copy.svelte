@@ -1,11 +1,11 @@
 <script>
     // Imports
-    import { persistent as state } from "./global-persistent-state.js";
+    import { persistent as state } from "./layout-persistent-store.js";
 
     // Components
-    import Split from "../components/Split.svelte";
-    import Tabs from "../pages/WindowTabs.svelte";
-    import WindowSplit from "../pages/WindowSplit.svelte";
+    import Split from "../../components/Split.svelte";
+    import Layout_Tabs from "./Layout_Tabs.svelte";
+    import Layout_Split from "./Layout_Split.svelte";
 
     // Variables
     export let isVertical;
@@ -22,9 +22,9 @@
     on:resize={event => $state.windows[windowIndex1].one_percent = event.detail}>
     <div slot="one">
         {#if window1?.type === "tabs"}
-            <Tabs id={window1?.id} />
+            <Layout_Tabs id={window1?.id} />
         {:else if window1?.type === "split"}
-            <WindowSplit
+            <Layout_Split
                 childrenIds={window1?.childrenIds}
                 isVertical={window1?.state.isVertical}
             />
@@ -42,9 +42,9 @@
     </div>
     <div slot="two">
         {#if window2?.type === "tabs"}
-            <Tabs id={window2?.id} />
+            <Layout_Tabs id={window2?.id} />
         {:else if window2?.type === "split"}
-            <WindowSplit
+            <Layout_Split
                 childrenIds={window2?.childrenIds}
                 isVertical={window2?.state.isVertical}
             />

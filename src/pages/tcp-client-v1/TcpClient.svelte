@@ -8,7 +8,7 @@
     import TcpClientMain from "./TcpClientMain.svelte";
 
     // State
-    let onlineWithApi = false;
+    export let isOffline = false;
     let selectedClient;
 
     // State - Main
@@ -18,10 +18,10 @@
     let select = "Functions";
     let isOpen = false;
     let encoding = "ascii";
-    let addresses = onlineWithApi ? [] : ["192.168.1.9:23", "192.168.1.42:8080"];
+    let addresses = isOffline ? [] : ["192.168.1.9:23", "192.168.1.42:8080"];
 
     // State - Clients
-    let clients = onlineWithApi ? [] : [
+    let clients = isOffline ? [] : [
         {
             isOpen: false,
             reconnect: false,
@@ -59,7 +59,7 @@
 
     // Startup / Shutdown
     onMount(async () => {
-        if (!onlineWithApi) return;
+        if (!isOffline) return;
         tcpClient_v1.clients.sub((res) => {
             clients = Object.values(res);
             addresses = Object.keys(res);
@@ -73,7 +73,7 @@
         });
     });
     onDestroy(async () => {
-        if (!onlineWithApi) return;
+        if (!isOffline) return;
         await tcpClient_v1.clients.unsub();
     });
 
@@ -92,7 +92,7 @@
         }
 
         // Unsubscribe to another address history
-        if (onlineWithApi && selectedClient?.address) {
+        if (isOffline && selectedClient?.address) {
             tcpClient_v1.data.unsub(selectedClient.address);
         }
 
@@ -106,7 +106,7 @@
         encoding = selectedClient.encoding;
 
         // Subscribe to another address history
-        if (onlineWithApi) {
+        if (isOffline) {
             lines = await tcpClient_v1.history.get(selectedClient.address);
             let lastData = "";
             tcpClient_v1.data.sub(selectedClient.address, (res) => {
@@ -230,7 +230,7 @@
 </script>
 
 <div class="page flex column max-width" class:max-width={subpage !== "Log"}>
-    {#if onlineWithApi}
+    {#if isOffline}
         <TcpClientMain
             bind:select
             {subpage}
@@ -270,7 +270,7 @@
             on:send={sendsSend}
         />
     {:else}
-        <div>Offline</div>
+        <!-- <div>Offline</div> -->
         <TcpClientMain
             bind:select
             {subpage}

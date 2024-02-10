@@ -1,12 +1,12 @@
 <script>
     // Imports
     import { onMount } from "svelte";
-    import { volatile as global } from "./global-volatile-state.js";
-    import { persistent as state } from "./global-persistent-state.js";
+    import { volatile as global } from "../../pages/global-volatile-store.js";
+    import { persistent as state } from "./layout-persistent-store.js";
 
     // Components
     import { X, Columns, Rows, RotateCcw } from 'lucide-svelte';
-    import Tabs from "../components/Tabs.svelte";
+    import Tabs from "../../components/Tabs.svelte.js";
 
     // Variables
     export let id

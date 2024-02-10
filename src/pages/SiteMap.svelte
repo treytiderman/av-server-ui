@@ -1,8 +1,7 @@
 <script>
     // Imports
-    import { volatile as global } from "../js/global-volatile-store.js";
-    import { persistent as state } from "../js/global-persistent-store.js";
-    import Page from "../layout/Page.svelte";
+    import { global } from "../app-volatile-store.js";
+    import { persistent as state } from "./global-persistent-state.js";
 
     // Functions
     function addTab(event, tabAdded) {
@@ -29,7 +28,7 @@
     }
 </script>
 
-<Page>
+<div class="page flow">
     <h2>Select a page</h2>
     <div class="flex column align-start">
         {#each Object.keys($global.pages) as pageName}
@@ -41,7 +40,7 @@
             </button>
         {/each}
     </div>
-</Page>
+</div>
 
 <style>
     button {

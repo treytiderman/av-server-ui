@@ -49,6 +49,3 @@
         <div>{response}</div>
     </div>
 </div>
-
-<style>
-</style>

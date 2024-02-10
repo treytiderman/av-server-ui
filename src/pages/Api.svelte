@@ -1,7 +1,7 @@
 <script>
     // Imports
     import { onMount, onDestroy } from "svelte";
-    import { persistentStore } from "../modules/store.js";
+    import { persistentStore } from "../js/store.js";
     import { ws } from "../api/api.js";
 
     // Components

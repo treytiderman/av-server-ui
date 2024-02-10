@@ -1,6 +1,5 @@
 <script>
-    import { user_v1 } from "../api/api.js";
-    import { volatile } from "./global-volatile-state.js"
+    import * as user_v1 from "../../pages/user-v1/user-v1";
 
     // State
     let username = "admin";
@@ -68,6 +67,7 @@
         z-index: 2;
     }
 
+    /* Background + Shadow */
     .wrapper::before {
         content: "";
         position: absolute;
