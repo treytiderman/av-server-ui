@@ -44,14 +44,14 @@ function setDebug(bool) {
     debug = bool
 }
 function getWebsocketUrl() {
-    let protocal = "ws://"
-    if (location.protocol === "https:") protocal = "wss://"
+    let protocol = "ws://"
+    if (location.protocol === "https:") protocol = "wss://"
     let host = location.host
-    return protocal + host
+    return protocol + host
 }
 function connect(url = "", callback = () => { }) {
     url = url || getWebsocketUrl()
-    console.log(url);
+    log(url);
     websocket = new WebSocket(url);
 
     // Events
@@ -66,7 +66,9 @@ function connect(url = "", callback = () => { }) {
     websocket.addEventListener('close', (event) => {
         log(`reconnect: ${url} in ${RECONNECT_TIMER}ms`)
         timeout = setTimeout(() => {
-            location.reload()
+            connect(url, (status) => {
+                if (status === "open") location.reload()
+            })
         }, RECONNECT_TIMER);
     })
     websocket.addEventListener('message', (event) => {

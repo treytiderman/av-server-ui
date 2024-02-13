@@ -8,7 +8,7 @@
     import TcpClientMain from "./TcpClientMain.svelte";
 
     // State
-    let onlineWithApi = false;
+    let onlineWithApi = true;
     let selectedClient;
 
     // State - Main
@@ -37,14 +37,10 @@
     ];
 
     // State - Functions
-    // let formAddress = "";
-    // let formEncoding = "";
-    // let formReconnect = "";
-    // let formData = "";
-    let formAddress = "192.168.1.9:23";
-    let formEncoding = "ascii";
-    let formReconnect = "false";
-    let formData = "data";
+    let formAddress = "";
+    let formEncoding = "";
+    let formReconnect = "";
+    let formData = "";
     let response = "...";
 
     // State - Settings
