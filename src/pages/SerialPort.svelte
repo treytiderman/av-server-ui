@@ -234,9 +234,9 @@
             on:click={() => (data.state.showSettings = !data.state.showSettings)}
         >
             {#if data.state.showSettings === true}
-                <X size="1.2rem" strokeWidth="2.5" />
+                <X size="1.25rem" strokeWidth="2.5" />
             {:else}
-                <Settings size="1.2rem" strokeWidth="2.5" />
+                <Settings size="1.25rem" strokeWidth="2.5" />
             {/if}
         </button>
     </div>

@@ -4,11 +4,11 @@
 
     // State
     export let isOffline = true
-    export let id = 1
-    export let type = "tabs"
-    export let parentId = 0
-    export let childrenIds = []
-    export let state = {}
+    let id = 1
+    let type = "split"
+    let parentId = 0
+    let childrenIds = []
+    let state = {}
 </script>
 
-<Layout_Window {isOffline} {type} />
+<Layout_Window {type} />

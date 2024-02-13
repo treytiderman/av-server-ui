@@ -11,7 +11,7 @@
     export let window2 = {};
 </script>
 
-<Split isResizable {isVertical}>
+<Split isResizable {isVertical} oneInit_percent={window1.one_percent}>
     <Tabs slot="one" />
     <Tabs slot="two" />
 </Split>

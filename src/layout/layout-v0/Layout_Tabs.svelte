@@ -6,52 +6,43 @@
     // Components
     import { X, Columns, Rows, RotateCcw } from "lucide-svelte";
     import Tabs from "../../components/Tabs.svelte";
-    import Split from "../../components/Split.svelte";
-    import Layout_Icon_Window1 from "./Layout_Icon_Window1.svelte";
-    import Layout_Icon_Window2H from "./Layout_Icon_Window2H.svelte";
-    import Layout_Icon_Window2V from "./Layout_Icon_Window2V.svelte";
-    import Layout_Icon_Window3HR from "./Layout_Icon_Window3HR.svelte";
-    import Layout_Icon_Window3HL from "./Layout_Icon_Window3HL.svelte";
-    import Layout_Icon_Window3VT from "./Layout_Icon_Window3VT.svelte";
-    import Layout_Icon_Window3VB from "./Layout_Icon_Window3VB.svelte";
-    import Layout_Icon_Window4 from "./Layout_Icon_Window4.svelte";
-
     import TestPage from "../../components/TestPage.svelte";
-    import User from "../../pages/user-v1/User.svelte";
-    import Logs from "../../pages/logs-v1/Logs.svelte";
+
+    import NewTab from "../new-tab-v1/NewTab.svelte";
 
     // State
-    export let isOffline = true;
-    export let tabActive = "Tab 1";
+    export let windowId = 0;
+    export let windowActive = false;
+    export let tabActive = "Tab 2";
     export let tabs = [
         { name: "Tab 1", component: TestPage },
         { name: "Tab 2", component: TestPage },
     ];
     export let newTab = {
-        name: "Blank",
-        component: $app_volatile_store.pages["Blank"],
+        name: "New Tab",
+        component: NewTab,
     };
 
-    $: contextMenuItems = [
-        {
-            button: "Split Vertical",
-            iconComponent: Rows,
-            onClick: () => {
-                splitClick(true);
-            },
-        },
+    export let contextMenuItems = [
         {
             button: "Split Horizontal",
             iconComponent: Columns,
             onClick: () => {
-                splitClick(false);
+                console.log(`Layout: window '${windowId}' split horizontal`);
+            },
+        },
+        {
+            button: "Split Vertical",
+            iconComponent: Rows,
+            onClick: () => {
+                console.log(`Layout: window '${windowId}' split vertical`);
             },
         },
         {
             button: "Unsplit",
             iconComponent: X,
             onClick: () => {
-                unsplitClick();
+                console.log(`Layout: window '${windowId}' unsplit`);
             },
         },
         {
@@ -61,10 +52,35 @@
             button: "Clear All Windows",
             iconComponent: RotateCcw,
             onClick: () => {
-                resetSplitsClick();
+                console.log(`Layout: window '${windowId}' clear all windows`);
             },
         },
     ];
 </script>
 
-<Tabs />
+<Tabs
+    {tabs}
+    {newTab}
+    {tabActive}
+    {windowActive}
+    {contextMenuItems}
+    on:tabSelect={event => {
+        const name = event.detail.name
+        tabActive = name
+        console.log(`Layout: window '${windowId}' select tab '${tabActive}'`);
+    }}
+    on:tabClose={event => {
+        const name = event.detail.name
+        tabs = tabs.filter(tab => tab.name !== name)
+        console.log(`Layout: window '${windowId}' close tab '${name}'`, tabs);
+        if (tabs.length === 0) tabActive = newTab.name
+        else if (tabActive === name) tabActive = tabs[0].name
+        console.log(`Layout: window '${windowId}' switch to tab '${tabActive}'`);
+    }}
+    on:componentActive={() => {
+        if (windowActive === false) {
+            windowActive = true
+            console.log(`Layout: window '${windowId}' active`);
+        }
+    }}
+/>

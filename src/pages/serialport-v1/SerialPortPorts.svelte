@@ -60,11 +60,11 @@
                 title="Serial Port with the path '{port.path}' is {port.isOpen ? 'open' : 'closed'}"
             >
                 {#if port.isOpen === undefined}
-                    <X size="1.2rem" strokeWidth="2" color="var(--color-text)" />
+                    <X size="1.25rem" strokeWidth="2" color="var(--color-text)" />
                 {:else if port.isOpen === true}
-                    <Circle size="1.2rem" strokeWidth="2" color="var(--color-text-green)" />
+                    <Circle size="1.25rem" strokeWidth="2" color="var(--color-text-green)" />
                 {:else if port.isOpen === false}
-                    <X size="1.2rem" strokeWidth="2" color="var(--color-text-red)" />
+                    <X size="1.25rem" strokeWidth="2" color="var(--color-text-red)" />
                 {/if}
                 <h4 class="mono-family">{port.path}</h4>
                 {#if port?.isOpen !== undefined}
@@ -73,20 +73,20 @@
                         title="Copy info into the Form"
                         on:click={() => dispatch("ports-copy", port)}
                     >
-                        <Copy size="1.2rem" strokeWidth="2" />
+                        <Copy size="1.25rem" strokeWidth="2" />
                     </button>
                     <button
                         title="Open '{port.path}' in the Terminal"
                         on:click={() => dispatch("ports-open", port.path)}
                     >
-                        <ExternalLink size="1.2rem" strokeWidth="2" />
+                        <ExternalLink size="1.25rem" strokeWidth="2" />
                     </button>
                 {/if}
             </div>
 
             {#if port?.encoding}
                 <div class="indent flex nowrap gap y-center">
-                    <Minus size="1.2rem" strokeWidth="2" color="var(--color-bg-1)" />
+                    <Minus size="1.25rem" strokeWidth="2" color="var(--color-bg-1)" />
                     <small class="dim">Baud Rate:</small>
                     <small class="">{port.baudrate}</small>
                 </div>
@@ -94,7 +94,7 @@
 
             {#if port?.encoding}
                 <div class="indent flex nowrap gap y-center">
-                    <Minus size="1.2rem" strokeWidth="2" color="var(--color-bg-1)" />
+                    <Minus size="1.25rem" strokeWidth="2" color="var(--color-bg-1)" />
                     <small class="dim">Encoding:</small>
                     <small class="">{port.encoding}</small>
                 </div>
@@ -102,7 +102,7 @@
 
             {#if port?.delimiter}
                 <div class="indent flex nowrap gap y-center">
-                    <Minus size="1.2rem" strokeWidth="2" color="var(--color-bg-1)" />
+                    <Minus size="1.25rem" strokeWidth="2" color="var(--color-bg-1)" />
                     <small class="dim">Delimiter:</small>
                     <small class="">{port.delimiter}</small>
                 </div>
@@ -110,7 +110,7 @@
 
             {#if port?.manufacturer}
                 <div class="indent flex nowrap gap y-center">
-                    <Minus size="1.2rem" strokeWidth="2" color="var(--color-bg-1)" />
+                    <Minus size="1.25rem" strokeWidth="2" color="var(--color-bg-1)" />
                     <small class="dim">Manufacturer:</small>
                     <small class="">{port.manufacturer}</small>
                 </div>
@@ -118,7 +118,7 @@
 
             {#if port?.serialNumber}
                 <div class="indent flex nowrap gap y-center">
-                    <Minus size="1.2rem" strokeWidth="2" color="var(--color-bg-1)" />
+                    <Minus size="1.25rem" strokeWidth="2" color="var(--color-bg-1)" />
                     <small class="dim">Serial Number:</small>
                     <small class="">{port.serialNumber}</small>
                 </div>
@@ -126,7 +126,7 @@
 
             {#if port?.friendlyName}
                 <div class="indent flex nowrap gap y-center">
-                    <Minus size="1.2rem" strokeWidth="2" color="var(--color-bg-1)" />
+                    <Minus size="1.25rem" strokeWidth="2" color="var(--color-bg-1)" />
                     <small class="dim">Friendly Name:</small>
                     <small class="">{port.friendlyName}</small>
                 </div>

@@ -62,7 +62,7 @@
             on:click={() => dispatch("newTabClick", newTab)}
             title="Create a New Tab"
         >
-            <Plus size=1.2rem strokeWidth=2.5 />
+            <Plus size=1.25rem strokeWidth=2.5 />
         </button>
 
         <!-- Context Menu -->
@@ -70,7 +70,7 @@
             class="context-menu center"
             on:click={(e) => contextMenuElement.showAtEvent(e)}
         >
-            <MoreVertical size=1.2rem strokeWidth=2.5 />
+            <MoreVertical size=1.25rem strokeWidth=2.5 />
         </button>
     </div>
 

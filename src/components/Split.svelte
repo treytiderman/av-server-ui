@@ -110,7 +110,7 @@
         isPointerdown = false;
     }, throttleTime_ms);
     function resetPosition() {
-        one_percent = 50
+        one_percent = oneInit_percent
         dispatch("resize", one_percent)
     }
 </script>
@@ -190,7 +190,7 @@
     /* Divider */
     .divider {
         background-color: var(--color-text-0);
-        background-color: var(--color-bg-2);
+        background-color: var(--color-border);
         border: none;
         border-radius: 0;
         padding: 0;
@@ -227,7 +227,7 @@
 
     button.divider:hover::after {
         background-color: var(--color-text-0);
-        background-color: var(--color-bg-2);
+        background-color: var(--color-border);
     }
     button.divider:active::after {
         opacity: 0;

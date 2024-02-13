@@ -46,13 +46,13 @@ TCP Client with the address '{client.address}' is {client.isOpen ? 'open' : 'clo
         >
             {#if client.isOpen}
                 <Circle
-                    size="1.2rem"
+                    size="1.25rem"
                     strokeWidth="2"
                     color="var(--color-text-green)"
                 />
             {:else}
                 <X
-                    size="1.2rem"
+                    size="1.25rem"
                     strokeWidth="2"
                     color="var(--color-text-red)"
                 />
@@ -67,20 +67,20 @@ TCP Client with the address '{client.address}' is {client.isOpen ? 'open' : 'clo
             </h4>
             <small class="">{client.encoding}</small>
             <div class:hide={!client.reconnect}>
-                <History size="1.2rem" strokeWidth="2" />
+                <History size="1.25rem" strokeWidth="2" />
             </div>
             <button
                 class="margin-left-auto"
                 title="Copy info into the Form"
                 on:click={() => dispatch("clients-copy", client)}
             >
-                <Copy size="1.2rem" strokeWidth="2" />
+                <Copy size="1.25rem" strokeWidth="2" />
             </button>
             <button
                 title="Open '{client.address}' in the Terminal"
                 on:click={() => dispatch("clients-open", client.address)}
             >
-                <ExternalLink size="1.2rem" strokeWidth="2" />
+                <ExternalLink size="1.25rem" strokeWidth="2" />
             </button>
         </div>
     {/each}

@@ -107,7 +107,7 @@
                         on:click={item.onClick(data)}
                     >
                         {#if item.iconComponent}
-                            <svelte:component this={item.iconComponent} size=1.2rem strokeWidth=2.5/>
+                            <svelte:component this={item.iconComponent} size=1.25rem strokeWidth=2.5/>
                         {:else}
                             <i class={item.icon}/>
                         {/if}

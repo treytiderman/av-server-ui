@@ -31,9 +31,9 @@
         },
         {
             hide: false,
-            button: "Context Menu Button",
+            button: "Context Menu Button 2",
             iconComponent: Plus,
-            onClick: () => console.log( "Context Menu Button" ),
+            onClick: () => console.log( "Context Menu Button 2" ),
         },
     ];
 </script>
@@ -49,7 +49,7 @@
 <div
     class="wrapper flex column"
     class:active={windowActive}
-    on:click={() => dispatch("tabActive")}
+    on:click={() => dispatch("componentActive")}
 >
     <!-- Header -->
     <div class="header flex">
@@ -60,15 +60,15 @@
                     class="tab-button flex nowrap"
                     class:tab-active={tabActive === tab.name}
                     on:pointerdown={(event) => {
-                        if (event.button === 1) dispatch("closeTabClick", tab);
+                        if (event.button === 1) dispatch("tabClose", tab);
                     }}
-                    on:click={() => dispatch("tabClick", tab)}
+                    on:click={() => dispatch("tabSelect", tab)}
                 >
                     {tab.name}
                     <button
                         class="tab-close"
                         class:tab-active={tabActive === tab.name}
-                        on:click={() => dispatch("closeTabClick", tab)}
+                        on:pointerup={() => dispatch("tabClose", tab)}
                     >
                         <X size="1rem" strokeWidth="2.5" />
                     </button>
@@ -80,10 +80,10 @@
         <button
             class="tab-add center"
             class:tab-active={tabActive === newTab.name}
-            on:click={() => dispatch("newTabClick", newTab)}
+            on:click={() => dispatch("tabSelect", newTab)}
             title="Create a New Tab"
         >
-            <Plus size="1.2rem" strokeWidth="2.5" />
+            <Plus size="1.25rem" strokeWidth="2.5" />
         </button>
 
         <!-- Context Menu -->
@@ -91,7 +91,7 @@
             class="context-menu center"
             on:click={(e) => contextMenuElement.showAtEvent(e)}
         >
-            <MoreVertical size="1.2rem" strokeWidth="2.5" />
+            <MoreVertical size="1.25rem" strokeWidth="2.5" />
         </button>
     </div>
 
@@ -164,7 +164,7 @@
 
         margin-left: var(--gap-sm);
         padding: var(--gap-xs);
-        padding: 2px;
+        padding: 0px;
     }
     .tab-close:hover {
         background-color: var(--color-bg-red);
