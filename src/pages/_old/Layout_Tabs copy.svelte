@@ -2,7 +2,7 @@
     // Imports
     import { onMount } from "svelte";
     import { volatile as global } from "../../pages/global-volatile-store.js";
-    import { persistent as state } from "./layout-persistent-store.js";
+    import { persistent as state } from "../../layout/layout-v0/layout-persistent-store.js";
 
     // Components
     import { X, Columns, Rows, RotateCcw } from 'lucide-svelte';

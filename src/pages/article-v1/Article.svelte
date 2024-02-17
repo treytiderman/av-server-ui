@@ -1,5 +1,5 @@
 <script>
-    import Article from "../layout/Article.svelte";
+    import Article from "./ArticleWrap.svelte";
 </script>
 
 <div class="page">

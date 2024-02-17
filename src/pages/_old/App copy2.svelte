@@ -4,9 +4,9 @@
     import {} from "./startup.js";
 
     // Components
-    import Main from "./pages/Main.svelte";
-    import Login from "./pages/Login.svelte";
-    import Split from "./components/Split.svelte";
+    import Main from "../Main.svelte.js";
+    import Login from "../Login.svelte.js";
+    import Split from "../../components/Split.svelte.js";
 
     // Functions
     function login(event) {

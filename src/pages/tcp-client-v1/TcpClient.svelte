@@ -8,7 +8,7 @@
     import TcpClientMain from "./TcpClientMain.svelte";
 
     // State
-    export let isOffline = false;
+    let isOffline = false;
     let selectedClient;
 
     // State - Main

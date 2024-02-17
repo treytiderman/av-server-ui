@@ -5,8 +5,9 @@
 
     // State - Main
     export let status = "startup";
-    export let href = "href";
-    export let lostConnectionAt = "lostConnectionAt";
+    export let serverAddress = "serverAddress";
+    export let lostConnectionAt = "";
+    export let error = "";
 </script>
 
 <!-- API Offline / Demo / UI Dev Only -->
@@ -16,14 +17,20 @@
 <!-- API Disconnected -->
 {:else if status === "closed"}
     <div class="page flow">
-        <h1>Lost Connection</h1>
-        <p>Connection to {href} was lost {lostConnectionAt}</p>
-        <button on:click={() => location.reload()}>Reload</button>
+        {#if lostConnectionAt}
+            <h1>Lost Connection</h1>
+            <p>Connection to {serverAddress} was lost {lostConnectionAt}</p>
+            <button on:click={() => location.reload()}>Reload</button>
+        {:else}
+            <h1>Could Not Connect</h1>
+            <p>Connection to {serverAddress} failed</p>
+            <button on:click={() => location.reload()}>Reload</button>
+        {/if}
     </div>
 
 <!-- API Connected & NOT Logged In -->
 {:else if status === "login" || status === "connected"}
-    <Api_Login on:login />
+    <Api_Login on:login {error} />
 
 <!-- API Connected & Logged In -->
 {:else if status === "authorized"}

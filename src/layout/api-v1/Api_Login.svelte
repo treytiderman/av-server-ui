@@ -1,17 +1,20 @@
 <script>
-    import * as user_v1 from "../../pages/user-v1/user-v1";
+    // Imports
+    import { createEventDispatcher } from "svelte";
+    const dispatch = createEventDispatcher();
 
     // State
-    let username = "admin";
-    let password = "admin";
-    let rememberMe = true;
-    let error = "";
+    export let error = "";
+    export let username = "admin";
+    export let password = "admin";
+    let rememberMe = false;
 
     async function login() {
-        const response = await user_v1.login(username, password);
-        if (response.startsWith("error")) return error = response;
-        if (rememberMe) localStorage.setItem("token", response);
-        location.reload();
+        dispatch("login", { username, password, rememberMe });
+        // const response = await user_v1.login(username, password);
+        // if (response.startsWith("error")) return error = response;
+        // if (rememberMe) localStorage.setItem("token", response);
+        // location.reload();
     }
 </script>
 
@@ -38,20 +41,21 @@
                     bind:value={password}
                 />
             </label>
-            <!-- <div>
+            <div>
                 <input
                     type="checkbox"
                     id="rememberMe"
                     bind:checked={rememberMe}
+                    title=""
                 />
                 <label for="rememberMe"> Remember Me </label>
-            </div> -->
+            </div>
             <button
                 type="submit"
                 class="fill-width purple"
                 on:click={() => login()}>Login</button
             >
-            <div>{error}</div>
+            <div class:hide={!error}>{error}</div>
         </form>
     </article>
 </div>
@@ -76,30 +80,34 @@
         right: 0;
         bottom: 0;
         z-index: -1;
-        background: linear-gradient(
-                45deg,
-                var(--color-bg-3) 10%,
-                transparent 10%,
-                transparent 90%,
-                var(--color-bg-3) 90%
-            ),
-            linear-gradient(
-                135deg,
-                transparent 40%,
-                var(--color-bg-2) 40%,
-                var(--color-bg-2) 60%,
-                transparent 0
-            ),
-            linear-gradient(
-                45deg,
-                transparent 40%,
-                var(--color-bg-3) 40%,
-                var(--color-bg-3) 60%,
-                transparent 0
-            );
-        background-size: 8rem 8rem;
+        filter: brightness(80%);
+
         background-color: var(--color-bg);
-        filter: brightness(30%);
+        background:
+            radial-gradient(
+                circle,
+                transparent 20%,
+                var(--color-bg) 20%,
+                var(--color-bg) 80%,
+                transparent 80%,
+                transparent
+            ),
+            radial-gradient(
+                    circle,
+                    transparent 20%,
+                    var(--color-bg) 20%,
+                    var(--color-bg) 80%,
+                    transparent 80%,
+                    transparent
+                )
+                100px 100px,
+            linear-gradient(var(--color-bg-1) 2px, transparent 2px) 0 -1px,
+            linear-gradient(90deg, var(--color-bg-1) 2px, var(--color-bg) 2px) -1px 0;
+        background-size:
+            25px 25px,
+            25px 25px,
+            100px 100px,
+            100px 100px;
     }
     .section {
         box-shadow: 0 4px 1rem black;

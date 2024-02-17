@@ -2,8 +2,8 @@
     import { persistent } from "./global-persistent-state.js";
 
     // Components
-    import Tabs from "../pages/WindowTabs.svelte";
-    import Split from "../pages/WindowSplit.svelte";
+    import Tabs from "../WindowTabs.svelte.js";
+    import Split from "../WindowSplit.svelte.js";
 
     // State
     export let isOffline = true

@@ -1,4 +1,4 @@
-import { persistentStore } from "../modules/store.js"
+import { persistentStore } from "../../js/store.js"
 
 // Store
 export const store = persistentStore("settings", {

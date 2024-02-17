@@ -29,10 +29,12 @@
 
     // Functions
     function addTab(event, name) {
-        dispatch("tabAdd", {
-            event: event,
-            tabName: name,
-        });
+        setTimeout(() => {
+            dispatch("tabAdd", {
+                event: event,
+                tabName: name,
+            });
+        }, 200);
     }
 </script>
 
@@ -51,7 +53,7 @@
                 <u>{username}</u>
             </span>
         </h3>
-        <div class="margin-left-auto" class:hide={headerWidth < 700}>
+        <div class="margin-left-auto" class:hide={headerWidth < 700} title="User '{username}'' {isAdmin ? "has ADMIN level privileges" : "has USER level privileges"}">
             {isAdmin ? "ADMIN" : "USER"}
         </div>
         <button

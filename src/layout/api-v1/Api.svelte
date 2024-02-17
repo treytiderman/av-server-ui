@@ -10,10 +10,14 @@
 
     // Components
     import Api_Main from "./Api_Main.svelte";
+    import { log } from "../../api/logger-v0.js";
+
+    // State
+    const url = ws.url().replace("4621", "4620");
+    let error = ""
 
     // Startup / Shutdown
     onMount(async () => {
-        const url = ws.url().replace("4621", "4620");
         if ($app_volatile_store.url.query?.offline === "true") offline();
         else startup(url);
     });
@@ -78,10 +82,23 @@
         console.log("Server Status:", "login needed");
         $api_volatile_store.status = "login"
     }
+    async function login(event) {
+        const username = event.detail.username
+        const password = event.detail.password
+        const rememberMe = event.detail.rememberMe
+
+        const response = await user_v1.login(username, password);
+        if (response.startsWith("error")) return error = response;
+        if (rememberMe) localStorage.setItem("token", response);
+        console.log("Server Status:", "authorized");
+        $api_volatile_store.status = "authorized"
+    }
 </script>
 
 <Api_Main
-    href={$app_volatile_store.url.href}
+    {error}
+    serverAddress={url}
     status={$api_volatile_store.status}
     lostConnectionAt={$api_volatile_store.lostConnectionAt}
+    on:login={login}
 />

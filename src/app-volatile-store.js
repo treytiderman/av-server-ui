@@ -9,6 +9,7 @@ export const store = volatileStore("app", {
 
     // Helpful
     hasFocus: true, // window / browser tab is in focus?
+    hasVisibility: true, // window / browser tab is visible?
     window: getWindow(), // dpr, width, height, portrait
     url: getUrl(), // protocol, ip, port, path, querystring
 
@@ -22,19 +23,39 @@ window.addEventListener('resize', event => {
     })
 })
 window.addEventListener("focus", (event) => {
+    console.log("app: is focus")
     store.update(val => {
         val.hasFocus = true
         return val
     })
 })
 window.addEventListener("blur", (event) => {
+    console.log("app: blur / lost focus")
     store.update(val => {
         val.hasFocus = false
         return val
     })
 })
+document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+        console.log("app: page hidden")
+        store.update(val => {
+            val.hasVisibility = false
+            return val
+        })
+    } else {
+        console.log("app: page visible")
+        store.update(val => {
+            val.hasVisibility = true
+            return val
+        })
+    }
+})
 
 // Helper Functions
+function isPageHidden() {
+    return document.hidden || document.msHidden || document.webkitHidden || document.mozHidden;
+}
 function parseQuerystring(string) {
     let obj = {}
     const keyValuePairs = string.replace("?", "").split('&')

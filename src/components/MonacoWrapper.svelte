@@ -6,7 +6,7 @@
     import tsWorker from "monaco-editor/esm/vs/language/typescript/ts.worker?worker";
     import { onMount } from "svelte";
     // import { persistent as state } from "../pages/global-persistent-state.js";
-    
+
     // Changed to dynamic import in onMount
     // import * as monaco from "monaco-editor";
     import { themeBlack } from "./theme-black.js";
@@ -38,13 +38,14 @@
     };
 
     // Variables
-     let theme = "dark";
-     let fontSize = "16px";
+    export let theme = "dark";
+    export let fontSize = 16;
     export let initValue = "";
     export let initLanguage = "json";
     export let data = {
         element: undefined,
         editor: undefined,
+        width: undefined,
         loading: true,
         setValue: (value, language = "json") => {
             monaco.editor.setModelLanguage(data.editor.getModel(), language);
@@ -56,8 +57,11 @@
         setTheme: (theme) => {
             monaco.editor.setTheme(theme || "dark");
         },
-        hideLineNumbers: (theme) => {
-            data.editor.updateOptions({ lineNumbers: "off", folding: false });
+        setLineNumbers: (hide) => {
+            data.editor.updateOptions({
+                lineNumbers: hide ? "off" : "on",
+                folding: !hide,
+            });
         },
         setFontSize: (number) => {
             if (number >= 8 && number <= 36) {
@@ -65,8 +69,11 @@
             }
         },
     };
-    
-    
+
+    $: !data.loading && data.setTheme(theme);
+    $: !data.loading && data.setFontSize(fontSize);
+    $: !data.loading && data.setLineNumbers(data.width < 600);
+
     // Startup
     onMount(async () => {
         // Dynamically import Monaco so it isn't loaded unless needed
@@ -77,14 +84,12 @@
         monaco.editor.defineTheme("light", themeWhite);
         monaco.editor.defineTheme("white", themeWhite);
         let screenWidth = document.documentElement.offsetWidth;
-        // let fontSize = document.documentElement.style.getPropertyValue("--font-size");
-        fontSize = fontSize.replace("px", "") - 2;
         data.editor = monaco.editor.create(data.element, {
             value: initValue,
             language: initLanguage,
             theme: theme,
             // theme: "dark",
-            // fontSize: fontSize,
+            // fontSize: "16px",
             // lineNumbers: "off",
             // folding: false,
             automaticLayout: true,
@@ -96,16 +101,6 @@
             data.editor.getModel().updateOptions({ tabSize: 4 });
         }
 
-        // Update theme
-        // state.subscribe((stateUpdate) => {
-        //     if (screenWidth < 600) data.hideLineNumbers();
-        //     data.setTheme(theme);
-
-        //     let size = JSON.stringify(fontSize);
-        //     size = size.replace("px", "") - 2;
-        //     data.setFontSize(size);
-        // });
-
         data.loading = false;
     });
 </script>
@@ -113,7 +108,7 @@
 {#if data.loading}
     <section class="pad">loading editor...</section>
 {/if}
-<section class="editor" bind:this={data.element} />
+<section class="editor" bind:this={data.element} bind:clientWidth={data.width} />
 
 <style>
     .editor {

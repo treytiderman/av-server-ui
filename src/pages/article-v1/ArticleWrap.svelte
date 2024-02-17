@@ -1,8 +1,4 @@
 <script>
-    // Imports
-    // import { onMount } from "svelte";
-    import Article from "../layout/Article.svelte";
-
     // Exports
     export let foldable = true;
     export let sectionNumbers = true;

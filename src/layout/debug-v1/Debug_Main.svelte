@@ -31,18 +31,18 @@
     div {
         width: fit-content;
         overflow: auto;
-        background: black;
+        background: var(--color-bg);
         height: 100%;
         width: 100%;
     }
     button {
         border: none;
-        background: black;
+        background: var(--color-bg);
         color: var(--color-text-red);
         padding: 0;
     }
     details {
-        background: black;
+        background: var(--color-bg);
         border: none;
         padding: 0;
     }

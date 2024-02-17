@@ -28,8 +28,8 @@
 
 <Split
     isResizable
-    isVertical={window.state.isVertical}
-    oneInit_percent={window.state.one_percent}
+    isVertical={window?.state.isVertical}
+    oneInit_percent={window?.state.one_percent}
     on:resize={onResize}
 >
     <div slot="one">
