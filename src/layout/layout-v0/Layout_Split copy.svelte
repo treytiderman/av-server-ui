@@ -28,16 +28,6 @@
                 childrenIds={window1?.childrenIds}
                 isVertical={window1?.state.isVertical}
             />
-        {:else}
-            <article>
-                <h2>Window Error</h2>
-                <button
-                    class="red"
-                    on:click={() => {$state.windows = [JSON.parse(JSON.stringify($state.windowsDefault))]}}
-                >
-                    Reset Windows
-                </button>
-            </article>
         {/if}
     </div>
     <div slot="two">
@@ -48,16 +38,6 @@
                 childrenIds={window2?.childrenIds}
                 isVertical={window2?.state.isVertical}
             />
-        {:else}
-            <article>
-                <h2>Window Error</h2>
-                <button
-                    class="red"
-                    on:click={() => {$state.windows = [JSON.parse(JSON.stringify($state.windowsDefault))]}}
-                >
-                    Reset Windows
-                </button>
-            </article>
         {/if}
     </div>
 </Split>

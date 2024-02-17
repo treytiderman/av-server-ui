@@ -1,14 +1,19 @@
 <script>
-    // Components
-    import Layout_Window from "./Layout_Window.svelte";
+    // Imports
+    import { store as layout_persistent_store } from "./layout-persistent-store";
 
-    // State
-    export let isOffline = true
-    let id = 1
-    let type = "split"
-    let parentId = 0
-    let childrenIds = []
-    let state = {}
+    // Components
+    import Layout_Tabs from "./Layout_Tabs.svelte";
+    import Layout_Split from "./Layout_Split.svelte";
+
+    // Dynamic
+    $: windows = $layout_persistent_store.windows;
+    $: window = windows.find((w) => w.parentId === 0);
+
 </script>
 
-<Layout_Window {type} />
+{#if window.type === "tabs"}
+    <Layout_Tabs id={window.id} />
+{:else if window.type === "split"}
+    <Layout_Split id={window.id} />
+{/if}

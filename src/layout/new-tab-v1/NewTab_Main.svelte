@@ -26,53 +26,61 @@
     // State - Main
     export let username = "admin";
     export let isAdmin = true;
+
+    // Functions
+    function addTab(event, name) {
+        dispatch("tabAdd", {
+            event: event,
+            tabName: name,
+        });
+    }
 </script>
 
 <div class="page max-width flow">
     <!-- Header -->
     <div class="flex nowrap gap-0 y-center" bind:clientWidth={headerWidth}>
-        <h3 class="long-name" class:hide={headerWidth < 800}>
+        <h3 class="long-name" class:hide={headerWidth < 700}>
             Welcome
             <span class="purple">
                 <u>{username}</u>
             </span>
             !
         </h3>
-        <h3 class="long-name-sm" class:hide={headerWidth > 800}>
+        <h3 class="long-name-sm" class:hide={headerWidth > 700}>
             <span class="purple">
                 <u>{username}</u>
             </span>
         </h3>
-        <div class="margin-left-auto" class:hide={headerWidth < 800}>
+        <div class="margin-left-auto" class:hide={headerWidth < 700}>
             {isAdmin ? "ADMIN" : "USER"}
         </div>
         <button
             title="Logout"
             class="border-none margin-left-auto"
-            on:click={() => dispatch("logout")}
+            on:pointerdown={() => dispatch("logout")}
         >
             <LogOut size="1.25rem" />
         </button>
         <button
             title="Notes"
             class="border-none"
-            class:hide={headerWidth < 800}
-            on:click={() => dispatch("tabAdd", "Notes")}
+            class:hide={headerWidth < 700}
+            on:pointerdown={(event) => addTab(event, "Notes")}
         >
             <StickyNote size="1.25rem" />
         </button>
         <button
             title="Site Map"
             class="border-none"
-            class:hide={headerWidth < 800}
-            on:click={() => dispatch("tabAdd", "Site Map")}
+            class:hide={headerWidth < 700}
+            on:pointerdown={(event) => addTab(event, "Site Map")}
         >
             <Map size="1.25rem" />
         </button>
         <button
             title="Settings"
             class="border-none"
-            on:click={() => dispatch("tabAdd", "Settings")}
+            on:pointerdown={(event) => addTab(event, "Settings")}
         >
             <Settings size="1.25rem" />
         </button>
@@ -85,7 +93,7 @@
             <button
                 title="Open the User Management Page"
                 class="flex gap-sm align-center orange"
-                on:click={() => dispatch("tabAdd", "User")}
+                on:pointerdown={(event) => addTab(event, "User")}
             >
                 <UserCog size="1.25rem" />
                 User Management
@@ -93,7 +101,7 @@
             <button
                 title="Open this System's Page"
                 class="flex gap-sm align-center orange"
-                on:click={() => dispatch("tabAdd", "System")}
+                on:pointerdown={(event) => addTab(event, "System")}
             >
                 <HeartPulse size="1.25rem" />
                 System
@@ -101,7 +109,7 @@
             <button
                 title="Open the Logs Page"
                 class="flex gap-sm align-center orange"
-                on:click={() => dispatch("tabAdd", "Logs")}
+                on:pointerdown={(event) => addTab(event, "Logs")}
             >
                 <Scroll size="1.25rem" />
                 Logs
@@ -116,7 +124,7 @@
             <button
                 title="Open the Programs / Scripts Page"
                 class="flex gap-sm align-center green"
-                on:click={() => dispatch("tabAdd", "Programs")}
+                on:pointerdown={(event) => addTab(event, "Programs")}
             >
                 <SquareCode size="1.25rem" />
                 Programs
@@ -124,7 +132,7 @@
             <button
                 title="Open the Code Editor Page"
                 class="flex gap-sm align-center dim"
-                on:click={() => dispatch("tabAdd", "Code")}
+                on:pointerdown={(event) => addTab(event, "Code")}
             >
                 <Code size="1.25rem" />
                 Code
@@ -132,7 +140,7 @@
             <button
                 title="Open the Database Viewer Page"
                 class="flex gap-sm align-center green"
-                on:click={() => dispatch("tabAdd", "Database")}
+                on:pointerdown={(event) => addTab(event, "Database")}
             >
                 <Database size="1.25rem" />
                 Database
@@ -145,7 +153,7 @@
             <button
                 title="Open the HTTP Client Page"
                 class="flex gap-sm align-center dim"
-                on:click={() => dispatch("tabAdd", "HTTP Client")}
+                on:pointerdown={(event) => addTab(event, "HTTP Client")}
             >
                 <Network size="1.25rem" />
                 HTTP Client
@@ -153,7 +161,7 @@
             <button
                 title="Open the HTTP Server Page"
                 class="flex gap-sm align-center dim"
-                on:click={() => dispatch("tabAdd", "HTTP Server")}
+                on:pointerdown={(event) => addTab(event, "HTTP Server")}
             >
                 <Server size="1.25rem" />
                 HTTP Server
@@ -161,7 +169,7 @@
             <button
                 title="Open the TCP Client Page"
                 class="flex gap-sm align-center purple"
-                on:click={() => dispatch("tabAdd", "TCP Client")}
+                on:pointerdown={(event) => addTab(event, "TCP Client")}
             >
                 <Network size="1.25rem" />
                 TCP Client
@@ -169,7 +177,7 @@
             <button
                 title="Open the TCP Server Page"
                 class="flex gap-sm align-center dim"
-                on:click={() => dispatch("tabAdd", "TCP Server")}
+                on:pointerdown={(event) => addTab(event, "TCP Server")}
             >
                 <Server size="1.25rem" />
                 TCP Server
@@ -177,7 +185,7 @@
             <button
                 title="Open the UDP Client Page"
                 class="flex gap-sm align-center dim"
-                on:click={() => dispatch("tabAdd", "UDP Client")}
+                on:pointerdown={(event) => addTab(event, "UDP Client")}
             >
                 <Network size="1.25rem" />
                 UDP Client
@@ -185,7 +193,7 @@
             <button
                 title="Open the UDP Server Page"
                 class="flex gap-sm align-center dim"
-                on:click={() => dispatch("tabAdd", "UDP Server")}
+                on:pointerdown={(event) => addTab(event, "UDP Server")}
             >
                 <Server size="1.25rem" />
                 UDP Server
@@ -193,7 +201,7 @@
             <button
                 title="Open the WebSocket Client Page"
                 class="flex gap-sm align-center dim"
-                on:click={() => dispatch("tabAdd", "WebSocket Client")}
+                on:pointerdown={(event) => addTab(event, "WebSocket Client")}
             >
                 <Network size="1.25rem" />
                 WebSocket Client
@@ -201,7 +209,7 @@
             <button
                 title="Open the WebSocket Server Page"
                 class="flex gap-sm align-center dim"
-                on:click={() => dispatch("tabAdd", "WebSocket Server")}
+                on:pointerdown={(event) => addTab(event, "WebSocket Server")}
             >
                 <Server size="1.25rem" />
                 WebSocket Server
@@ -209,7 +217,7 @@
             <button
                 title="Open the Serial Port Page"
                 class="flex gap-sm align-center purple"
-                on:click={() => dispatch("tabAdd", "Serial Port")}
+                on:pointerdown={(event) => addTab(event, "Serial Port")}
             >
                 <Usb size="1.25rem" />
                 Serial Port
@@ -230,5 +238,8 @@
         text-overflow: ellipsis;
         text-wrap: nowrap;
         white-space: nowrap;
+    }
+    .grid.auto-sm {
+        grid-template-columns: repeat(auto-fit, minmax(min(14rem, 100%), 1fr));
     }
 </style>

@@ -5,10 +5,6 @@
 
     // Components
     import Layout_Main from "./Layout_Main.svelte";
-
-    // State
-    export let isOffline = true
-
 </script>
 
-<Layout_Main {isOffline} />
+<Layout_Main />

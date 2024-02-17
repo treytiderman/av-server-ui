@@ -313,10 +313,4 @@
         text-wrap: nowrap;
         white-space: nowrap;
     }
-    .long-name {
-        /* max-width: 26ch; */
-    }
-    .long-name-sm {
-        /* max-width: 16ch; */
-    }
 </style>

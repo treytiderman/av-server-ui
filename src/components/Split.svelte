@@ -110,7 +110,7 @@
         isPointerdown = false;
     }, throttleTime_ms);
     function resetPosition() {
-        one_percent = oneInit_percent
+        one_percent = 50
         dispatch("resize", one_percent)
     }
 </script>

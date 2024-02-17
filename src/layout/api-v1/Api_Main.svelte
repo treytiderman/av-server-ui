@@ -11,7 +11,7 @@
 
 <!-- API Offline / Demo / UI Dev Only -->
 {#if status === "offline"}
-    <Layout isOffline={true} />
+    <Layout />
 
 <!-- API Disconnected -->
 {:else if status === "closed"}
@@ -27,5 +27,5 @@
 
 <!-- API Connected & Logged In -->
 {:else if status === "authorized"}
-    <Layout isOffline={false} />
+    <Layout />
 {/if}
