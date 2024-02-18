@@ -1,14 +1,17 @@
 <script>
     // Imports
-    import { state } from "./tcp-client-state.js";
-    import { tcpClient_v1 } from "../../api/api.js";
     import { onMount, onDestroy } from "svelte";
+    import { tcpClient_v1 } from "../../api/api.js";
+
+    // Stores
+    import { store as state } from "./tcp-client-state.js";
+    import { store as app_volatile_store } from "../../app-volatile-store.js";
 
     // Components
     import TcpClientMain from "./TcpClientMain.svelte";
 
     // State
-    let isOffline = false;
+    let isOffline = $app_volatile_store.url.query?.offline === "true";
     let selectedClient;
 
     // State - Main
@@ -18,10 +21,10 @@
     let select = "Functions";
     let isOpen = false;
     let encoding = "ascii";
-    let addresses = isOffline ? [] : ["192.168.1.9:23", "192.168.1.42:8080"];
+    let addresses = ["192.168.1.9:23", "192.168.1.42:8080"];
 
     // State - Clients
-    let clients = isOffline ? [] : [
+    let clients = [
         {
             isOpen: false,
             reconnect: false,
@@ -37,15 +40,11 @@
     ];
 
     // State - Functions
-    // let formAddress = "";
-    // let formEncoding = "";
-    // let formReconnect = "";
-    // let formData = "";
-    let formAddress = "192.168.1.9:23";
-    let formEncoding = "ascii";
-    let formReconnect = "false";
-    let formData = "data";
-    let response = "...";
+    let formAddress = "";
+    let formEncoding = "";
+    let formReconnect = "";
+    let formData = "";
+    let response = "";
 
     // State - Settings
     $: showBorders = $state.settings.showBorders;
@@ -59,7 +58,7 @@
 
     // Startup / Shutdown
     onMount(async () => {
-        if (!isOffline) return;
+        if (isOffline) return;
         tcpClient_v1.clients.sub((res) => {
             clients = Object.values(res);
             addresses = Object.keys(res);
@@ -73,7 +72,7 @@
         });
     });
     onDestroy(async () => {
-        if (!isOffline) return;
+        if (isOffline) return;
         await tcpClient_v1.clients.unsub();
     });
 
@@ -92,7 +91,7 @@
         }
 
         // Unsubscribe to another address history
-        if (isOffline && selectedClient?.address) {
+        if (!isOffline && selectedClient?.address) {
             tcpClient_v1.data.unsub(selectedClient.address);
         }
 
@@ -106,7 +105,7 @@
         encoding = selectedClient.encoding;
 
         // Subscribe to another address history
-        if (isOffline) {
+        if (!isOffline) {
             lines = await tcpClient_v1.history.get(selectedClient.address);
             let lastData = "";
             tcpClient_v1.data.sub(selectedClient.address, (res) => {
@@ -125,12 +124,14 @@
     async function toggleEncoding(event) {
         const detail = event.detail;
         console.log("tcp-client-toggleEncoding", selectedClient);
+        if (isOffline) return;
         const encoding = selectedClient.encoding === "ascii" ? "hex" : "ascii";
         response = await tcpClient_v1.client.setEncoding(selectedClient.address, encoding);
     }
     async function headerOpen(event) {
         const detail = event.detail;
         console.log("tcp-client-headerOpen", selectedClient);
+        if (isOffline) return;
         response = await tcpClient_v1.client.open(
             selectedClient.address,
             selectedClient.encoding,
@@ -140,6 +141,7 @@
     async function headerClose(event) {
         const detail = event.detail;
         console.log("tcp-client-headerClose", selectedClient);
+        if (isOffline) return;
         response = await tcpClient_v1.client.close(selectedClient.address);
     }
     async function clientCopy(event) {
@@ -159,21 +161,25 @@
     async function open(event) {
         const detail = event.detail;
         console.log("tcp-client-open", detail);
+        if (isOffline) return;
         response = await tcpClient_v1.client.open(detail.address, detail.encoding, detail.reconnect);
     }
     async function reconnect(event) {
         const detail = event.detail;
         console.log("tcp-client-reconnect", detail);
+        if (isOffline) return;
         response = await tcpClient_v1.client.reconnect(detail.address, detail.encoding, detail.reconnect);
     }
     async function send(event) {
         const detail = event.detail;
         console.log("tcp-client-send", detail);
+        if (isOffline) return;
         response = await tcpClient_v1.client.send(detail.address, detail.data, detail.encoding);
     }
     async function close(event) {
         const detail = event.detail;
         console.log("tcp-client-close", detail);
+        if (isOffline) return;
         response = await tcpClient_v1.client.close(detail.address);
     }
     async function remove(event) {
@@ -184,16 +190,19 @@
     async function setEncoding(event) {
         const detail = event.detail;
         console.log("tcp-client-setEncoding", detail);
+        if (isOffline) return;
         response = await tcpClient_v1.client.setEncoding(detail.address, detail.encoding);
     }
     async function closeAll(event) {
         const detail = event.detail;
         console.log("tcp-client-closeAll", detail);
+        if (isOffline) return;
         response = await tcpClient_v1.clients.close();
     }
     async function removeAll(event) {
         const detail = event.detail;
         console.log("tcp-client-removeAll", detail);
+        if (isOffline) return;
         response = await tcpClient_v1.clients.remove();
     }
     async function escapeCRLFClick(event) {
@@ -225,76 +234,49 @@
     async function sendsSend(event) {
         const detail = event.detail;
         console.log("tcp-client-sendsSend", selectedClient, detail);
+        if (isOffline) return;
         response = await tcpClient_v1.client.send(selectedClient.address, detail, selectedClient.encoding);
     }
 </script>
 
 <div class="page flex column max-width" class:max-width={subpage !== "Log"}>
-    {#if isOffline}
-        <TcpClientMain
-            bind:select
-            {subpage}
-            {isOpen}
-            {encoding}
-            {addresses}
-            {clients}
-            {formAddress}
-            {formEncoding}
-            {formReconnect}
-            {formData}
-            {response}
-            {showBorders}
-            {escapeCRLF}
-            {prettyJSON}
-            {freezeCol1Col2}
-            {lines}
-            on:header-open={headerOpen}
-            on:header-close={headerClose}
-            on:header-changeConnection={changeConnection}
-            on:header-toggleEncoding={toggleEncoding}
-            on:clients-copy={clientCopy}
-            on:clients-open={clientOpen}
-            on:functions-open={open}
-            on:functions-reconnect={reconnect}
-            on:functions-send={send}
-            on:functions-close={close}
-            on:functions-remove={remove}
-            on:functions-setEncoding={setEncoding}
-            on:functions-closeAll={closeAll}
-            on:functions-removeAll={removeAll}
-            on:settings-escapeCRLF={escapeCRLFClick}
-            on:settings-freezeCol1Col2={freezeCol1Col2Click}
-            on:settings-prettyJSON={prettyJSONClick}
-            on:settings-showBorders={showBordersClick}
-            on:lineClick={lineClick}
-            on:send={sendsSend}
-        />
-    {:else}
-        <!-- <div>Offline</div> -->
-        <TcpClientMain
-            bind:select
-            {subpage}
-            {isOpen}
-            {encoding}
-            {addresses}
-            {clients}
-            {formAddress}
-            {formEncoding}
-            {formReconnect}
-            {formData}
-            {response}
-            {showBorders}
-            {escapeCRLF}
-            {prettyJSON}
-            {freezeCol1Col2}
-            {lines}
-            on:header-changeConnection={changeConnection}
-            on:clients-copy={clientCopy}
-            on:clients-open={clientOpen}
-            on:settings-escapeCRLF={escapeCRLFClick}
-            on:settings-freezeCol1Col2={freezeCol1Col2Click}
-            on:settings-prettyJSON={prettyJSONClick}
-            on:settings-showBorders={showBordersClick}
-        />
-    {/if}
+    <small class="dim" class:hide={isOffline === false}> Offline </small>
+    <TcpClientMain
+        bind:select
+        {subpage}
+        {isOpen}
+        {encoding}
+        {addresses}
+        {clients}
+        {formAddress}
+        {formEncoding}
+        {formReconnect}
+        {formData}
+        {response}
+        {showBorders}
+        {escapeCRLF}
+        {prettyJSON}
+        {freezeCol1Col2}
+        {lines}
+        on:header-open={headerOpen}
+        on:header-close={headerClose}
+        on:header-changeConnection={changeConnection}
+        on:header-toggleEncoding={toggleEncoding}
+        on:clients-copy={clientCopy}
+        on:clients-open={clientOpen}
+        on:functions-open={open}
+        on:functions-reconnect={reconnect}
+        on:functions-send={send}
+        on:functions-close={close}
+        on:functions-remove={remove}
+        on:functions-setEncoding={setEncoding}
+        on:functions-closeAll={closeAll}
+        on:functions-removeAll={removeAll}
+        on:settings-escapeCRLF={escapeCRLFClick}
+        on:settings-freezeCol1Col2={freezeCol1Col2Click}
+        on:settings-prettyJSON={prettyJSONClick}
+        on:settings-showBorders={showBordersClick}
+        on:lineClick={lineClick}
+        on:send={sendsSend}
+    />
 </div>

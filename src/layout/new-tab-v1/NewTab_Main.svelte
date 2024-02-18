@@ -53,31 +53,12 @@
                 <u>{username}</u>
             </span>
         </h3>
-        <div class="margin-left-auto" class:hide={headerWidth < 700} title="User '{username}'' {isAdmin ? "has ADMIN level privileges" : "has USER level privileges"}">
-            {isAdmin ? "ADMIN" : "USER"}
-        </div>
         <button
             title="Logout"
             class="border-none margin-left-auto"
             on:pointerdown={() => dispatch("logout")}
         >
             <LogOut size="1.25rem" />
-        </button>
-        <button
-            title="Notes"
-            class="border-none"
-            class:hide={headerWidth < 700}
-            on:pointerdown={(event) => addTab(event, "Notes")}
-        >
-            <StickyNote size="1.25rem" />
-        </button>
-        <button
-            title="Site Map"
-            class="border-none"
-            class:hide={headerWidth < 700}
-            on:pointerdown={(event) => addTab(event, "Site Map")}
-        >
-            <Map size="1.25rem" />
         </button>
         <button
             title="Settings"
@@ -109,12 +90,38 @@
                 System
             </button>
             <button
-                title="Open the Logs Page"
+                title="Open a list of all pages"
                 class="flex gap-sm align-center orange"
+                on:pointerdown={(event) => addTab(event, "Site Map")}
+            >
+                <Map size="1.25rem" />
+                Site Map
+            </button>
+
+            <button
+                title="Open the Logs Page"
+                class="flex gap-sm align-center dim"
                 on:pointerdown={(event) => addTab(event, "Logs")}
             >
                 <Scroll size="1.25rem" />
                 Logs
+            </button>
+
+            <button
+                title="Open the Notes Page"
+                class="flex gap-sm align-center dim"
+                on:pointerdown={(event) => addTab(event, "Notes")}
+            >
+                <StickyNote size="1.25rem" />
+                Notes
+            </button>
+            <button
+                title="Open an iframe Page"
+                class="flex gap-sm align-center dim"
+                on:pointerdown={(event) => addTab(event, "Browser")}
+            >
+                <StickyNote size="1.25rem" />
+                Browser
             </button>
         </div>
     </div>
@@ -125,7 +132,7 @@
         <div class="grid auto-sm gap align-start">
             <button
                 title="Open the Programs / Scripts Page"
-                class="flex gap-sm align-center green"
+                class="flex gap-sm align-center dim"
                 on:pointerdown={(event) => addTab(event, "Programs")}
             >
                 <SquareCode size="1.25rem" />
@@ -176,6 +183,7 @@
                 <Network size="1.25rem" />
                 TCP Client
             </button>
+
             <button
                 title="Open the TCP Server Page"
                 class="flex gap-sm align-center dim"
@@ -200,6 +208,7 @@
                 <Server size="1.25rem" />
                 UDP Server
             </button>
+
             <button
                 title="Open the WebSocket Client Page"
                 class="flex gap-sm align-center dim"

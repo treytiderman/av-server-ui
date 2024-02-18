@@ -1,28 +1,33 @@
 <script>
     // Imports
     import { onMount, onDestroy } from "svelte";
-    import { database_v1 } from "../api/api.js";
+    import { database_v1 } from "../../api/api.js";
 
-    // Variables
-    const data = {
-        action: "userCreate",
-        databaseNames: ["name"],
-        databases: {},
+    // Stores
+    import { store as app_volatile_store } from "../../app-volatile-store.js";
+
+    // State
+    let isOffline = $app_volatile_store.url.query?.offline === "true";
+    let dbNames = ["db-name"];
+    let dbs = {
+        "db-name": {
+            key: "value",
+        },
     };
 
     function namesUpdate(names) {
         // unsub
-        data.databaseNames.forEach((name) => {
+        dbNames.forEach((name) => {
             database_v1.db.unsub(name);
         });
 
         // new names
-        data.databaseNames = names;
+        dbNames = names;
 
         // sub
         names.forEach((name) => {
             database_v1.db.sub(name, (res) => {
-                data.databases[name] = res;
+                dbs[name] = res;
             });
         });
     }
@@ -32,22 +37,19 @@
         database_v1.names.sub((names) => namesUpdate(names));
     });
     onDestroy(() => {
-        data.databaseNames.forEach((name) => database_v1.db.unsub(name));
+        dbNames.forEach((name) => database_v1.db.unsub(name));
         database_v1.names.unsub();
     });
 </script>
 
 <div class="page">
+    <small class="dim" class:hide={isOffline === false}> Offline </small>
     <div class="section flow">
         <h2>Database</h2>
-        {#each data.databaseNames as name}
+        {#each dbNames as name}
             <details>
                 <summary>{name}</summary>
-                <pre class="mono">{JSON.stringify(
-                        data.databases[name],
-                        true,
-                        4,
-                    )}</pre>
+                <pre class="mono">{JSON.stringify(dbs[name], true, 4)}</pre>
             </details>
         {/each}
     </div>

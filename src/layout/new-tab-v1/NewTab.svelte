@@ -1,14 +1,10 @@
 <script>
     // Imports
-    import { store as layout_persistent_store } from "../layout-v0/layout-persistent-store";
-    import { store as api_volatile_store } from "../api-v1/api-volatile-store";
+    import { store as layout_persistent_store } from "../layout-v0/layout-persistent-store.js";
+    import { store as api_volatile_store } from "../api-v1/api-volatile-store.js";
 
     // Components
     import NewTab from "./NewTab_Main.svelte";
-
-    // State - Main
-    let username = "admin";
-    let isAdmin = true;
 
     // Functions
     function tabAdd(ev) {
@@ -19,9 +15,11 @@
         const index = windows.findIndex((w) => w.id === id);
         const tabs = $layout_persistent_store.windows[index].state.tabs;
 
-        if (tabs.some(tab => tab.name === name)) {
-            console.log(`new-tab: cancel add tab '${name}' to window '${id}' since its already open`);
-            return
+        if (tabs.some((tab) => tab.name === name)) {
+            console.log(
+                `new-tab: cancel add tab '${name}' to window '${id}' since its already open`,
+            );
+            return;
         }
 
         $layout_persistent_store.windows[index].state.tabs = [
@@ -41,8 +39,8 @@
     function logout() {
         console.log(`new-tab: logout`);
         localStorage.removeItem("token");
-        clearAllWindows()
-        $api_volatile_store.status = "login"
+        clearAllWindows();
+        $api_volatile_store.status = "login";
     }
     function clearAllWindows() {
         console.log(`new-tab clear all windows`);
@@ -53,4 +51,9 @@
     }
 </script>
 
-<NewTab {username} {isAdmin} on:logout={logout} on:tabAdd={tabAdd} />
+<NewTab
+    username={$api_volatile_store.user.username}
+    isAdmin={$api_volatile_store.user.isAdmin}
+    on:logout={logout}
+    on:tabAdd={tabAdd}
+/>

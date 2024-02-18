@@ -1,7 +1,7 @@
 <script>
     // Imports
     import { onMount } from "svelte";
-    import { store as app_volatile_store } from "../../app-volatile-store.js";
+    import { store as pages_volatile_store } from "../../pages/pages-volatile-store";
     import { store as layout_persistent_store } from "./layout-persistent-store";
 
     // Components
@@ -53,7 +53,7 @@
     function updateTabs(tabs) {
         if (tabs) {
             return tabs.map((t) => {
-              t.component = $app_volatile_store.pages[t.name];
+              t.component = $pages_volatile_store[t.name];
               if (!t.component) t.component = NewTab;
               return t;
           })

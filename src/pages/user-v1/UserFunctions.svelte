@@ -18,10 +18,6 @@
 <label>
     Function <br />
     <select bind:value={func}>
-        <optgroup label="Login / Logout">
-            <option value="login">login</option>
-            <option value="logout">logout</option>
-        </optgroup>
         <optgroup label="Group Management">
             <option value="groupCreate">group create</option>
             <option value="groupDelete">group delete</option>
@@ -43,7 +39,6 @@
 <form on:submit|preventDefault={() => {}}>
     <label
         class:hide={!(
-            func === "login" ||
             func === "userCreate" ||
             func === "userDelete" ||
             func === "userAddGroup" ||
@@ -60,11 +55,7 @@
         />
     </label>
     <label
-        class:hide={!(
-            func === "login" ||
-            func === "userCreate" ||
-            func === "userChangePassword"
-        )}
+        class:hide={!(func === "userCreate" || func === "userChangePassword")}
     >
         Password <br />
         <input
@@ -121,7 +112,10 @@
             Create
         </button>
     {:else if func === "userDelete"}
-        <button class="red" on:click={() => dispatch("userDelete", { username })}>
+        <button
+            class="red"
+            on:click={() => dispatch("userDelete", { username })}
+        >
             Delete
         </button>
     {:else if func === "userAddGroup"}
@@ -150,17 +144,6 @@
         >
             Change
         </button>
-    {:else if func === "login"}
-        <button
-            class="purple"
-            on:click={() => dispatch("login", { username, password })}
-        >
-            Login
-        </button>
-    {:else if func === "logout"}
-        <button class="yellow" on:click={() => dispatch("logout", { username })}>
-            Logout
-        </button>
     {:else if func === "groupCreate"}
         <button
             class="cyan"
@@ -169,17 +152,11 @@
             Create
         </button>
     {:else if func === "groupDelete"}
-        <button
-            class="red"
-            on:click={() => dispatch("groupDelete", { group })}
-        >
+        <button class="red" on:click={() => dispatch("groupDelete", { group })}>
             Delete
         </button>
     {:else if func === "resetToDefault"}
-        <button
-            class="red"
-            on:click={() => dispatch("resetToDefault")}
-        >
+        <button class="red" on:click={() => dispatch("resetToDefault")}>
             Reset all Users and Groups to default
         </button>
     {/if}

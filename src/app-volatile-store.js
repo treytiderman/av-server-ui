@@ -1,11 +1,7 @@
 import { volatileStore } from "./js/store.js";
-import { pages } from "./pages/pages.js";
 
 // Store
 export const store = volatileStore("app", {
-
-    // All Pages as an object { "name": component, ... }
-    pages: pages,
 
     // Helpful
     hasFocus: true, // window / browser tab is in focus?

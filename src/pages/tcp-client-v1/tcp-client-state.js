@@ -1,6 +1,6 @@
 import { persistentStore } from "../../js/store.js";
 
-export { state, def }
+export { store, def }
 
 const def = {
     settings: {
@@ -11,5 +11,5 @@ const def = {
     },
 };
 
-const state = persistentStore("tcp-client", def);
-// state.reset()
+const store = persistentStore("tcp-client", def);
+// store.reset()

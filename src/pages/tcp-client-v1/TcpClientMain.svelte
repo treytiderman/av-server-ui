@@ -37,7 +37,7 @@
     export let formEncoding = "";
     export let formReconnect = "";
     export let formData = "";
-    export let response = "...";
+    export let response = "";
 
     // State - Settings
     export let showBorders = false;
@@ -102,7 +102,7 @@
                 on:functions-closeAll
                 on:functions-removeAll
             />
-            <div>{response}</div>
+            <div class:hide={!response}>{response}</div>
         </div>
     </div>
 

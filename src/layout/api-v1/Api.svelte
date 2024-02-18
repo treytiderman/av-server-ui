@@ -14,15 +14,16 @@
 
     // State
     const url = ws.url().replace("4621", "4620");
+    let isOffline = $app_volatile_store.url.query?.offline === "true"
     let error = ""
 
     // Startup / Shutdown
     onMount(async () => {
-        if ($app_volatile_store.url.query?.offline === "true") offline();
+        if (isOffline) offline();
         else startup(url);
     });
     onDestroy(async () => {
-        if ($app_volatile_store.url.query?.offline === "true") return;
+        if (isOffline) return;
         else shutdown();
     });
 
@@ -30,7 +31,7 @@
     async function offline() {
         console.log("Server Status:", "offline dev / demo");
         $api_volatile_store.status = "offline"
-        $api_volatile_store.user.username = "admin";
+        $api_volatile_store.user.username = "demo-user";
         $api_volatile_store.user.groups = ["admin"];
         $api_volatile_store.user.isAdmin = true;
     }
@@ -90,8 +91,7 @@
         const response = await user_v1.login(username, password);
         if (response.startsWith("error")) return error = response;
         if (rememberMe) localStorage.setItem("token", response);
-        console.log("Server Status:", "authorized");
-        $api_volatile_store.status = "authorized"
+        onLogin();
     }
 </script>
 
