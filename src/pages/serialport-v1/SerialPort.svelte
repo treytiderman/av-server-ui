@@ -4,11 +4,14 @@
     import { serial_v1 as api } from "../../api/api.js";
     import { onMount, onDestroy } from "svelte";
 
+    // Stores
+    import { store as app_volatile_store } from "../../app-volatile-store.js";
+
     // Components
     import SerialPortMain from "./SerialPortMain.svelte";
 
     // State
-    let onlineWithApi = true;
+    let isOffline = $app_volatile_store.url.query?.offline === "true";
     let selectedPort;
 
     // State - Main
@@ -20,46 +23,39 @@
     let encoding = "ascii";
     let baudrate = 9600;
     let delimiter = "none";
-    let paths = onlineWithApi ? [] : ["COM4"];
+    let paths = isOffline === false ? [] : ["COM4"];
 
     // State - Ports
-    let ports = onlineWithApi
-        ? []
-        : [
-              {
-                  path: "COM1",
-                  manufacturer: "(Standard port types)",
-                  pnpId: "ACPI\\PNP0501\\0",
-                  friendlyName: "Communications Port (COM1)",
-              },
-              {
-                  path: "COM4",
-                  manufacturer: "FTDI",
-                  serialNumber: "A10NQRTP",
-                  pnpId: "FTDIBUS\\VID_0403+PID_6001+A10NQRTPA\\0000",
-                  friendlyName: "USB Serial Port (COM4)",
-                  vendorId: "0403",
-                  productId: "6001",
+    let ports = isOffline === false ? [] : [
+        {
+            path: "COM1",
+            manufacturer: "(Standard port types)",
+            pnpId: "ACPI\\PNP0501\\0",
+            friendlyName: "Communications Port (COM1)",
+        },
+        {
+            path: "COM4",
+            manufacturer: "FTDI",
+            serialNumber: "A10NQRTP",
+            pnpId: "FTDIBUS\\VID_0403+PID_6001+A10NQRTPA\\0000",
+            friendlyName: "USB Serial Port (COM4)",
+            vendorId: "0403",
+            productId: "6001",
 
-                  isOpen: true,
-                  baudrate: 9600,
-                  encoding: "ascii",
-                  delimiter: "none",
-              },
-          ];
+            isOpen: true,
+            baudrate: 9600,
+            encoding: "ascii",
+            delimiter: "none",
+        },
+    ];
 
     // State - Functions
-    // let formPath = "";
-    // let formEncoding = "";
-    // let formBaudrate = 9600;
-    // let formDelimiter = "";
-    // let formData = "";
-    let formPath = "COM3";
-    let formEncoding = "ascii";
+    let formPath = "";
+    let formEncoding = "";
     let formBaudrate = 9600;
-    let formDelimiter = "none";
-    let formData = "data";
-    let response = "...";
+    let formDelimiter = "";
+    let formData = "";
+    let response = "";
 
     // State - Settings
     $: showBorders = $state.settings.showBorders;
@@ -69,11 +65,10 @@
 
     // State - Log
     let lines = [];
-    $: console.log("lines", lines);
 
     // Startup / Shutdown
     onMount(async () => {
-        if (!onlineWithApi) return;
+        if (isOffline) return;
         api.available.sub(async (res) => {
             ports = await getPorts();
         });
@@ -95,13 +90,15 @@
         });
     });
     onDestroy(async () => {
-        if (!onlineWithApi) return;
+        if (isOffline) return;
         await api.ports.unsub();
     });
 
     // Functions
     async function getPorts() {
         const available = await api.available.get();
+        if (available.startsWith("error")) return []
+        console.log("available", available);
         const statuses = await api.ports.get();
 
         Object.values(statuses).forEach((status) => {
@@ -127,7 +124,7 @@
         }
 
         // Unsubscribe last history
-        if (onlineWithApi && selectedPort?.path) {
+        if (!isOffline && selectedPort?.path) {
             api.data.unsub(selectedPort.path);
         }
 
@@ -135,7 +132,6 @@
         subpage = "Log";
         selectedPort = ports.find((c) => c.path === detail);
         if (!selectedPort) return (subpage = "Functions");
-        console.log("selectedPort", selectedPort);
 
         isOpen = selectedPort.isOpen;
         encoding = selectedPort.encoding;
@@ -143,31 +139,32 @@
         delimiter = selectedPort.delimiter;
 
         // Subscribe new history
-        if (onlineWithApi) {
-            lines = await api.history.get(selectedPort.path);
-            let lastData = "";
-            api.data.sub(selectedPort.path, (res) => {
-                console.log("data.sub", res);
+        if (isOffline) return;
+        lines = await api.history.get(selectedPort.path);
+        let lastData = "";
+        api.data.sub(selectedPort.path, (res) => {
+            console.log("data.sub", res);
 
-                // Backend issue. Delete once fixed
-                if (lastData === JSON.stringify(res) || !res) return;
-                lastData = JSON.stringify(res);
-                console.log("new data.sub", res);
+            // Backend issue. Delete once fixed
+            if (lastData === JSON.stringify(res) || !res) return;
+            lastData = JSON.stringify(res);
+            console.log("new data.sub", res);
 
-                lines.push(res);
-                lines = lines;
-            });
-        }
+            lines.push(res);
+            lines = lines;
+        });
     }
     async function toggleEncoding(event) {
         const detail = event.detail;
         console.log("serial-port-toggleEncoding", selectedPort);
         const encoding = selectedPort.encoding === "ascii" ? "hex" : "ascii";
+        if (isOffline) return;
         response = await api.port.setEncoding(selectedPort.path, encoding);
     }
     async function headerOpen(event) {
         const detail = event.detail;
         console.log("serial-port-headerOpen", selectedPort);
+        if (isOffline) return;
         response = await api.port.open(
             selectedPort.path,
             selectedPort.baudrate,
@@ -178,6 +175,7 @@
     async function headerClose(event) {
         const detail = event.detail;
         console.log("serial-port-headerClose", selectedPort);
+        if (isOffline) return;
         response = await api.port.close(selectedPort.path);
     }
     async function portCopy(event) {
@@ -198,46 +196,55 @@
     async function open(event) {
         const detail = event.detail;
         console.log("serial-port-open", detail);
+        if (isOffline) return;
         response = await api.port.open(detail.path, detail.baudrate, detail.encoding, detail.delimiter);
     }
     async function send(event) {
         const detail = event.detail;
         console.log("serial-port-send", detail);
+        if (isOffline) return;
         response = await api.port.send(detail.path, detail.data, detail.encoding);
     }
     async function close(event) {
         const detail = event.detail;
         console.log("serial-port-close", detail);
+        if (isOffline) return;
         response = await api.port.close(detail.path);
     }
     async function remove(event) {
         const detail = event.detail;
         console.log("serial-port-remove", detail);
+        if (isOffline) return;
         response = await api.port.remove(detail.path);
     }
     async function setEncoding(event) {
         const detail = event.detail;
         console.log("serial-port-setEncoding", detail);
+        if (isOffline) return;
         response = await api.port.setEncoding(detail.path, detail.encoding);
     }
     async function setBaudrate(event) {
         const detail = event.detail;
         console.log("serial-port-setBaudrate", detail);
+        if (isOffline) return;
         response = await api.port.setBaudrate(detail.path, detail.baudrate);
     }
     async function setDelimiter(event) {
         const detail = event.detail;
         console.log("serial-port-setDelimiter", detail);
+        if (isOffline) return;
         response = await api.port.setDelimiter(detail.path, detail.delimiter);
     }
     async function closeAll(event) {
         const detail = event.detail;
         console.log("serial-port-closeAll", detail);
+        if (isOffline) return;
         response = await api.ports.close();
     }
     async function removeAll(event) {
         const detail = event.detail;
         console.log("serial-port-removeAll", detail);
+        if (isOffline) return;
         response = await api.ports.remove();
     }
     async function escapeCRLFClick(event) {
@@ -269,81 +276,52 @@
     async function sendsSend(event) {
         const detail = event.detail;
         console.log("serial-port-sendsSend", selectedPort, detail);
+        if (isOffline) return;
         response = await api.port.send(selectedPort.path, detail, selectedPort.encoding);
     }
 </script>
 
 <div class="page flex column max-width" class:max-width={subpage !== "Log"}>
-    {#if onlineWithApi}
-        <SerialPortMain
-            bind:select
-            {subpage}
-            {isOpen}
-            {encoding}
-            {baudrate}
-            {paths}
-            {ports}
-            {formPath}
-            {formEncoding}
-            {formBaudrate}
-            {formDelimiter}
-            {formData}
-            {response}
-            {showBorders}
-            {escapeCRLF}
-            {prettyJSON}
-            {freezeCol1Col2}
-            {lines}
-            on:header-open={headerOpen}
-            on:header-close={headerClose}
-            on:header-changePage={changePage}
-            on:header-toggleEncoding={toggleEncoding}
-            on:ports-copy={portCopy}
-            on:ports-open={portOpen}
-            on:functions-open={open}
-            on:functions-send={send}
-            on:functions-close={close}
-            on:functions-remove={remove}
-            on:functions-setEncoding={setEncoding}
-            on:functions-setBaudrate={setBaudrate}
-            on:functions-setDelimiter={setDelimiter}
-            on:functions-closeAll={closeAll}
-            on:functions-removeAll={removeAll}
-            on:settings-escapeCRLF={escapeCRLFClick}
-            on:settings-freezeCol1Col2={freezeCol1Col2Click}
-            on:settings-prettyJSON={prettyJSONClick}
-            on:settings-showBorders={showBordersClick}
-            on:lineClick={lineClick}
-            on:send={sendsSend}
-        />
-    {:else}
-        <div>Offline</div>
-        <SerialPortMain
-            bind:select
-            {subpage}
-            {isOpen}
-            {encoding}
-            {baudrate}
-            {paths}
-            {ports}
-            {formPath}
-            {formEncoding}
-            {formBaudrate}
-            {formDelimiter}
-            {formData}
-            {response}
-            {showBorders}
-            {escapeCRLF}
-            {prettyJSON}
-            {freezeCol1Col2}
-            {lines}
-            on:header-changePage={changePage}
-            on:ports-copy={portCopy}
-            on:ports-open={portOpen}
-            on:settings-escapeCRLF={escapeCRLFClick}
-            on:settings-freezeCol1Col2={freezeCol1Col2Click}
-            on:settings-prettyJSON={prettyJSONClick}
-            on:settings-showBorders={showBordersClick}
-        />
-    {/if}
+    <small class="dim" class:hide={isOffline === false}> Offline </small>
+    <SerialPortMain
+        bind:select
+        {subpage}
+        {isOpen}
+        {encoding}
+        {baudrate}
+        {paths}
+        {ports}
+        {formPath}
+        {formEncoding}
+        {formBaudrate}
+        {formDelimiter}
+        {formData}
+        {response}
+        {showBorders}
+        {escapeCRLF}
+        {prettyJSON}
+        {freezeCol1Col2}
+        {lines}
+        on:header-open={headerOpen}
+        on:header-close={headerClose}
+        on:header-changePage={changePage}
+        on:header-toggleEncoding={toggleEncoding}
+        on:ports-copy={portCopy}
+        on:ports-open={portOpen}
+        on:functions-open={open}
+        on:functions-send={send}
+        on:functions-close={close}
+        on:functions-remove={remove}
+        on:functions-setEncoding={setEncoding}
+        on:functions-setBaudrate={setBaudrate}
+        on:functions-setDelimiter={setDelimiter}
+        on:functions-closeAll={closeAll}
+        on:functions-removeAll={removeAll}
+        on:settings-escapeCRLF={escapeCRLFClick}
+        on:settings-freezeCol1Col2={freezeCol1Col2Click}
+        on:settings-prettyJSON={prettyJSONClick}
+        on:settings-showBorders={showBordersClick}
+        on:lineClick={lineClick}
+        on:send={sendsSend}
+    />
 </div>

@@ -26,12 +26,24 @@ export const ws = {
 }
 
 // Constants
-const RECONNECT_TIMER = 1_000
+const RECONNECT_TIMER = 5_000
 
 // Variables
 let debug = false
 let websocket = { readyState: 3 }
-let timeout
+let interval
+let hidden = false
+
+// Listen for window visibility
+document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+        // console.log("app: page hidden")
+        hidden = true
+    } else {
+        // console.log("app: page visible")
+        hidden = false
+    }
+})
 
 // Functions
 function log(...params) { if (debug) console.log(...params) }
@@ -65,10 +77,13 @@ function connect(url = "", callback = () => { }) {
     }
     websocket.addEventListener('close', (event) => {
         log(`reconnect: ${url} in ${RECONNECT_TIMER}ms`)
-        timeout = setTimeout(() => {
-            connect(url, (status) => {
-                if (status === "open") location.reload()
-            })
+        clearInterval(interval)
+        interval = setInterval(() => {
+            if (hidden === false) {
+                connect(url, (status) => {
+                    if (status === "open") location.reload()
+                })
+            }
         }, RECONNECT_TIMER);
     })
     websocket.addEventListener('message', (event) => {

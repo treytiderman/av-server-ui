@@ -1,20 +1,41 @@
 <script>
     // Imports
-    import { volatile as global } from "../js/global-volatile-store.js";
     import { createEventDispatcher } from "svelte";
     const dispatch = createEventDispatcher();
 
     // Components
-    import { X, Plus, MoreVertical } from 'lucide-svelte';
+    import { X, Plus, MoreVertical } from "lucide-svelte";
     import ContextMenu from "../components/ContextMenu.svelte";
+    import TestPage from "../components/TestPage.svelte";
 
     // Variables
     let contextMenuElement;
-    export let tabs = [];
-    export let newTab = { name: "New Tab", component: "" };
-    export let tabActive = newTab;
-    export let windowActive = false;
-    export let contextMenuItems = [];
+
+    // State
+    export let tabs = [
+        { name: "Tab 1", component: TestPage },
+        { name: "Tab 2", component: TestPage },
+    ];
+    export let newTab = { name: "New Tab", component: TestPage };
+    export let tabActive = "New Tab";
+    export let windowActive = true;
+    export let contextMenuItems = [
+        {
+            hide: false,
+            button: "Context Menu Button",
+            iconComponent: Plus,
+            onClick: () => console.log( "Context Menu Button" ),
+        },
+        {
+            hr: true,
+        },
+        {
+            hide: false,
+            button: "Context Menu Button 2",
+            iconComponent: Plus,
+            onClick: () => console.log( "Context Menu Button 2" ),
+        },
+    ];
 </script>
 
 <ContextMenu
@@ -26,9 +47,9 @@
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div
-    class="container flex column"
+    class="wrapper flex column"
     class:active={windowActive}
-    on:click={() => dispatch("tabActive")}
+    on:click={() => dispatch("componentActive")}
 >
     <!-- Header -->
     <div class="header flex">
@@ -37,19 +58,19 @@
             <div class="tab">
                 <button
                     class="tab-button flex nowrap"
-                    class:tab-active={tabActive.name === tab.name}
+                    class:tab-active={tabActive === tab.name}
                     on:pointerdown={(event) => {
-                        if (event.button === 1) dispatch("closeTabClick", tab);
+                        if (event.button === 1) dispatch("tabClose", tab);
                     }}
-                    on:click={() => dispatch("tabClick", tab)}
+                    on:click={() => dispatch("tabSelect", tab)}
                 >
                     {tab.name}
                     <button
                         class="tab-close"
-                        class:tab-active={tabActive.name === tab.name}
-                        on:click={() => dispatch("closeTabClick", tab)}
+                        class:tab-active={tabActive === tab.name}
+                        on:pointerup={() => dispatch("tabClose", tab)}
                     >
-                        <X size=1rem strokeWidth=2.5 />
+                        <X size="1rem" strokeWidth="2.5" />
                     </button>
                 </button>
             </div>
@@ -58,11 +79,11 @@
         <!-- New Tab -->
         <button
             class="tab-add center"
-            class:tab-active={tabActive.name === newTab.name}
-            on:click={() => dispatch("newTabClick", newTab)}
+            class:tab-active={tabActive === newTab.name}
+            on:click={() => dispatch("tabSelect", newTab)}
             title="Create a New Tab"
         >
-            <Plus size=1.2rem strokeWidth=2.5 />
+            <Plus size="1.25rem" strokeWidth="2.5" />
         </button>
 
         <!-- Context Menu -->
@@ -70,33 +91,32 @@
             class="context-menu center"
             on:click={(e) => contextMenuElement.showAtEvent(e)}
         >
-            <MoreVertical size=1.2rem strokeWidth=2.5 />
+            <MoreVertical size="1.25rem" strokeWidth="2.5" />
         </button>
     </div>
 
     <!-- Content -->
-    <!-- Always show tabs so scroll position and any input remain how they were -->
+    <!-- Load all tabs so scroll position and any input remain how they were -->
     {#each tabs as tab}
-        <div class="content" class:display-none={tabActive.name !== tab.name}>
-            <!-- await breaks everything and flashes everytime something is clicked -->
-            <!-- {#await import(tab.componentFilePath) then component}
-                <svelte:component this={component.default}/>
-            {/await} -->
-            <svelte:component this={$global.pages[tab.name]} />
+        <div class="content grow" class:hide={tabActive !== tab.name}>
+            <svelte:component this={tab.component} />
         </div>
     {/each}
-    <div class="content" class:display-none={tabActive.name !== newTab.name}>
+    <div class="content grow" class:hide={tabActive !== newTab.name}>
         <svelte:component this={newTab.component} />
     </div>
 </div>
 
 <style>
-    .container {
+    .wrapper {
         height: 100%;
     }
     .content {
         height: 100%;
         overflow: auto;
+    }
+    .hide {
+        display: none;
     }
 
     .header {
@@ -144,7 +164,7 @@
 
         margin-left: var(--gap-sm);
         padding: var(--gap-xs);
-        padding: 2px;
+        padding: 0px;
     }
     .tab-close:hover {
         background-color: var(--color-bg-red);

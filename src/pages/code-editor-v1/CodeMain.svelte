@@ -8,6 +8,10 @@
     // Variables
     let monaco;
 
+    // State
+    export let theme = "black";
+    export let fontSize = 16;
+
     // Functions
     function save() {
         $state.value = monaco.getValue();
@@ -22,6 +26,8 @@
     </div>
     <div class="editor">
         <MonacoWrapper
+            {theme}
+            {fontSize}
             initValue={$state.value}
             initLanguage="javascript"
             bind:data={monaco}

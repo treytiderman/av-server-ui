@@ -1,4 +1,4 @@
-import { persistentStore } from "../../modules/store.js";
+import { persistentStore } from "../../js/store.js";
 
 export { state, def }
 

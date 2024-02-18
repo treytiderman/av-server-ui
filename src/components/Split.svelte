@@ -189,7 +189,8 @@
 
     /* Divider */
     .divider {
-        background-color: var(--color-text-1);
+        background-color: var(--color-text-0);
+        background-color: var(--color-border);
         border: none;
         border-radius: 0;
         padding: 0;
@@ -205,8 +206,8 @@
         position: absolute;
         top: 0px;
         bottom: 0px;
-        left: -2px;
-        width: 6px;
+        left: -1px;
+        width: 4px;
     }
 
     .isVertical > button.divider {
@@ -220,12 +221,13 @@
         position: absolute;
         left: 0px;
         right: 0px;
-        top: -2px;
-        height: 6px;
+        top: -1px;
+        height: 4px;
     }
 
     button.divider:hover::after {
-        background-color: var(--color-text-1);
+        background-color: var(--color-text-0);
+        background-color: var(--color-border);
     }
     button.divider:active::after {
         opacity: 0;

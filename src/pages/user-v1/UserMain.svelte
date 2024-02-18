@@ -17,7 +17,6 @@
     ];
 
     // State - Functions
-    export let username = "arlo";
     export let response = "server response here...";
 </script>
 
@@ -34,7 +33,6 @@
     <!-- Functions -->
     <div class="section flow grow">
         <UserFunctions
-            {username}
             on:userCreate
             on:userDelete
             on:userAddGroup
@@ -42,13 +40,8 @@
             on:userChangePassword
             on:groupCreate
             on:groupDelete
-            on:login
-            on:logout
             on:resetToDefault
         />
-        <div>{response}</div>
+        <div class:hide={!response}>{response}</div>
     </div>
 </div>
-
-<style>
-</style>

@@ -75,7 +75,7 @@ html.light {
     --font-family-mono: 'Fira Code', Menlo, Consolas, monospace;
     --line-height: 1.6;
     --max-p-width: 80ch;
-    --max-page-width: 120ch;
+    --max-page-width: 90ch;
 
     /* Margin, Padding, Gap */
     --pad-x: 0.8rem;
